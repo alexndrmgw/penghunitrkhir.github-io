@@ -747,70 +747,6 @@
 
             color:white;
         } */
-
-        .select-group{
-
-            margin-top:14px;
-
-            text-align:left;
-        }
-
-        .select-group label{
-
-            display:block;
-
-            margin-bottom:8px;
-
-            font-size:13px;
-
-            color:#d1d5db;
-
-            font-weight:600;
-        }
-
-        .select-group select{
-
-            width:100%;
-
-            padding:12px 14px;
-
-            border-radius:14px;
-
-            border:2px solid #374151;
-
-            background:#111827;
-
-            color:white;
-
-            font-size:15px;
-
-            outline:none;
-
-            transition:all 0.25s ease;
-
-            box-shadow:
-            0 4px 10px rgba(0,0,0,0.25);
-        }
-
-        .select-group select:hover{
-
-            border-color:#f59e0b;
-        }
-
-        .select-group select:focus{
-
-            border-color:#10b981;
-
-            box-shadow:
-            0 0 0 3px rgba(16,185,129,0.2);
-        }
-
-        .select-group option{
-
-            background:#111827;
-
-            color:white;
-        }
         .gender-buttons{
 
             display:flex;
@@ -1017,57 +953,7 @@
                     </button>
 
                 </div>
-                <div class="select-group">
 
-                    <label>🎭 Trait</label>
-
-                    <select id="playerTrait" required>
-
-                        <option value="">
-                            Pilih Trait
-                        </option>
-
-                        <option value="Strategis">
-                            🧠 Strategis
-                        </option>
-
-                        <option value="Licik">
-                            🐍 Licik
-                        </option>
-
-                        <option value="Santai">
-                            😴 Santai
-                        </option>
-
-                        <option value="Emosional">
-                            😡 Emosional
-                        </option>
-
-                    </select>
-
-                </div>
-                <div class="select-group">
-
-                    <label>📍 Asal Kota</label>
-
-                    <select id="playerCity" required>
-
-                        <option value="">
-                            Pilih Kota
-                        </option>
-
-                        <option value="Jakarta">Jakarta</option>
-                        <option value="Bandung">Bandung</option>
-                        <option value="Surabaya">Surabaya</option>
-                        <option value="Yogyakarta">Yogyakarta</option>
-                        <option value="Semarang">Semarang</option>
-                        <option value="Medan">Medan</option>
-                        <option value="Makassar">Makassar</option>
-                        <option value="Bali">Bali</option>
-
-                    </select>
-
-                </div>
                 <br>
 
                 <button onclick="savePlayerName()">
@@ -1204,26 +1090,10 @@
 
             let traits = ["Strategis","Emosional","Santai","Licik"];
 
-            let cities = [
-                "Jakarta",
-                "Bandung",
-                "Surabaya",
-                "Yogyakarta",
-                "Semarang",
-                "Medan",
-                "Makassar",
-                "Bali"
-            ];
-
             let players = [];
             let status = {};
             let relation = {};
-            // if(Object.keys(relation).length === 0){
-
-            //     relation = {};
-            // }
             let traitsMap = {};
-            let cityMap = {};
             let genderMap = {
                 "Adel":"wanita",
                 "Amel":"wanita",
@@ -1407,31 +1277,8 @@
                     return;
                 }
 
-                let selectedTrait =
-                document.getElementById("playerTrait").value;
-
-                let selectedCity =
-                document.getElementById("playerCity").value;
-
-                if(!selectedTrait){
-
-                    alert("Pilih trait dulu!");
-
-                    return;
-                }
-
-                if(!selectedCity){
-
-                    alert("Pilih kota dulu!");
-
-                    return;
-                }
-
                 playerName = value;
                 genderMap[playerName] = playerGender;
-                traitsMap[playerName] = selectedTrait;
-
-                cityMap[playerName] = selectedCity;
 
                 localStorage.setItem("playerName", playerName);
                 localStorage.setItem("playerGender",playerGender);
@@ -1439,13 +1286,7 @@
                 document.getElementById("nameModal")
                 .style.display = "none";
 
-                document.querySelector(".container").style.display = "flex";
-
-                
-
                 initGame();
-
-                saveGame();
             }
 
             function selectGender(gender){
@@ -1549,158 +1390,39 @@
                 genderMap[playerName] = playerGender;
                 // ⬇️ TAMBAHKAN INI
                 players = [];
-                // status = {};
-                // relation = {};
-                if(!relation){
-                    relation = {};
-                }
-                // traitsMap = {};
-                if(!cityMap){
-                    cityMap = {};
-                }
+                status = {};
+                relation = {};
+                traitsMap = {};
                 names.forEach(n=>{
                     players.push(n);
-                    // status[n] = "AMAN";
-                    if(!status[n]){
-                        status[n] = "AMAN";
-                    }
+                    status[n] = "AMAN";
                     // ✅ TAMBAH INI
-                    // stats[n] = {
-                    //     bos: 0,
-                    //     pk: 0,
-                    //     imun: 0,
-                    //     art: 0,
-                    //     bottom3: 0,
-                    //     bottom2: 0
-                    // };
-                    if(!stats[n]){
-
-                        stats[n] = {
-
-                            bos: 0,
-                            pk: 0,
-                            imun: 0,
-                            art: 0,
-                            bottom3: 0,
-                            bottom2: 0
-                        };
-                    }
-                    // traitsMap[n] = traits[Math.floor(Math.random()*traits.length)];
-                    if(!traitsMap[n]){
-
-                        traitsMap[n] =
-                        traits[
-                            Math.floor(Math.random()*traits.length)
-                        ];
-                    }
-                    if(!cityMap[n]){
-
-                        cityMap[n] =
-                        cities[
-                            Math.floor(Math.random()*cities.length)
-                        ];
-                    }
-                    // relation[n] = {};
-                    // names.forEach(m=>{
-                    //     if(n!==m) relation[n][m] = 0;
-                    // });
-                    if(!relation[n]){
-                        relation[n] = {};
-                    }
-
+                    stats[n] = {
+                        bos: 0,
+                        pk: 0,
+                        imun: 0,
+                        art: 0,
+                        bottom3: 0,
+                        bottom2: 0
+                    };
+                    traitsMap[n] = traits[Math.floor(Math.random()*traits.length)];
+                    relation[n] = {};
                     names.forEach(m=>{
-
-                        if(n !== m && relation[n][m] == null){
-
-                            relation[n][m] = 0;
-                        }
+                        if(n!==m) relation[n][m] = 0;
                     });
                 });
 
-                // document.getElementById("log").innerHTML =
-                // `
-                // <p>
-                //     🏠 Selamat datang di Rumah Karantina...
-                // </p>
-                // `;
-                if(
-                    !document.getElementById("log").innerHTML.trim()
-                ){
+                document.getElementById("log").innerHTML =
+                `
+                <p>
+                    🏠 Selamat datang di Rumah Karantina...
+                </p>
+                `;
 
-                    document.getElementById("log").innerHTML =
-                    `
-                    <p>
-                        🏠 Selamat datang di Rumah Karantina...
-                    </p>
-                    `;
-                }
-
-                // loadGame();
-                // updatePlayers();
-                // renderDay();
-                // cek dulu apakah ada save
-                // const hasSave = localStorage.getItem(SAVE_KEY);
-
-                // if(hasSave){
-
-                //     loadGame();
-                //     updatePlayers();
-                //     renderDay();
-
-                // }else{
-
-                //     updatePlayers();
-                //     renderDay();
-                // }
-
+                loadGame();
                 updatePlayers();
                 renderDay();
-                
             }
-            const hasSave = localStorage.getItem(SAVE_KEY);
-
-            // if(hasSave){
-
-            //     loadGame();
-
-            // }else{
-
-            //     initGame();
-            // }
-            // if(hasSave){
-
-            //     loadGame();
-
-            // }else{
-
-            //     // sembunyikan semua dulu
-            //     document.querySelector(".container").style.display = "none";
-            // }
-            if(hasSave){
-
-                try{
-
-                    loadGame();
-
-                }catch(e){
-
-                    localStorage.removeItem(SAVE_KEY);
-
-                    document.querySelector(".container").style.display = "none";
-
-                    document.getElementById("day").innerText =
-                    "Perkenalan Rumah Karantina";
-                }
-
-            }else{
-
-                document.querySelector(".container").style.display = "none";
-
-                document.getElementById("day").innerText =
-                "Perkenalan Rumah Karantina";
-            }
-
-
             
 
             // names.forEach(n=>{
@@ -1719,7 +1441,7 @@
                 el.scrollTop = el.scrollHeight;
                 saveScrollPosition();
 
-                saveGame(); // ⬅️ auto save setiap log
+                //saveGame(); // ⬅️ auto save setiap log
             }
 
             // function togglePlayers(){
@@ -1798,7 +1520,6 @@
                         }</b><br>
                         Status: ${status[p]}<br>
                         Trait: ${traitsMap[p]}<br>
-                        📍 Kota: ${cityMap[p]}<br>
                         
                         ❤️ Ke Kamu: ${p !== playerName ? rel : "-"}<br>
                         <span class="role">${role}</span>
@@ -2095,10 +1816,6 @@
                     eliminatedOrder.indexOf(b);
 
                     //return indexB - indexA;
-                    // return indexA - indexB;
-                    if(indexA === -1) indexA = 999;
-                    if(indexB === -1) indexB = 999;
-
                     return indexA - indexB;
                 });
 
@@ -2611,7 +2328,7 @@
 
                                 saveGame();
 
-                                // return;
+                                return;
                             }
                         }
                     }
@@ -3174,7 +2891,7 @@
                     );
 
                     // hanya sampai 7 besar
-                    if(getAlive().length >= 7){
+                    if(getAlive().length > 7){
 
                         log("🎮 Hari Game Kelompok!");
                         await delay(DEBUG_DELAY);
@@ -3326,20 +3043,9 @@
                         roles.imun = null;
                         roles.kunci = null;
 
-                        // weekDay = 0;
-
-                        // updatePlayers();
-                        weekDay = 1;
+                        weekDay = 0;
 
                         updatePlayers();
-
-                        saveGame();
-
-                        isDayProcessing = false;
-
-                        setGameButtonsDisabled(false);
-
-                        return;
                     }
 
                     dayCount++;
@@ -5448,15 +5154,12 @@
                     status = parsed.status;
                     relation = parsed.relation;
                     traitsMap = parsed.traitsMap;
-                    cityMap = parsed.cityMap || {};
-                    playerGender = parsed.playerGender || "";
                     eliminatedOrder = parsed.eliminatedOrder || [];
                     amnesters = parsed.amnesters || [];
                     roles = parsed.roles;
                     activeRoles = parsed.activeRoles || activeRoles;
                     freezeBosAfterAmnesty =
                     parsed.freezeBosAfterAmnesty || false;
-                    genderMap[playerName] = playerGender;
 
                     freezePkAfterAmnesty =
                     parsed.freezePkAfterAmnesty || false;
@@ -5617,7 +5320,6 @@
                     status,
                     relation,
                     traitsMap,
-                    cityMap,
                     roles,
                     activeRoles,
                     freezeBosAfterAmnesty,
@@ -5631,8 +5333,6 @@
                     lastWeekRoles,
                     eliminatedOrder,
                     amnesters,
-                    playerName,
-                    playerGender,
                     pendingDecision,
                     extraditionState,
                     amnestyState,
@@ -5728,7 +5428,6 @@
                 "Perkenalan Rumah Karantina";
 
             }
-            
         </script>
         <!-- <div id="modalRelasi" class="modal" onclick="clickOutside(event)">
             <div class="modal-content">
