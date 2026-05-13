@@ -3951,9 +3951,9 @@
                     <button onclick="voteAmnesty('${p}')">
                         Pilih ${p}
 
-                        ❤️ ${
+                        (❤️ ${
                             getRelationSafe(playerName,p)
-                        }
+                        })
                     </button><br>
                     `;
                 });
@@ -4439,10 +4439,10 @@
 
                             id="imunBtn-${p}"
 
-                            data-label="${p} ❤️ ${getRelationSafe(playerName,p)}"
+                            data-label="${p} (❤️ ${getRelationSafe(playerName,p)})"
                             >
 
-                                ${p} ❤️ ${getRelationSafe(playerName,p)}
+                                ${p} (❤️ ${getRelationSafe(playerName,p)}) 
 
                             </button><br>
                             `;
@@ -4544,9 +4544,9 @@
 
                             Selamatkan ${p}
 
-                            ❤️ ${
+                            (❤️ ${
                                 getRelationSafe(playerName,p)
-                            }
+                            })
 
                         </button>
                         `;
@@ -4608,9 +4608,9 @@
 
                             Eliminasi ${p}
 
-                            ❤️ ${
+                            (❤️ ${
                                 getRelationSafe(playerName,p)
-                            }
+                        })
 
                         </button>
                         `;
@@ -4806,9 +4806,9 @@
 
                             Eliminasi ${p}
 
-                            ❤️ ${
+                            (❤️ ${
                                 getRelationSafe(playerName,p)
-                            }
+                            })
 
                         </button><br>
                         `;
@@ -4867,9 +4867,9 @@
 
                         Eliminasi ${p}
 
-                        ❤️ ${
+                        (❤️ ${
                             getRelationSafe(playerName,p)
-                        }
+                        })
 
                     </button><br>
                     `;
@@ -4933,14 +4933,14 @@
                     <button
                     onclick="toggleImunChoice('${p}')"
                     id="imunBtn-${p}"
-                    data-label="${p} ❤️ ${getRelationSafe(playerName,p)}"
+                    data-label="${p} (❤️ ${getRelationSafe(playerName,p)})"
                     style="
                         background:
                         ${checked ? '#10b981' : '#f59e0b'}
                     "
                     >
                         ${checked ? '✅ ' : ''}
-                        ${p} ❤️ ${getRelationSafe(playerName,p)}
+                        ${p} (❤️ ${getRelationSafe(playerName,p)})         
                     </button><br>
                     `;
                 });
@@ -5304,9 +5304,9 @@
 
                             Selamatkan ${p}
 
-                            ❤️ ${
+                            (❤️ ${
                                 getRelationSafe(playerName,p)
-                            }
+                            })
 
                         </button><br>
                         `;
@@ -5375,9 +5375,9 @@
 
                             Eliminasi ${p}
 
-                            ❤️ ${
+                            (❤️ ${
                                 getRelationSafe(playerName,p)
-                            }
+                            })
 
                         </button><br>
                         `;
@@ -5675,7 +5675,7 @@
 
                                 Selamatkan ${p}
 
-                                ❤️ ${getRelationSafe(playerName,p)}
+                                (❤️ ${getRelationSafe(playerName,p)})  
 
                             </button><br>
                             `;
@@ -5707,7 +5707,7 @@
 
                                 Pilih ${p}
 
-                                ❤️ ${getRelationSafe(playerName,p)}
+                                (❤️ ${getRelationSafe(playerName,p)})
 
                             </button><br>
                             `;
