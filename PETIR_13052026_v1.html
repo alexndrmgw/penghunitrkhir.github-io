@@ -1,0 +1,5494 @@
+<!DOCTYPE html>
+    <html lang="id">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>🏠🔑Penghuni Terakhir</title>
+
+        <style>
+        *{
+            box-sizing: border-box;
+        }
+
+        /* html, body{
+            width: 100%;
+            overflow-x: hidden;
+        } */
+        /* html,
+        body{
+            width:100%;
+            height:100%;
+            overflow:hidden;
+             padding-bottom:env(safe-area-inset-bottom);
+        } */
+        html,
+        body{
+            width:100%;
+            min-height:100%;
+            overflow-x:hidden;
+            overflow-y:auto;
+            padding-bottom:env(safe-area-inset-bottom);
+        }
+        body {
+            font-family: 'Segoe UI';
+            background: #0f172a;
+            color: white;
+            margin: 0;
+        }
+
+        header {
+            background: #1e293b;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .container {
+            display: flex;
+            width:100%;
+            max-width:100%;
+            overflow-x:hidden;
+        }
+
+        /* .sidebar {
+            width: 30%;
+            background: #111827;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .main {
+            width: 70%;
+            padding: 20px;
+        } */
+
+        .sidebar {
+            /* width: 24%; */
+            width: 20%;
+            background: #111827;
+            /* height: 100vh; */
+            height: calc(100vh - 110px);
+            overflow-y: auto;
+            padding: 10px;
+            padding-bottom: 10px;
+        }
+
+        .main {
+            /* width: 76%; */
+            width: 80%;
+            padding: 20px;
+            /* display:flex; 
+            flex-direction:column; */
+            overflow:hidden;
+             min-width:0;
+        }
+
+        .card {
+            background: #1f2937;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+
+            transition: all 0.25s ease;
+
+        }
+
+        .card:hover {
+            /* transform: scale(1.03); */
+            transform: translateY(-2px);
+
+            box-shadow: 0 8px 18px rgba(0,0,0,0.35);
+        }
+
+        .role {
+            font-size: 12px;
+            color: gold;
+        }
+
+        button {
+            padding: 10px;
+            margin: 5px;
+            border: none;
+            border-radius: 8px;
+            background: #f59e0b;
+            cursor: pointer;
+            max-width:100%;
+            word-break:break-word;
+        }
+
+        button:disabled{
+
+            background: #f59e0b;
+
+            opacity: 0.5;
+
+            cursor: not-allowed;
+
+            color: #111;
+
+            filter: grayscale(20%);
+        }
+
+        /* .log {
+            background: #020617;
+            height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            border-radius: 10px;
+        } */
+        .log {
+            background: #020617;
+
+            /* height: 300px; */
+            height: calc(100vh - 260px);
+
+            overflow-y: auto;
+            overflow-x: hidden;
+
+            padding: 10px;
+            /* padding-right:18px; */
+
+            border-radius: 10px;
+
+            width: 100%;
+            max-width: 100%;
+
+            box-sizing: border-box;
+
+            /* word-break: break-word; */
+            word-break: break-word;
+            flex:1;
+            /* min-height:500px; */
+            min-height:auto;
+            padding-right:0;
+
+            /* scroll-behavior:smooth; */
+            
+        }
+        /* MODAL ANIMATION */
+        /* .modal {
+            display: none;
+            position: fixed;
+            z-index: 999;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        } */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 999;
+            left: 0;
+            top: 0;
+
+            width: 100%;
+            height: 100%;
+
+            background: rgba(0,0,0,0.7);
+
+            justify-content: center;
+            align-items: center;
+
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.show {
+            display: block;
+            opacity: 1;
+        }
+
+        .modal-content {
+            position: relative;
+            background: #1f2937;
+            margin: 5% auto;
+            padding: 20px;
+            width: 60%;
+            max-height: 70vh;
+            overflow-y: auto;
+            border-radius: 12px;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+            width: calc(100% - 20px);
+            max-width: 700px;
+
+            margin: 10px;
+        }
+
+        .modal.show .modal-content {
+            transform: translateY(0);
+        }
+
+        /* RELATION COLOR */
+        .friend { color: #22c55e; }   /* hijau */
+        .enemy { color: #ef4444; }    /* merah */
+        .neutral { color: #e5e7eb; }  /* putih */
+
+        /* PLAYER CARD */
+        .card.out {
+            background: #000;
+            opacity: 0.6;
+        }
+
+        /* CARD RELATION BACKGROUND */
+        .friend-bg {
+            background: #064e3b;
+            border: 1px solid #22c55e;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+        }
+
+        .enemy-bg {
+            background: #450a0a;
+            border: 1px solid #ef4444;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+        }
+
+        .neutral-bg {
+            background: #1f2937;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+        }
+        
+
+        /* .close {
+            float: right;
+            font-size: 25px;
+            cursor: pointer;
+        } */
+        .close{
+
+            position:absolute;
+
+            top:15px;
+            right:15px;
+
+            width:36px;
+            height:36px;
+
+            display:flex;
+            align-items:center;
+            justify-content:center;
+
+            background:#ef4444;
+
+            color:white;
+
+            border-radius:10px;
+
+            font-size:20px;
+
+            font-weight:bold;
+
+            cursor:pointer;
+
+            transition:0.2s;
+        }
+
+        .close:hover{
+
+            background:#dc2626;
+
+            transform:scale(1.08);
+        }
+
+        /* MOBILE MODE */
+        .mobile-only {
+            display: none;
+        }
+
+        /* default desktop */
+        #playersContainer {
+            display: block;
+        }
+        .sidebar,
+        .log{
+            scrollbar-gutter: stable;
+        }
+
+        /* MOBILE */
+        @media (max-width: 768px){
+
+            header{
+                /* padding:12px 10px; */
+                /* padding:14px 12px; */
+                padding:10px 12px 8px;
+            }
+
+            header h1{
+                /* font-size:32px;
+                margin-bottom:8px; */
+                /* font-size:30px;
+                margin-bottom:6px; */
+                font-size:28px;
+                margin:0 0 2px 0;
+                line-height:1.1;
+            }
+
+            header h2{
+                /* font-size:18px;
+                line-height:1.4; */
+                font-size:16px;
+                line-height:1.2;
+                margin:0;
+            }
+
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+
+                transform: translateY(-20px);
+                opacity: 0;
+                max-height: 0;
+                overflow: hidden;
+
+                transition: all 0.3s ease;
+            }
+
+            .sidebar.show {
+                transform: translateY(0);
+                opacity: 1;
+                max-height: 2000px;
+            }
+
+            .main {
+                /* width: 100%;
+                height:100dvh;
+                overflow:auto;
+                padding:20px;
+
+                box-sizing:border-box; */
+                /* width:100%;
+                min-height:100dvh;
+                overflow:visible; */
+                width:100%;
+                /* padding:12px; */
+                padding:4px 12px 12px;
+            }
+
+            /* .log{
+
+                height:450px;
+                /* height:calc(100vh - 260px); 
+            } */
+            .log{
+                background:#020617;
+
+                min-height:0;
+
+                max-height:55vh;
+
+                overflow-y:auto;
+                overflow-x:hidden;
+
+                border-radius:14px;
+
+                padding:14px 14px 28px;
+
+                width:100%;
+
+                box-sizing:border-box;
+
+                margin-top:6px;
+            }
+            .log p{
+                margin:0 0 10px 0;
+            }
+            /* .log:empty{
+                display:none;
+            } */
+            .log:empty{
+                min-height:0;
+                padding:0;
+                border:none;
+                background:transparent;
+                overflow:hidden;
+            }
+            .mobile-top{
+                /* margin-top:10px; */
+                margin-top:-6px;
+            }
+
+            .mobile-only {
+                display: inline-block;
+                background: #10b981;
+            }
+            /* .mobile-buttons{
+                display:flex;
+                flex-wrap:wrap;
+                gap:8px;
+                margin-bottom:12px;
+            }
+
+            .mobile-buttons button{
+                flex:1 1 calc(50% - 8px);
+                font-size:14px;
+                padding:10px;
+            } */
+             .mobile-buttons{
+
+                /* display:grid;
+
+                grid-template-columns:1fr 1fr;
+
+                gap:10px;
+
+                padding:10px 14px;
+                margin-top:-10px; */
+                display:grid;
+
+                grid-template-columns:1fr 1fr;
+
+                gap:10px;
+
+                padding:4px 14px 10px;
+
+                margin-top:-14px;
+            }
+
+            .mobile-buttons button{
+
+                width:100%;
+
+                font-size:14px;
+
+                padding:12px 10px;
+
+                border-radius:12px;
+            }
+            .danger-btn{
+                grid-column:1 / -1;
+            }
+            .floating-player-btn{
+
+                position:fixed;
+
+                right:18px;
+
+                bottom:18px;
+
+                width:58px;
+
+                height:58px;
+
+                border:none;
+
+                border-radius:50%;
+
+                background:#10b981;
+
+                color:white;
+
+                font-size:24px;
+
+                z-index:9999;
+
+                box-shadow:
+                0 4px 14px rgba(0,0,0,.4);
+            }
+        }
+        /* MODAL MOBILE PESERTA */
+        .modal-overlay{
+            position: fixed;
+            inset: 0;
+
+            background: rgba(0,0,0,0.7);
+
+            display: none;
+
+            justify-content: center;
+            align-items: center;
+
+            z-index: 999;
+        }
+
+        .modal-overlay.show{
+            display: flex;
+            animation: fadeIn 0.25s ease;
+        }
+
+        .players-modal-content{
+            /* width: 90%; */
+            width: calc(100% - 20px);
+            max-width: 500px;
+
+            margin: 10px;
+
+            max-height: 85vh;
+
+            overflow-y: auto;
+            max-height: 85vh;
+
+            overflow-y: auto;
+
+            background: #1f2937;
+
+            border-radius: 16px;
+
+            padding: 15px;
+
+            animation: slideUp 0.25s ease;
+        }
+
+        .modal-header{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+
+            margin-bottom:15px;
+        }
+
+        .modal-header button{
+            background:red;
+            border:none;
+            color:white;
+
+            border-radius:8px;
+
+            padding:6px 10px;
+        }
+        /* CARD PESERTA DI MODAL MOBILE */
+        #playersMobile{
+            display:flex;
+            flex-direction:column;
+            gap:12px;
+        }
+
+        /* paksa card tampil normal */
+        #playersMobile .player-card{
+            /* background:#1e293b; */
+
+            border-radius:14px;
+
+            padding:12px;
+
+            border:1px solid rgba(255,255,255,0.08);
+
+            box-shadow:0 4px 10px rgba(0,0,0,0.25);
+
+            width:100%;
+
+            box-sizing:border-box;
+        }
+
+        /* card penghuni keluar */
+        #playersMobile .player-card.eliminated{
+            background:#111;
+            opacity:0.7;
+        }
+
+        /* teks card */
+        #playersMobile .player-card h3{
+            margin-bottom:8px;
+        }
+
+        #playersMobile .player-card p{
+            margin:4px 0;
+        }
+
+        /* ANIMASI */
+        @keyframes fadeIn{
+            from{opacity:0;}
+            to{opacity:1;}
+        }
+
+        @keyframes slideUp{
+            from{
+                transform:translateY(20px);
+                opacity:0;
+            }
+
+            to{
+                transform:translateY(0);
+                opacity:1;
+            }
+        }
+        /* MODAL NAMA PLAYER */
+        .name-modal{
+            position: fixed;
+            inset: 0;
+
+            background: rgba(0,0,0,0.8);
+
+            display: flex;
+
+            justify-content: center;
+            align-items: center;
+
+            z-index: 9999;
+        }
+
+        .name-modal-content{
+            background: #1f2937;
+
+            width: 90%;
+            max-width: 400px;
+
+            padding: 25px;
+
+            border-radius: 18px;
+
+            text-align: center;
+
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+
+            animation: fadeUp 0.3s ease;
+        }
+
+        .name-modal-content h2{
+            margin-bottom: 10px;
+        }
+
+        .name-modal-content p{
+            margin-bottom: 15px;
+        }
+
+        .name-modal-content input{
+            width: 100%;
+
+            padding: 12px;
+
+            border-radius: 10px;
+
+            border: none;
+
+            margin-bottom: 15px;
+
+            background: #111827;
+            color: white;
+        }
+
+        .name-modal-content button{
+            width: 100%;
+        }
+
+        @keyframes fadeUp{
+            from{
+                opacity:0;
+                transform:translateY(20px);
+            }
+
+            to{
+                opacity:1;
+                transform:translateY(0);
+            }
+        }
+        .modal-header{
+
+            display:flex;
+
+            justify-content:space-between;
+
+            align-items:center;
+
+            margin-bottom:15px;
+        }
+
+        .modal-header button{
+
+            background:red;
+
+            color:white;
+
+            border:none;
+
+            padding:8px 12px;
+
+            border-radius:10px;
+
+            cursor:pointer;
+
+            font-weight:bold;
+        }
+        /* .gender-buttons{
+
+            display:flex;
+
+            gap:10px;
+
+            justify-content:center;
+
+            margin-top:15px;
+        }
+
+        .gender-buttons button{
+
+            background:#1e293b;
+
+            color:white;
+
+            border:none;
+
+            padding:10px 18px;
+
+            border-radius:12px;
+
+            cursor:pointer;
+
+            transition:0.25s;
+
+            font-weight:bold;
+        }
+
+        .gender-buttons button:hover{
+
+            transform:scale(1.05);
+        }
+
+        .active-gender{
+
+            background:#10b981 !important;
+
+            color:white;
+        } */
+        .gender-buttons{
+
+            display:flex;
+
+            gap:10px;
+
+            justify-content:center;
+
+            margin-top:10px;
+        }
+
+        .gender-buttons button{
+
+            background:#111827;
+
+            color:#e5e7eb;
+
+            border:2px solid #374151;
+
+            padding:10px 18px;
+
+            border-radius:14px;
+
+            cursor:pointer;
+
+            transition:all 0.25s ease;
+
+            font-weight:bold;
+
+            font-size:15px;
+
+            min-width:110px;
+
+            box-shadow:
+            0 4px 10px rgba(0,0,0,0.25);
+        }
+
+        .gender-buttons button:hover{
+
+            transform:translateY(-2px);
+
+            border-color:#f59e0b;
+
+            box-shadow:
+            0 6px 16px rgba(245,158,11,0.25);
+        }
+
+        .active-gender{
+
+            background:#10b981 !important;
+
+            border-color:#34d399 !important;
+
+            color:white !important;
+
+            box-shadow:
+            0 0 15px rgba(16,185,129,0.45),
+            0 6px 16px rgba(0,0,0,0.35);
+        }
+        .relation-card{
+            background:#111827;
+            border:1px solid rgba(255,255,255,0.08);
+            border-radius:14px;
+            padding:14px;
+            margin-bottom:14px;
+            box-shadow:0 4px 10px rgba(0,0,0,0.25);
+        }
+
+        .relation-card h4{
+            margin:0 0 10px 0;
+            color:#fff;
+            font-size:18px;
+
+            border-bottom:
+            1px solid rgba(255,255,255,0.08);
+
+            padding-bottom:8px;
+        }
+
+        .relation-item{
+            display:flex;
+            justify-content:space-between;
+
+            padding:5px 0;
+
+            font-size:14px;
+        }
+
+        .rel-positive{
+            color:#4ade80;
+            font-weight:bold;
+        }
+
+        .rel-negative{
+            color:#f87171;
+            font-weight:bold;
+        }
+
+        .rel-neutral{
+            color:#d1d5db;
+        }
+
+        .modal-overlay.closing{
+            animation: fadeOut 0.25s ease forwards;
+        }
+
+        .modal-overlay.closing .players-modal-content{
+            animation: slideDown 0.25s ease forwards;
+        }
+
+        @keyframes fadeOut{
+            from{opacity:1;}
+            to{opacity:0;}
+        }
+
+        @keyframes slideDown{
+            from{
+                transform:translateY(0);
+                opacity:1;
+            }
+
+            to{
+                transform:translateY(20px);
+                opacity:0;
+            }
+        }
+
+        </style>
+    </head>
+
+    <body>
+
+        <header>
+            <h1>🏠🔑 Penghuni Terakhir</h1>
+            <h2 id="day">Hari 1</h2>
+        </header>
+
+
+        <!-- <div id="nameModal" class="name-modal">
+
+            <div class="name-modal-content">
+
+                <h2>🎮 Selamat Datang</h2>
+
+                <p>Masukkan nama pemain:</p>
+
+                <input type="text" id="playerNameInput" placeholder="Nama kamu">
+
+                <button onclick="savePlayerName()">
+                    Mulai Game
+                </button>
+
+            </div>
+
+        </div> -->
+
+        <div id="nameModal" class="name-modal">
+
+            <div class="name-modal-content">
+
+                <h2>🎮 Selamat Datang</h2>
+
+                <p>Masukkan nama pemain:</p>
+
+                <input
+                    type="text"
+                    id="playerNameInput"
+                    placeholder="Nama kamu"
+                >
+
+                <br>
+
+                <!-- <select id="genderInput">
+
+                    <option value="">
+                        Pilih Gender
+                    </option>
+
+                    <option value="pria">
+                        👨 Pria
+                    </option>
+
+                    <option value="wanita">
+                        👩 Wanita
+                    </option>
+
+                </select> -->
+                <div class="gender-buttons">
+
+                    <button
+                        id="btnPria"
+                        onclick="selectGender('pria')"
+                        type="button"
+                    >
+                        ♂️ Pria
+                    </button>
+
+                    <button
+                        id="btnWanita"
+                        onclick="selectGender('wanita')"
+                        type="button"
+                    >
+                        ♀️ Wanita
+                    </button>
+
+                </div>
+
+                <br>
+
+                <button onclick="savePlayerName()">
+                    Mulai Game
+                </button>
+
+            </div>
+
+        </div>
+
+        <div class="container">
+
+            <div class="sidebar" id="playersContainer">
+                <div id="players"></div>
+            </div>
+
+            <div class="main">
+                <div class="mobile-top">
+
+                    <div class="mobile-header">
+                        <!-- kosong karena header asli sudah di atas -->
+                    </div>
+
+                    <div class="mobile-buttons">
+
+                        <button id="nextBtn" onclick="nextDay()">➡️ Ganti Hari</button>
+
+                        <button id="socialBtn" onclick="socialize()">
+                            💬 Sosialisasi
+                        </button>
+
+                        <button onclick="lihatRelasi()">
+                            ❤️ Skor Relasi
+                        </button>
+
+                        
+
+                        <button onclick="showReport()">
+                            📊 Report
+                        </button>
+
+                        <button onclick="resetGame()"  class="danger-btn">
+                            🔄 Reset Game
+                        </button>
+
+                        
+
+                    </div>
+
+                </div>
+
+
+                <div class="log" id="log"></div>
+
+           
+
+            </div>
+            <div id="reportModal" class="modal">
+
+                <div class="modal-content">
+
+                    <!-- <button
+                    class="close-btn"
+                    onclick="closeReport()">
+                        ✖
+                    </button> -->
+                    <span
+                    class="close"
+                    onclick="closeReport()">
+                        ✖
+                    </span>
+
+                    <h2>📊 Report Penghuni</h2>
+
+                    <div id="reportContent"></div>
+
+                </div>
+
+            </div>
+
+            <div id="playersModal" class="modal-overlay">
+
+            <div class="players-modal-content">
+
+                <div class="modal-header">
+                    <h3>👥 Daftar Peserta</h3>
+
+                    <button onclick="closePlayersModal()">✖</button>
+                </div>
+
+                <div id="playersMobile"></div>
+
+            </div>
+
+        </div>
+
+        <button
+            class="floating-player-btn mobile-only"
+            onclick="openPlayersModal()"
+        >
+            👥 
+        </button>
+
+        <script>
+            // ⬇️ TARUH DI SINI (PALING ATAS)
+            const SAVE_KEY = "penghuni_terakhir_save";
+            const DEBUG_DELAY = 500;
+            let dailySocialCount = 0;
+            let weekDay = 1;
+            let dayCount = 0; // ⬅️ TAMBAHKAN DI SINI
+            let playerName = "";
+            let playerGender = "";
+            let playerEverEliminated = false;
+            let isDayProcessing = false;
+            let preserveRolesAfterAmnesty = false;
+            
+            //let skipRoleAssignmentOnce = false;
+            let amnestyLockDay = 0;
+            let endgameMode = false;
+
+            let freezeBosAfterAmnesty = false;
+            let freezePkAfterAmnesty = false;
+            let freezeImunAfterAmnesty = false;
+            let amnestyFrozenRoles = {
+                bos:null,
+                kunci:null,
+                imun:null
+            };
+            
+
+            playerName =localStorage.getItem("playerName") || "";
+
+            playerGender =localStorage.getItem("playerGender") || "";
+
+            let traits = ["Strategis","Emosional","Santai","Licik"];
+
+            let players = [];
+            let status = {};
+            let relation = {};
+            let traitsMap = {};
+            let genderMap = {
+                "Adel":"wanita",
+                "Amel":"wanita",
+                "Astri":"wanita",
+                "Ayu":"wanita",
+                "Boy":"pria",
+                "Dinda":"wanita",
+                "Egi":"wanita",
+                "Gezod":"pria",
+                "Hendra":"pria",
+                "Ichan":"pria",
+                "Iid":"pria",
+                "Kiki":"pria",
+                "Lazu":"pria",
+                "Panca":"pria",
+                "Putri":"wanita",
+                "Richard":"pria",
+                "Shandy":"pria",
+                "Shinta":"wanita",
+                "Venny":"wanita",
+                "Yuni":"wanita"
+            };
+
+            let roles = {
+                bos:null,
+                art:null,
+                imun:null,
+                kunci:null
+            };
+            let activeRoles = {
+                bos: null,
+                art: null,
+                imun: null,
+                kunci: null
+            };
+            let eliminatedOrder = [];
+            let stats = {};
+            let amnesters = [];
+
+            let extraditionState = {
+                bottom3: [],
+                bottom2: [],
+                imunChoices: [],
+                savedByBoss: null,
+                savedByKey: null
+            };
+            let pendingDecision = null;
+            //amnesti comeback random
+            //let comebackDone = false;
+            let comebackDone = localStorage.getItem("comebackDone") === "true";
+            //amnesti jalur voting
+            let amnestyState = {
+
+                final2: [],
+
+                autoComeback: null
+            };
+
+            let lastWeekRoles = {
+                bos: null,
+                art: null,
+                imun: null,
+                kunci: null
+            };
+
+            // INIT PLAYER
+            // let names = ["KAMU","Andi","Budi","Citra","Dewi","Eka","Fajar","Gina","Hadi","Indah",
+            // "Joko","Kiki","Lina","Maya","Nina","Oka","Putra","Rani","Sari","Tono"];
+            //let playerName = localStorage.getItem("playerName");
+            // const reservedNames = [
+            //     "Adel",
+            //     "Amel",
+            //     "Astri",
+            //     "Ayu",
+            //     "Boy",
+            //     "Egi",
+            //     "Gezod",
+            //     "Hendra",
+            //     "Ichan",
+            //     "Iid",
+            //     "Kiki",
+            //     "Lazu",
+            //     "Panca",
+            //     "Putri",
+            //     "Richard",
+            //     "Shandy",
+            //     "Shinta",
+            //     "Venny",
+            //     "Yuni"
+            // ];
+
+            function getReservedNames(){
+
+                if(playerGender === "pria"){
+
+                    return [
+                        "Adel",
+                        "Amel",
+                        "Astri",
+                        "Ayu",
+                        "Boy",
+                        "Dinda",
+                        "Egi",
+                        "Gezod",
+                        "Hendra",
+                        "Ichan",
+                        "Iid",
+                        "Kiki",
+                        "Panca",
+                        "Putri",
+                        "Richard",
+                        "Shandy",
+                        "Shinta",
+                        "Venny",
+                        "Yuni"
+                    ];
+                }
+
+                return [
+                    "Adel",
+                    "Amel",
+                    "Astri",
+                    "Ayu",
+                    "Boy",
+                    "Egi",
+                    "Gezod",
+                    "Hendra",
+                    "Ichan",
+                    "Iid",
+                    "Kiki",
+                    "Lazu",
+                    "Panca",
+                    "Putri",
+                    "Richard",
+                    "Shandy",
+                    "Shinta",
+                    "Venny",
+                    "Yuni"
+                ];
+            }
+
+            function savePlayerName(){
+
+                let input =
+                document.getElementById("playerNameInput");
+
+                let value = input.value.trim();
+                //playerGender = document.getElementById("genderInput").value;
+
+                // if(value === ""){
+                //     alert("Masukkan nama dulu!");
+                //     return;
+                // }
+                if(value === ""){
+                    alert("Masukkan nama dulu!");
+                    return;
+                }
+                if(!/^[a-zA-Z\s]+$/.test(value)){
+
+                    alert(
+                    "Nama hanya boleh huruf dan spasi!"
+                    );
+
+                    return;
+                }
+                if(!playerGender){
+
+                    alert("Pilih gender dulu!");
+
+                    return;
+                }
+
+                // cek nama sama
+                if(
+                    //reservedNames
+                    getReservedNames()
+                    .map(n=>n.toLowerCase())
+                    .includes(value.toLowerCase())
+                ){
+                    alert("Nama sudah dipakai peserta lain!");
+                    return;
+                }
+
+                playerName = value;
+                genderMap[playerName] = playerGender;
+
+                localStorage.setItem("playerName", playerName);
+                localStorage.setItem("playerGender",playerGender);
+
+                document.getElementById("nameModal")
+                .style.display = "none";
+
+                initGame();
+            }
+
+            function selectGender(gender){
+
+                playerGender = gender;
+
+                let priaBtn =
+                document.getElementById("btnPria");
+
+                let wanitaBtn =
+                document.getElementById("btnWanita");
+
+                priaBtn.classList.remove("active-gender");
+                wanitaBtn.classList.remove("active-gender");
+
+                if(gender === "pria"){
+
+                    priaBtn.classList.add("active-gender");
+
+                }else{
+
+                    wanitaBtn.classList.add("active-gender");
+                }
+            }
+
+            function initGame(){
+
+                // names = [
+                //     playerName,
+                //     "Adel",
+                //     "Amel",
+                //     "Astri",
+                //     "Ayu",
+                //     "Boy",
+                //     "Egi",
+                //     "Gezod",
+                //     "Hendra",
+                //     "Ichan",
+                //     "Iid",
+                //     "Kiki",
+                //     "Lazu",
+                //     "Panca",
+                //     "Putri",
+                //     "Richard",
+                //     "Shandy",
+                //     "Shinta",
+                //     "Venny",
+                //     "Yuni"
+                // ];
+                if(playerGender === "wanita"){
+
+                    names = [
+                        playerName,
+                        "Adel",
+                        "Amel",
+                        "Astri",
+                        "Ayu",
+                        "Boy",
+                        "Egi",
+                        "Gezod",
+                        "Hendra",
+                        "Ichan",
+                        "Iid",
+                        "Kiki",
+                        "Lazu",
+                        "Panca",
+                        "Putri",
+                        "Richard",
+                        "Shandy",
+                        "Shinta",
+                        "Venny",
+                        "Yuni"
+                    ];
+
+                }else{
+
+                    names = [
+                        playerName,
+                        "Adel",
+                        "Amel",
+                        "Astri",
+                        "Ayu",
+                        "Boy",
+                        "Dinda",
+                        "Egi",
+                        "Gezod",
+                        "Hendra",
+                        "Ichan",
+                        "Iid",
+                        "Kiki",
+                        "Panca",
+                        "Putri",
+                        "Richard",
+                        "Shandy",
+                        "Shinta",
+                        "Venny",
+                        "Yuni"
+                    ];
+                }
+                // TAMBAH INI
+                genderMap[playerName] = playerGender;
+                // ⬇️ TAMBAHKAN INI
+                players = [];
+                status = {};
+                relation = {};
+                traitsMap = {};
+                names.forEach(n=>{
+                    players.push(n);
+                    status[n] = "AMAN";
+                    // ✅ TAMBAH INI
+                    stats[n] = {
+                        bos: 0,
+                        pk: 0,
+                        imun: 0,
+                        art: 0,
+                        bottom3: 0,
+                        bottom2: 0
+                    };
+                    traitsMap[n] = traits[Math.floor(Math.random()*traits.length)];
+                    relation[n] = {};
+                    names.forEach(m=>{
+                        if(n!==m) relation[n][m] = 0;
+                    });
+                });
+
+                document.getElementById("log").innerHTML =
+                `
+                <p>
+                    🏠 Selamat datang di Rumah Karantina...
+                </p>
+                `;
+
+                loadGame();
+                updatePlayers();
+                renderDay();
+            }
+            
+
+            // names.forEach(n=>{
+            //     players.push(n);
+            //     status[n] = "AMAN";
+            //     traitsMap[n] = traits[Math.floor(Math.random()*traits.length)];
+            //     relation[n] = {};
+            //     names.forEach(m=>{
+            //         if(n!==m) relation[n][m] = 0;
+            //     });
+            // });
+
+            function log(text){
+                let el = document.getElementById("log");
+                el.innerHTML += "<p>"+text+"</p>";
+                el.scrollTop = el.scrollHeight;
+                saveScrollPosition();
+
+                //saveGame(); // ⬅️ auto save setiap log
+            }
+
+            // function togglePlayers(){
+            //     let el = document.getElementById("playersContainer");
+            //     el.classList.toggle("show");
+            // }
+
+            // UI PLAYER
+            function updatePlayers(){
+
+                let alive = players.filter(p=>status[p]!=="KELUAR");
+                //let out = players.filter(p=>status[p]==="KELUAR");
+                let out = [...eliminatedOrder];
+
+                let sorted = [...alive, ...out];
+
+                let html="";
+
+                sorted.forEach(p=>{
+                    // let role="";
+                    // if(roles.bos===p) role="👑 Bos";
+                    // if(roles.art===p) role="🧹 ART";
+                    // if(roles.imun===p) role="🛡️ Imun";
+                    // if(roles.kunci===p) role="🔑 Kunci";
+                    let role = "";
+
+                    // if(roles.bos === p){
+                    //     role += "👑 Bos ";
+                    // }
+
+                    // if(roles.art === p){
+                    //     role += "🧹 ART ";
+                    // }
+
+                    // if(roles.imun === p){
+                    //     role += "🛡️ Imun ";
+                    // }
+
+                    // if(roles.kunci === p){
+                    //     role += "🔑 Kunci ";
+                    // }
+                    if(activeRoles.bos === p){
+                        role += "👑 Bos ";
+                    }
+
+                    if(activeRoles.art === p){
+                        role += "🧹 ART ";
+                    }
+
+                    if(activeRoles.imun === p){
+                        role += "🛡️ Imun ";
+                    }
+
+                    if(activeRoles.kunci === p){
+                        role += "🔑 Kunci ";
+                    }
+
+                    if(amnesters.includes(p)){
+                        role += "🎭 Amnester ";
+                    }
+
+                    // let rel = p !== "KAMU" ? relation[p]["KAMU"] : 0;
+                    let rel = p !== playerName ? relation[p][playerName] : 0;
+
+                    let bgClass = "";
+                    if(status[p] !== "KELUAR"){
+                        bgClass = getRelationBgClass(rel);
+                    }
+
+                    html += `
+                    <div class="card player-card ${bgClass} ${status[p]==="KELUAR" ? "out" : ""}">
+                        <b>${p}${
+                            genderMap[p] === "pria"
+                            ? "♂️"
+                            : "♀️"
+                        }</b><br>
+                        Status: ${status[p]}<br>
+                        Trait: ${traitsMap[p]}<br>
+                        
+                        ❤️ Ke Kamu: ${p !== playerName ? rel : "-"}<br>
+                        <span class="role">${role}</span>
+                    </div>`;
+                });
+
+                document.getElementById("players").innerHTML = html;
+                // let socialBtn =
+                // document.getElementById("socialBtn");
+
+                // if(status[playerName] === "KELUAR"){
+
+                //     socialBtn.disabled = true;
+
+                //     socialBtn.style.opacity = "0.5";
+
+                //     socialBtn.innerText =
+                //     "❌ Kamu Sudah Terekstradisi";
+
+                // }else{
+
+                //     // socialBtn.disabled = false;
+
+                //     // socialBtn.style.opacity = "1";
+
+                //     // socialBtn.innerText =
+                //     // "💬 Sosialisasi";
+                //     // kalau sedang proses malam ekstradisi / popup
+                //     if(isDayProcessing || pendingDecision){
+
+                //         socialBtn.disabled = true;
+
+                //         socialBtn.style.opacity = "0.5";
+
+                //     }else{
+
+                //         socialBtn.disabled = false;
+
+                //         socialBtn.style.opacity = "1";
+                //     }
+
+                //     socialBtn.innerText =
+                //     "💬 Sosialisasi";
+                    
+                // }
+
+                
+                
+
+            }
+
+            // GAME LOGIC
+            function randomScore(p){
+            //     let base = Math.random()*50;
+
+            //     if(traitsMap[p]==="Strategis") base += 30;
+            //     if(traitsMap[p]==="Licik") base += 20;
+
+            //     return Math.floor(base);
+                let base = Math.random()*50;
+
+                switch(traitsMap[p]){
+
+                    case "Strategis":
+                        base += 12;
+                        break;
+
+                    case "Licik":
+                        base += 8;
+                        break;
+
+                    case "Santai":
+                        base += 5;
+                        break;
+
+                    case "Emosional":
+                        base += 3;
+                        break;
+                }
+
+                return Math.floor(base);
+            }
+           
+
+            function getAlive(){
+                return players.filter(p=>status[p]!=="KELUAR");
+            }
+
+            function pickTop(list, lowest=false){
+                let arr = list.map(p=>[p,randomScore(p)]);
+                arr.sort((a,b)=> lowest ? a[1]-b[1] : b[1]-a[1]);
+                return arr[0][0];
+            }
+
+            // function getTopCandidates(list, count=3, lowest=false){
+
+            //     let arr = list.map(p => [p, randomScore(p)]);
+
+            //     arr.sort((a,b)=>
+            //         lowest
+            //         ? a[1] - b[1]
+            //         : b[1] - a[1]
+            //     );
+
+            //     return arr.slice(0,count).map(x=>x[0]);
+            // }
+
+            function rankCandidates(list, lowest=false){
+
+                let arr = list.map(p => ({
+                    name: p,
+                    score: randomScore(p)
+                }));
+
+                arr.sort((a,b)=>
+                    lowest
+                    ? a.score - b.score
+                    : b.score - a.score
+                );
+
+                return arr;
+            }
+
+            // function pickWeighted(top3){
+
+            //     let rand = Math.random();
+
+            //     // rank 1
+            //     if(rand < 0.45){
+            //         return top3[0].name;
+            //     }
+
+            //     // rank 2
+            //     if(rand < 0.80){
+            //         return top3[1].name;
+            //     }
+
+            //     // rank 3
+            //     return top3[2].name;
+            // }
+            function pickWeighted(top3){
+
+                if(top3.length === 1){
+                    return top3[0].name;
+                }
+
+                if(top3.length === 2){
+
+                    return Math.random() < 0.6
+                    ? top3[0].name
+                    : top3[1].name;
+                }
+
+                let rand = Math.random();
+
+                if(rand < 0.45){
+                    return top3[0].name;
+                }
+
+                if(rand < 0.80){
+                    return top3[1].name;
+                }
+
+                return top3[2].name;
+            }
+
+            function renderDay(){
+                // let week = Math.ceil(dayCount / 7);
+
+                // document.getElementById("day").innerText =
+                // "Hari ke-" + dayCount +
+                // " | Minggu ke-" + week +
+                // " (Hari " + weekDay + ")";
+                // sebelum game dimulai
+                // if(dayCount === 0){
+                //     document.getElementById("day").innerText =
+                //     "Game Belum Dimulai";
+                //     return;
+                // }
+
+                // let week = Math.ceil(dayCount / 7);
+
+                // document.getElementById("day").innerText =
+                // "Hari ke-" + dayCount +
+                // " | Minggu ke-" + week +
+                // " (Hari " + weekDay + ")";
+                if(dayCount === 0){
+                    document.getElementById("day").innerText =
+                    // "Game Belum Dimulai";
+                    "Perkenalan Rumah Karantina";
+                    return;
+                }
+
+                let week = Math.ceil(dayCount / 7);
+
+                let displayWeekDay = (weekDay === 1 ? 7 : weekDay - 1);
+
+                document.getElementById("day").innerText =
+                "Hari ke-" + dayCount +
+                " | Minggu ke-" + week +
+                " (Hari " + displayWeekDay + ")";
+            }
+
+            // function openPlayersModal(){
+
+            //     let modal = document.getElementById("playersModal");
+
+            //     modal.classList.add("show");
+
+            //     // copy isi player card desktop
+            //     document.getElementById("playersMobile").innerHTML =
+            //     document.getElementById("players").innerHTML;
+            //     // renderPlayers("players");
+            //     // renderPlayers("playersMobile");
+            // }
+
+            // function closePlayersModal(){
+            //     document.getElementById("playersModal")
+            //     .classList.remove("show");
+            // }
+
+            function openPlayersModal(){
+
+                let modal = document.getElementById("playersModal");
+
+                // toggle
+                if(modal.classList.contains("show")){
+                    closePlayersModal();
+                    return;
+                }
+
+                modal.classList.add("show");
+
+                document.getElementById("playersMobile").innerHTML =
+                document.getElementById("players").innerHTML;
+            }
+
+            function closePlayersModal(){
+
+                let modal =
+                document.getElementById("playersModal");
+
+                // animasi close
+                modal.classList.add("closing");
+
+                setTimeout(()=>{
+                    modal.classList.remove("show");
+                    modal.classList.remove("closing");
+                },250);
+            }
+
+            function showReport(){
+
+                //let ranking = [...players]
+                // .sort((a,b)=>{
+
+                //     let totalA =
+                //     stats[a].bos +
+                //     stats[a].pk +
+                //     stats[a].imun +
+                //     stats[a].art +
+                //     stats[a].bottom3 +
+                //     stats[a].bottom2;
+
+                //     let totalB =
+                //     stats[b].bos +
+                //     stats[b].pk +
+                //     stats[b].imun +
+                //     stats[b].art +
+                //     stats[b].bottom3 +
+                //     stats[b].bottom2;
+
+                //     return totalB - totalA;
+                // });
+
+                let ranking = [...players].sort((a,b)=>{
+
+                    // aktif dulu
+                    if(status[a] !== "KELUAR" &&
+                    status[b] === "KELUAR"){
+                        return -1;
+                    }
+
+                    if(status[a] === "KELUAR" &&
+                    status[b] !== "KELUAR"){
+                        return 1;
+                    }
+
+                    // urutan eliminasi
+                    let indexA =
+                    eliminatedOrder.indexOf(a);
+
+                    let indexB =
+                    eliminatedOrder.indexOf(b);
+
+                    //return indexB - indexA;
+                    return indexA - indexB;
+                });
+
+                let html = "";
+
+                ranking.forEach((p,index)=>{
+
+                    html += `
+                    <div style="
+                        margin-bottom:15px;
+                        padding:12px;
+                        border:1px solid #444;
+                        border-radius:10px;
+                        background:${
+                            status[p] === "KELUAR"
+                            ? "rgba(120,120,120,0.18)"
+                            : "#111827"
+                        };
+
+                        opacity:${
+                            status[p] === "KELUAR"
+                            ? "0.65"
+                            : "1"
+                        };
+
+                        filter:${
+                            status[p] === "KELUAR"
+                            ? "grayscale(40%)"
+                            : "none"
+                        };
+                    ">
+
+                        <b>#${index+1} ${p}</b><br><br>
+
+                        👑 Bos: ${stats[p].bos}x<br>
+                        🔑 PK: ${stats[p].pk}x<br>
+                        🛡️ Imun: ${stats[p].imun}x<br>
+                        🧹 ART: ${stats[p].art}x<br>
+                        🔥 Bottom 3: ${stats[p].bottom3}x<br>
+                        ⚠️ Bottom 2: ${stats[p].bottom2}x
+                    </div>
+                    `;
+                });
+
+                document.getElementById("reportContent")
+                .innerHTML = html;
+
+                let modal =
+                document.getElementById("reportModal");
+
+                modal.style.display = "flex";
+
+                setTimeout(()=>{
+                    modal.classList.add("show");
+                },10);
+            }
+
+            // function closeReport(){
+
+            //     document.getElementById("reportModal")
+            //     .style.display = "none";
+            // }
+
+            function closeReport(){
+
+                let modal =
+                document.getElementById("reportModal");
+
+                modal.classList.remove("show");
+
+                setTimeout(()=>{
+                    modal.style.display = "none";
+                },300);
+            }
+
+            // window.addEventListener("click", function(e){
+
+            //     let modal = document.getElementById("playersModal");
+
+            //     if(e.target === modal){
+            //         closePlayersModal();
+            //     }
+            // });
+            window.addEventListener("click", function(e){
+
+                let relationModal =
+                document.getElementById("relationModal");
+
+                let playersModal =
+                document.getElementById("playersModal");
+
+                let reportModal =
+                document.getElementById("reportModal");
+
+                if(e.target === reportModal){
+                    closeReport();
+                }
+
+                // ✅ relation modal boleh close
+                if(e.target === relationModal){
+                    closeRelationModal();
+                }
+
+                // ✅ player modal boleh close
+                if(e.target === playersModal){
+                    closePlayersModal();
+                }
+
+                // ❌ decisionModal TIDAK BOLEH close
+            });
+
+            // DAY SYSTEM
+            async function nextDay(){
+                if(isDayProcessing) return;
+                if(pendingDecision) return;
+
+                isDayProcessing = true;
+                setGameButtonsDisabled(true);
+                let alive = getAlive();
+
+                // if(alive.length === 1){
+
+                //     log(
+                //         "🏆 Selamat " +
+                //         alive[0] +
+                //         " menjadi Penghuni Terakhir!"
+                //     );
+
+                //     document.getElementById(
+                //         "nextBtn"
+                //     ).disabled = true;
+
+                //     document.getElementById(
+                //         "nextBtn"
+                //     ).style.opacity = "0.5";
+                //     isDayProcessing = false;
+                //     //setGameButtonsDisabled(false);
+
+                //     return;
+                // }
+                if(alive.length === 1){
+
+                    log(
+                        "🏆 Selamat " +
+                        alive[0] +
+                        " menjadi Penghuni Terakhir!"
+                    );
+
+                    isDayProcessing = true;
+
+                    pendingDecision = true;
+
+                    setGameButtonsDisabled(true);
+
+                    updatePlayers();
+
+                    saveGame();
+
+                    return;
+                }
+                                
+                
+
+                // ⬇️ TAMBAHKAN DI SINI
+                //log(`<hr><b>📅 Hari ke-${weekDay}</b>`);
+                //log(`<hr><b>📅 Hari ke-${dayCount}</b>`);
+                //log(`<hr><b>📅 Hari ke-${dayCount + 1}</b>`);
+                if(weekDay !== 6){
+
+                    log(`<hr><b>📅 Hari ke-${dayCount + 1}</b>`);
+                }
+                // update header lebih awal
+                // dayCount++;
+
+                // weekDay++;
+
+                // if(endgameMode){
+
+                //     if(weekDay > 2){
+                //         weekDay = 1;
+                //     }
+
+                // }else{
+
+                //     if(weekDay > 7){
+                //         weekDay = 1;
+                //     }
+                // }
+                // preview hari berikutnya di header
+                let previewDay = dayCount + 1;
+
+                let previewWeekDay = weekDay + 1;
+
+                if(endgameMode){
+
+                    if(previewWeekDay > 2){
+                        previewWeekDay = 1;
+                    }
+
+                }else{
+
+                    if(previewWeekDay > 7){
+                        previewWeekDay = 1;
+                    }
+                }
+
+                let previewWeek =
+                Math.ceil(previewDay / 7);
+
+                let displayWeekDay =
+                (previewWeekDay === 1 ? 7 : previewWeekDay - 1);
+
+                document.getElementById("day").innerText =
+                "Hari ke-" + previewDay +
+                " | Minggu ke-" + previewWeek +
+                " (Hari " + displayWeekDay + ")";
+
+                // renderDay();
+
+                //document.getElementById("day").innerText = "Hari "+weekDay;
+                //document.getElementById("day").innerText = "Hari ke-" + dayCount + " (Hari " + weekDay + ")";
+                //let week = Math.ceil(dayCount / 7);
+
+                // document.getElementById("day").innerText =
+                // "Hari ke-" + dayCount +
+                // " | Minggu ke-" + week +
+                // " (Hari " + weekDay + ")";
+                //renderDay();
+                
+                // jika masuk hari 1 → minggu baru
+                // if(weekDay === 1 && dayCount > 1){
+                //     lastWeekRoles = {...roles}; // simpan role minggu lalu
+                //     log("📦 Role minggu lalu disimpan (tidak bisa dipakai minggu ini)");
+                // }
+                if(weekDay === 1 && dayCount > 1){
+
+                    // ⛔ khusus setelah amnesti:
+                    // role minggu lalu tetap dipakai
+                    if(preserveRolesAfterAmnesty){
+
+                        activeRoles.bos = amnestyFrozenRoles.bos;
+                        activeRoles.kunci = amnestyFrozenRoles.kunci;
+                        activeRoles.imun = amnestyFrozenRoles.imun;
+
+                        roles.bos = amnestyFrozenRoles.bos;
+                        roles.kunci = amnestyFrozenRoles.kunci;
+                        roles.imun = amnestyFrozenRoles.imun;
+
+
+                        //preserveRolesAfterAmnesty = false;+
+                        // ⬅️ penting
+                        lastWeekRoles = {
+                            bos: null,
+                            art: roles.art,
+                            imun: null,
+                            kunci: null
+                        };
+                        
+                        log(
+                            "♻️ Role minggu sebelumnya tetap aktif karena amnesti"
+                        );
+                        //preserveRolesAfterAmnesty = false;
+
+                    }else{
+
+                        lastWeekRoles = {...roles};
+
+                        // log(
+                        //     "📦 Role minggu lalu disimpan (tidak bisa dipakai minggu ini)"
+                        // );
+                    }
+                }
+
+                //let alive = getAlive();
+
+                // if(weekDay===1){
+                //     if(getAlive().length <= 4){
+
+                //         roles.bos = null;
+                //         activeRoles.bos = null;
+
+                //         log("👑 Tidak ada BOS di 4 besar.");
+
+                //         //return;
+                //     }
+                //     //let kandidat = alive.filter(p => p !== lastWeekRoles.bos);
+                //     let kandidat = alive.filter(p =>
+
+                //         p !== lastWeekRoles.bos &&
+
+                //         activeRoles.art !== p &&
+                //         activeRoles.imun !== p &&
+                //         activeRoles.kunci !== p
+                //     );
+                //     roles.bos = pickTop(kandidat);
+                //     activeRoles.bos = roles.bos;
+                //     log("👑 Bos: "+roles.bos);
+                // }
+                // if(weekDay===1){
+
+                //     if(getAlive().length <= 4){
+
+                //         roles.bos = null;
+                //         activeRoles.bos = null;
+
+                //         log("👑 Tidak ada BOS di 4 besar.");
+
+                //     }else{
+
+                //         let kandidat = alive.filter(p =>
+
+                //             p !== lastWeekRoles.bos &&
+
+                //             activeRoles.art !== p &&
+                //             activeRoles.imun !== p &&
+                //             activeRoles.kunci !== p
+                //         );
+
+                //         // roles.bos = pickTop(kandidat);
+                //         // stats[roles.bos].bos++;
+
+                //         // activeRoles.bos = roles.bos;
+
+                //         // log("👑 Bos: "+roles.bos);
+                //         if(preserveRolesAfterAmnesty){
+
+                //             roles.bos = activeRoles.bos;
+                //             activeRoles.bos = roles.bos;
+
+                //             log(
+                //                 "♻️ 👑 Bos tetap: " +
+                //                 activeRoles.bos
+                //             );
+
+                //         }else{
+
+                //             roles.bos = pickTop(kandidat);
+
+                //             stats[roles.bos].bos++;
+
+                //             activeRoles.bos = roles.bos;
+
+                //             log("👑 Bos: "+roles.bos);
+                //         }
+                //     }
+                // }
+                if(endgameMode){
+
+                    let aliveCount = getAlive().length;
+
+                    // ======================
+                    // 4 BESAR = SEMIFINAL
+                    // ======================
+
+                    if(aliveCount === 4){
+
+                        if(weekDay === 1){
+
+                            log("🌙 Hari bebas / istirahat semifinal");
+
+                        }else if(weekDay === 2){
+
+                            log("🔥 EVENT SEMI FINAL DIMULAI!");
+                            await delay(DEBUG_DELAY);
+
+                            await playEndgameStage("SEMIFINAL");
+                        }
+                    }
+
+                    // ======================
+                    // 3 BESAR = FINAL
+                    // ======================
+
+                    else if(aliveCount === 3){
+
+                        if(weekDay === 1){
+
+                            log("🌙 Hari bebas / istirahat final");
+
+                        }else if(weekDay === 2){
+
+                            log("🏆 EVENT FINAL DIMULAI!");
+                            await delay(DEBUG_DELAY);
+
+                            await playEndgameStage("FINAL");
+                        }
+                    }
+
+                    // ======================
+                    // 2 BESAR = GRAND FINAL
+                    // ======================
+
+                    else if(aliveCount === 2){
+
+                        if(weekDay === 1){
+
+                            log("🌙 Hari bebas / refleksi grand final");
+
+                        }else if(aliveCount === 2){
+
+                            if(weekDay === 1){
+
+                                log("🌙 Hari bebas / refleksi grand final");
+
+                            }else if(weekDay === 2){
+
+                                let finalists = getAlive();
+
+                                log("👑 GRAND FINAL DIMULAI!");
+                                await delay(DEBUG_DELAY);
+
+                                // =================
+                                // ROUND 1
+                                // =================
+
+                                log("🔥 Babak 1 dimulai...");
+                                await delay(DEBUG_DELAY);
+
+                                let score = {};
+
+                                score[finalists[0]] = 0;
+                                score[finalists[1]] = 0;
+
+                                let round1Winner =
+                                finalists[Math.floor(Math.random()*2)];
+
+                                score[round1Winner]++;
+
+                                log(
+                                    "🏆 Pemenang babak 1 = " +
+                                    round1Winner
+                                );
+
+                                await delay(DEBUG_DELAY);
+
+                                // =================
+                                // ROUND 2
+                                // =================
+
+                                log("🔥 Babak 2 dimulai...");
+                                await delay(DEBUG_DELAY);
+
+                                let round2Winner =
+                                finalists[Math.floor(Math.random()*2)];
+
+                                score[round2Winner]++;
+
+                                log(
+                                    "🏆 Pemenang babak 2 = " +
+                                    round2Winner
+                                );
+
+                                await delay(DEBUG_DELAY);
+
+                                let finalWinner;
+
+                                // =================
+                                // CEK SERI
+                                // =================
+
+                                if(
+                                    score[finalists[0]] ===
+                                    score[finalists[1]]
+                                ){
+
+                                    log("⚔️ Penentuan babak 3...");
+                                    await delay(DEBUG_DELAY);
+
+                                    let round3Winner =
+                                    finalists[Math.floor(Math.random()*2)];
+
+                                    log(
+                                        "👑 Pemenang babak 3 = " +
+                                        round3Winner
+                                    );
+
+                                    finalWinner = round3Winner;
+
+                                }else{
+
+                                    finalWinner =
+                                    score[finalists[0]] >
+                                    score[finalists[1]]
+                                    ? finalists[0]
+                                    : finalists[1];
+                                }
+
+                                await delay(DEBUG_DELAY);
+
+                                let runnerUp =
+                                finalists.find(p => p !== finalWinner);
+
+                                status[runnerUp] = "KELUAR";
+
+                                eliminatedOrder.unshift(runnerUp);
+
+                                updatePlayers();
+
+                                log(
+                                    "🏆 Selamat " +
+                                    finalWinner +
+                                    " menjadi Penghuni Terakhir!"
+                                );
+
+                                log("🎉 Ceremonial kemenangan dimulai!");
+
+                                pendingDecision = true;
+
+                                setGameButtonsDisabled(true);
+
+                                saveGame();
+
+                                return;
+                            }
+                        }
+                    }
+
+                    updatePlayers();
+
+                    dayCount++;
+
+                    weekDay++;
+
+                    if(weekDay > 2){
+                        weekDay = 1;
+                    }
+
+                    renderDay();
+
+                    // dayCount++;
+
+                    // weekDay++;
+
+                    // if(weekDay > 2){
+                    //     weekDay = 1;
+                    // }
+
+                    // renderDay();
+
+                    saveGame();
+
+                    isDayProcessing = false;
+
+                    setGameButtonsDisabled(false);
+
+                    return;
+                }
+                if(!endgameMode && weekDay===1){
+
+                    
+
+                    // ⛔ setelah amnesti:
+                    // jangan assign ulang bos
+                    // if(skipRoleAssignmentOnce){
+
+                    //     roles.bos = activeRoles.bos;
+
+                    //     log(
+                    //         "♻️ 👑 Bos tetap setelah amnesti: " +
+                    //         roles.bos
+                    //     );
+
+                    //     skipRoleAssignmentOnce = false;
+
+                    // }else 
+                    if(freezeBosAfterAmnesty){
+
+                        // roles.bos = activeRoles.bos;
+                        roles.bos = amnestyFrozenRoles.bos;
+                        activeRoles.bos = amnestyFrozenRoles.bos;
+
+                        log(
+                            "♻️ 👑 Bos tetap setelah amnesti: " +
+                            roles.bos
+                        );
+
+                        freezeBosAfterAmnesty = false;
+                    }
+                    else if(getAlive().length <= 4){
+
+                        roles.bos = null;
+                        activeRoles.bos = null;
+
+                        log("👑 Tidak ada BOS lagi di tahap ini.");
+
+                    }else{
+
+                        let kandidat = alive.filter(p =>
+
+                            p !== lastWeekRoles.bos 
+                            //alex delete ddulu
+                            // &&
+
+                            // activeRoles.art !== p &&
+                            // activeRoles.imun !== p &&
+                            // activeRoles.kunci !== p
+                        );
+
+                        // if(preserveRolesAfterAmnesty){
+
+                        //     roles.bos = activeRoles.bos;
+                        //     //activeRoles.bos = roles.bos;
+
+                        //     log(
+                        //         "♻️ 👑 Bos tetap: " +
+                        //         activeRoles.bos
+                        //     );
+
+                        // }else{
+
+                        //     roles.bos = pickTop(kandidat);
+
+                        //     stats[roles.bos].bos++;
+
+                        //     activeRoles.bos = roles.bos;
+
+                        //     log("👑 Bos: "+roles.bos);
+                        // }
+                        // let topBosCandidates =
+                        // getTopCandidates(kandidat,3);
+
+                        // log(
+                        //     "🎮 Kandidat game BOS: " +
+                        //     topBosCandidates.join(", ")
+                        // );
+
+                        // await delay(DEBUG_DELAY);
+                        // roles.bos = pickTop(kandidat);
+
+                        if(kandidat.length === 0){
+
+                            kandidat = [...alive];
+                        }
+
+                        let bosRank =
+                        rankCandidates(kandidat);
+
+                        let topBosCandidates =
+                        bosRank.slice(0,3).map(x=>x.name);
+
+                        log(
+                            "🎮 Kandidat game BOS: " +
+                            topBosCandidates.join(", ")
+                        );
+
+                        await delay(DEBUG_DELAY);
+
+                        // roles.bos = bosRank[0].name;
+                        // let bosTop3 =
+                        // bosRank.slice(0,3);
+
+                        // roles.bos =
+                        // bosTop3[
+                        //     Math.floor(Math.random()*bosTop3.length)
+                        // ].name;
+                        let bosTop3 =
+                        bosRank.slice(0,3);
+
+                        roles.bos =
+                        pickWeighted(bosTop3);
+
+                        stats[roles.bos].bos++;
+
+                        activeRoles.bos = roles.bos;
+
+                        log("👑 Bos: "+roles.bos);
+                    }
+                }
+
+                // else if(weekDay===2){
+                //     if(getAlive().length <= 4){
+
+                //         roles.art = null;
+                //         activeRoles.art = null;
+
+                //         log("🧹 Tidak ada ART di 4 besar.");
+
+                //         //return;
+                //     }
+                //     // let kandidat = alive.filter(p => p !== lastWeekRoles.art);
+                //     // roles.art = pickTop(kandidat, true);
+                //     // activeRoles.art = roles.art;
+                //     // log("🧹 ART: "+roles.art);
+                //     else{
+
+                //         let kandidat =
+                //         alive.filter(p => p !== lastWeekRoles.art);
+
+                //         roles.art = pickTop(kandidat, true);
+
+                //         activeRoles.art = roles.art;
+
+                //         log("🧹 ART: "+roles.art);
+                //     }
+                // }
+                else if(!endgameMode && weekDay===2){
+
+                    if(getAlive().length <= 4){
+
+                        roles.art = null;
+                        activeRoles.art = null;
+
+                        log("🧹 Tidak ada ART  di tahap ini.");
+
+                    }else{
+
+                        let kandidat =
+                        alive.filter(p =>
+                            p !== lastWeekRoles.art&&
+
+                            activeRoles.bos !== p
+                        );
+
+                        if(kandidat.length === 0){
+
+                            kandidat = [...alive];
+                        }
+
+                        // let bottomArtCandidates =
+                        // getTopCandidates(kandidat,3,true);
+
+                        // log(
+                        //     "⚠️ Kandidat game ART: " +
+                        //     bottomArtCandidates.join(", ")
+                        // );
+
+                        // await delay(DEBUG_DELAY);
+
+                        // roles.art = pickTop(kandidat, true);
+                        let artRank =
+                        rankCandidates(kandidat,true);
+
+                        let bottomArtCandidates =
+                        artRank.slice(0,3).map(x=>x.name);
+
+                        log(
+                            "⚠️ Kandidat game ART: " +
+                            bottomArtCandidates.join(", ")
+                        );
+
+                        await delay(DEBUG_DELAY);
+
+                        // roles.art = artRank[0].name;
+                        // let artBottom3 =
+                        // artRank.slice(0,3);
+
+                        // roles.art =
+                        // artBottom3[
+                        //     Math.floor(Math.random()*artBottom3.length)
+                        // ].name;
+                        let artBottom3 =
+                        artRank.slice(0,3);
+
+                        roles.art =
+                        pickWeighted(artBottom3);
+                        stats[roles.art].art++;
+
+                        activeRoles.art = roles.art;
+
+                        log("🧹 ART: "+roles.art);
+                    }
+                }
+
+                // else if(weekDay===3){
+                //     if(getAlive().length <= 4){
+
+                //         roles.kunci = null;
+                //         activeRoles.kunci = null;
+
+                //         log("🔑 Tidak ada Pemegang Kunci di 4 besar.");
+
+                //         //return;
+                //     }
+                //     //let kandidat = alive.filter(p => p !== lastWeekRoles.kunci);
+                //     let kandidat = alive.filter(p =>
+
+                //         p !== lastWeekRoles.kunci &&
+
+                //         activeRoles.bos !== p &&
+                //         activeRoles.imun !== p
+                //     );
+                //     roles.kunci = kandidat[Math.floor(Math.random()*kandidat.length)];
+                //     activeRoles.kunci = roles.kunci;
+                //     log("🔑 Pemegang Kunci: "+roles.kunci);
+                // }
+                // else if(weekDay===3){
+
+                //      if(freezePkAfterAmnesty){
+
+                //         roles.kunci = activeRoles.kunci;
+
+                //         log(
+                //             "♻️ 🔑 PK tetap setelah amnesti: " +
+                //             roles.kunci
+                //         );
+
+                //         freezePkAfterAmnesty = false;
+
+                //     }else if(getAlive().length <= 4){
+
+                //         roles.kunci = null;
+                //         activeRoles.kunci = null;
+
+                //         log("🔑 Tidak ada Pemegang Kunci di 4 besar.");
+
+                //     }else{
+
+                //         let kandidat = alive.filter(p =>
+
+                //             p !== lastWeekRoles.kunci &&
+
+                //             activeRoles.bos !== p &&
+                //             activeRoles.imun !== p
+                //         );
+
+                //         // roles.kunci =
+                //         // kandidat[Math.floor(Math.random()*kandidat.length)];
+                //         // stats[roles.kunci].pk++;
+
+                //         // activeRoles.kunci = roles.kunci;
+
+                //         // log("🔑 Pemegang Kunci: "+roles.kunci);
+                //         if(preserveRolesAfterAmnesty){
+
+                //             roles.kunci = activeRoles.kunci;
+                //             //activeRoles.kunci = roles.kunci;
+
+                //             log(
+                //                 "♻️ 🔑 PK tetap: " +
+                //                 activeRoles.kunci
+                //             );
+
+                //         }else{
+
+                //             roles.kunci =
+                //             kandidat[Math.floor(Math.random()*kandidat.length)];
+
+                //             stats[roles.kunci].pk++;
+
+                //             activeRoles.kunci = roles.kunci;
+
+                //             log("🔑 Pemegang Kunci: "+roles.kunci);
+                //         }
+                //     }
+                // }
+                else if(!endgameMode && weekDay===3){
+
+                    if(freezePkAfterAmnesty){
+
+                        // roles.kunci = activeRoles.kunci;
+                        roles.kunci = amnestyFrozenRoles.kunci;
+                        activeRoles.kunci = amnestyFrozenRoles.kunci;
+
+                        log(
+                            "♻️ 🔑 PK tetap setelah amnesti: " +
+                            roles.kunci
+                        );
+
+                        freezePkAfterAmnesty = false;
+
+                    }else if(getAlive().length <= 4){
+
+                        roles.kunci = null;
+                        activeRoles.kunci = null;
+
+                        log("🔑 Tidak ada Pemegang Kunci  di tahap ini.");
+
+                    }else{
+
+                        let kandidat = alive.filter(p =>
+
+                            p !== lastWeekRoles.kunci 
+                            
+                            &&
+
+                            activeRoles.bos !== p 
+                            //alex delete dulu
+                            // &&
+                            // activeRoles.imun !== p
+                        );
+
+                        
+
+                        roles.kunci =
+                        kandidat[Math.floor(Math.random()*kandidat.length)];
+
+                        stats[roles.kunci].pk++;
+
+                        activeRoles.kunci = roles.kunci;
+
+                        log("🔑 Pemegang Kunci: "+roles.kunci);
+                    }
+                }
+
+                // else if(weekDay===4){
+                //     if(getAlive().length <= 6){
+
+                //         roles.imun = null;
+                //         activeRoles.imun = null;
+
+                //         log("🛡️ Tidak ada imun di 6 besar.");
+
+                //         //return;
+                //     }
+                //     //let kandidat = alive.filter(p => p !== lastWeekRoles.imun);
+                //     let kandidat = alive.filter(p =>
+
+                //         p !== lastWeekRoles.imun &&
+
+                //         activeRoles.bos !== p &&
+                //         activeRoles.kunci !== p
+                //     );
+                //     roles.imun = pickTop(kandidat, true);
+                //     activeRoles.imun = roles.imun;
+                //     log("🛡️ Imun: "+roles.imun);
+                // }
+                // else if(weekDay===4){
+
+                //     if(freezeImunAfterAmnesty){
+
+                //         roles.imun = activeRoles.imun;
+
+                //         log(
+                //             "♻️ 🛡️ Imun tetap setelah amnesti: " +
+                //             roles.imun
+                //         );
+
+                //         freezeImunAfterAmnesty = false;
+
+                //     }
+                //     else if(getAlive().length <= 6){
+
+                //         roles.imun = null;
+                //         activeRoles.imun = null;
+
+                //         log("🛡️ Tidak ada imun di 6 besar.");
+
+                //     }else{
+
+                //         let kandidat = alive.filter(p =>
+
+                //             p !== lastWeekRoles.imun &&
+
+                //             activeRoles.bos !== p &&
+                //             activeRoles.kunci !== p
+                //         );
+
+                //         // roles.imun = pickTop(kandidat, true);
+                //         // stats[roles.imun].imun++;
+
+                //         // activeRoles.imun = roles.imun;
+
+                //         // log("🛡️ Imun: "+roles.imun);
+                //         if(preserveRolesAfterAmnesty){
+
+                //             roles.imun = activeRoles.imun;
+                //             //activeRoles.imun = roles.imun;
+
+                //             log(
+                //                 "♻️ 🛡️ Imun tetap: " +
+                //                 activeRoles.imun
+                //             );
+
+                //             //preserveRolesAfterAmnesty = false;
+                //             // ⬅️ pindahkan reset ke sini
+                //             if(weekDay === 4){
+                //                 preserveRolesAfterAmnesty = false;
+                //             }
+
+                //         }else{
+
+                //             roles.imun = pickTop(kandidat, true);
+
+                //             stats[roles.imun].imun++;
+
+                //             activeRoles.imun = roles.imun;
+
+                //             log("🛡️ Imun: "+roles.imun);
+                //         }
+                //     }
+                // }
+                else if(!endgameMode && weekDay===4){
+
+                    if(freezeImunAfterAmnesty){
+
+                        //roles.imun = activeRoles.imun;
+                        roles.imun = amnestyFrozenRoles.imun;
+                        activeRoles.imun = amnestyFrozenRoles.imun;
+
+                        log(
+                            "♻️ 🛡️ Imun tetap setelah amnesti: " +
+                            roles.imun
+                        );
+
+                        freezeImunAfterAmnesty = false;
+
+                        preserveRolesAfterAmnesty = false;
+
+                    }
+                    else if(getAlive().length <= 6){
+
+                        roles.imun = null;
+                        activeRoles.imun = null;
+
+                        log("🛡️ Tidak ada imun lagi di tahap ini.");
+
+                    }else{
+
+                        let kandidat = alive.filter(p =>
+
+                            p !== lastWeekRoles.imun &&
+
+                            activeRoles.bos !== p &&
+                            activeRoles.kunci !== p
+                        );
+
+                        if(kandidat.length === 0){
+
+                            kandidat = [...alive];
+                        }
+
+                        // let bottomImunCandidates =
+                        // getTopCandidates(kandidat,3,true);
+
+                        // log(
+                        //     "🛡️ Kandidat game IMUN: " +
+                        //     bottomImunCandidates.join(", ")
+                        // );
+
+                        // await delay(DEBUG_DELAY);
+
+                        // roles.imun = pickTop(kandidat, true);
+                        let imunRank =
+                        rankCandidates(kandidat,true);
+
+                        let bottomImunCandidates =
+                        imunRank.slice(0,3).map(x=>x.name);
+
+                        log(
+                            "🛡️ Kandidat game IMUN: " +
+                            bottomImunCandidates.join(", ")
+                        );
+
+                        await delay(DEBUG_DELAY);
+
+                        // roles.imun = imunRank[0].name;
+                        // let imunBottom3 =
+                        // imunRank.slice(0,3);
+
+                        // roles.imun =
+                        // imunBottom3[
+                        //     Math.floor(Math.random()*imunBottom3.length)
+                        // ].name;
+                        let imunBottom3 =
+                        imunRank.slice(0,3);
+
+                        roles.imun =
+                        pickWeighted(imunBottom3);
+
+                        stats[roles.imun].imun++;
+
+                        activeRoles.imun = roles.imun;
+
+                        log("🛡️ Imun: "+roles.imun);
+                    }
+                }
+
+                else if(!endgameMode && weekDay===5){
+
+                    let peserta =
+                    getAlive().filter(
+                        p => p !== roles.bos
+                    );
+
+                    // hanya sampai 7 besar
+                    if(getAlive().length > 7){
+
+                        log("🎮 Hari Game Kelompok!");
+                        await delay(DEBUG_DELAY);
+
+                        // shuffle random
+                        peserta =
+                        [...peserta]
+                        .sort(()=>0.5-Math.random());
+
+                        let timBiru = [];
+                        let timMerah = [];
+
+                        peserta.forEach((p,index)=>{
+
+                            if(index % 2 === 0){
+
+                                timBiru.push(p);
+
+                            }else{
+
+                                timMerah.push(p);
+                            }
+                        });
+
+                        log("👥 Pembagian Tim...");
+                        await delay(DEBUG_DELAY);
+
+                        log("🔵 Tim Biru:");
+                        log(timBiru.join(", "));
+
+                        log("🔴 Tim Merah:");
+                        log(timMerah.join(", "));
+
+                        await delay(DEBUG_DELAY);
+
+                        log("🎯 Permainan dimulai...");
+                        await delay(1500);
+
+                        // random winner
+                        let winner =
+                        Math.random() < 0.5
+                        ? "biru"
+                        : "merah";
+
+                        let winningTeam =
+                        winner === "biru"
+                        ? timBiru
+                        : timMerah;
+
+                        log(
+                            "🏆 Pemenangnya adalah Tim " +
+                            (winner === "biru"
+                            ? "Biru 🔵"
+                            : "Merah 🔴")
+                        );
+
+                        await delay(DEBUG_DELAY);
+
+                        // boost relation antar member
+                        for(let i=0;i<winningTeam.length;i++){
+
+                            for(let j=i+1;j<winningTeam.length;j++){
+
+                                let a = winningTeam[i];
+                                let b = winningTeam[j];
+
+                                relation[a][b] += 1;
+                                relation[b][a] += 1;
+                            }
+                        }
+
+                        log(
+                            "❤️ Relasi sesama anggota tim pemenang meningkat!"
+                        );
+
+                    }else{
+
+                        log(
+                            "🤝 Hari bebas, tidak ada game kelompok lagi"
+                        );
+                    }
+                }
+
+                // else if(weekDay===6){
+                //     ekstradisi();
+                // }
+                else if(!endgameMode && weekDay===6){
+
+                    if(getAlive().length === 8 && !comebackDone){
+
+                        //comebackNight();
+                        await comebackNight();
+
+                        comebackDone = true;
+                        localStorage.setItem("comebackDone", "true");
+
+                        updatePlayers();
+
+                        dayCount++;
+
+                        weekDay++;
+                        if(weekDay>7) weekDay=1;
+
+                        renderDay();
+
+                        saveGame();
+
+                        // ✅ aktifkan lagi tombol
+                        isDayProcessing = false;
+                        setGameButtonsDisabled(false);
+
+                        return;
+                    }
+
+                    let week =
+                    Math.ceil(dayCount / 7);
+
+                    log(`
+                    <hr>
+                    <b>
+                    
+                    🌙 Hari ke-${dayCount + 1}
+                    (Malam Ekstradisi Minggu ke-${week})
+                    </b>
+                    `);
+
+                    //ekstradisi();
+                    await ekstradisi();
+                    // return;
+                    updatePlayers();
+                    // if(getAlive().length <= 4){
+
+                    //     endgameMode = true;
+
+                    //     weekDay = 0;
+                    // }
+                    if(getAlive().length <= 4){
+
+                        endgameMode = true;
+
+                        // hapus semua role aktif
+                        activeRoles.bos = null;
+                        activeRoles.art = null;
+                        activeRoles.imun = null;
+                        activeRoles.kunci = null;
+
+                        roles.bos = null;
+                        roles.art = null;
+                        roles.imun = null;
+                        roles.kunci = null;
+
+                        weekDay = 0;
+
+                        updatePlayers();
+                    }
+
+                    dayCount++;
+
+                    weekDay++;
+                    if(weekDay > 7) weekDay = 1;
+
+                    renderDay();
+
+                    simulateHouseRelations();
+
+                    dailySocialCount = 0;
+
+                    saveGame();
+
+                    return;
+                }
+
+                else if(!endgameMode && weekDay===7){
+                    log("☕ Hari santai di rumah, para penghuni menghabiskan waktu setelah malam ekstradisi.");
+                }
+
+                updatePlayers();
+                // dayCount++; // ⬅️ TAMBAH INI
+
+                // ⬇️ pindahin ke bawah
+                // weekDay++;
+                // if(weekDay>7) weekDay=1;
+                dayCount++;
+
+                weekDay++;
+
+                if(endgameMode){
+
+                    if(weekDay > 2){
+                        weekDay = 1;
+                    }
+
+                }else{
+
+                    if(weekDay > 7){
+                        weekDay = 1;
+                    }
+                }
+                
+                renderDay();
+                simulateHouseRelations();
+                dailySocialCount = 0;
+                saveGame();
+                //isDayProcessing = false;
+                // ✅ aktifkan lagi tombol
+                isDayProcessing = false;
+                setGameButtonsDisabled(false);
+            }
+
+            // SOSIAL
+            // function socialize(){
+            //     let alive = getAlive();
+            //     let p1 = alive[Math.floor(Math.random()*alive.length)];
+            //     let p2 = alive[Math.floor(Math.random()*alive.length)];
+
+            //     if(p1===p2) return;
+
+            //     // ⬇️ sekarang bisa positif ATAU negatif
+            //     let change = Math.floor(Math.random()*11) - 5; // -5 sampai +5
+
+            //     relation[p1][p2] += change;
+            //     relation[p2][p1] += change;
+
+            //     let statusText = change >= 0 ? "makin dekat 🤝" : "bersitegang ⚡";
+
+            //     log(`💬 ${p1} ${statusText} dengan ${p2} (${change})`);
+            //     saveGame();
+            // }
+            function socialize(){
+
+                if(isDayProcessing || pendingDecision){
+                    return;
+                }
+                
+                dailySocialCount++;
+                // hanya penghuni yang masih aman
+                let available = players.filter(p =>
+                    p !== playerName &&
+                    status[p] !== "KELUAR"
+                );
+
+                if(available.length === 0){
+                    log("Tidak ada penghuni untuk diajak sosialisasi.");
+                    return;
+                }
+
+                // pilih random target
+                let target =
+                available[Math.floor(Math.random()*available.length)];
+
+                // random skor
+                let score =
+                Math.floor(Math.random()*5)-2;
+
+                relation[playerName][target] += score;
+                relation[target][playerName] += score;
+
+                // log
+                if(score > 0){
+
+                    log(`😊 ${playerName} makin dekat dengan ${target} (+${score})`);
+
+                }else if(score < 0){
+
+                    log(`😡 ${playerName} bersitegang dengan ${target} (${score})`);
+
+                }else{
+
+                    log(`😐 ${playerName} berbincang biasa dengan ${target}`);
+
+                }
+
+                updatePlayers();
+
+                saveGame();
+            }
+            // function simulateHouseRelations(){
+
+            //     let alive =
+            //     players.filter(p=>status[p]!=="KELUAR");
+
+            //     for(let i=0;i<3;i++){
+
+            //         let a =
+            //         alive[Math.floor(Math.random()*alive.length)];
+
+            //         let b =
+            //         alive[Math.floor(Math.random()*alive.length)];
+
+            //         if(a===b) continue;
+
+            //         let delta =
+            //         Math.floor(Math.random()*3)-1;
+
+            //         relation[a][b] += delta;
+            //         relation[b][a] += delta;
+            //     }
+            // }
+            function simulateHouseRelations(){
+
+                // let alive =
+                // players.filter(p=>status[p]!=="KELUAR");
+
+                // alive.forEach(a=>{
+
+                //     // random berapa interaksi
+                //     let interactionCount =
+                //     Math.floor(Math.random()*3)+1;
+
+                //     for(let i=0;i<interactionCount;i++){
+
+                //         let targets =
+                //         alive.filter(b=>b!==a);
+
+                //         let b =
+                //         targets[Math.floor(Math.random()*targets.length)];
+
+                //         let delta =
+                //         Math.floor(Math.random()*5)-2;
+
+                //         relation[a][b] += delta;
+                //         relation[b][a] += delta;
+                //     }
+                // });
+                let alive =
+                players.filter(p=>status[p]!=="KELUAR");
+
+                // intensitas AI mengikuti player
+                let totalInteractions =
+                Math.max(3, dailySocialCount);
+
+                for(let i=0;i<totalInteractions;i++){
+
+                    let a =
+                    alive[Math.floor(Math.random()*alive.length)];
+
+                    let targets =
+                    alive.filter(b=>b!==a);
+
+                    let b =
+                    targets[Math.floor(Math.random()*targets.length)];
+
+                    let delta =
+                    Math.floor(Math.random()*3)-1;
+
+                    relation[a][b] += delta;
+                    relation[b][a] += delta;
+                }
+            }
+
+            //LIHAT RELASI
+            function lihatRelasi(){
+                // let html = "";
+
+                // players.forEach(p1=>{
+                //     //if(status[p1]==="KELUAR") return;
+
+                //     html += `<b>🔹 ${p1}</b><br>`;
+
+                //     players.forEach(p2=>{
+                //         //if(p1!==p2 && status[p2]!=="KELUAR"){
+                //         if(p1!==p2){
+                //             let val = relation[p1][p2];
+                //             let cls = getRelationClass(val);
+
+                //             html += `&nbsp;&nbsp;➝ ${p2} : <span class="${cls}">${val}</span><br>`;
+                //         }
+                //     });
+
+                //     html += "<br>";
+                // });
+
+                // document.getElementById("isiRelasi").innerHTML = html;
+
+                // // let modal = document.getElementById("modalRelasi");
+                // // modal.style.display = "block";
+                // let modal = document.getElementById("modalRelasi");
+
+                // modal.style.display = "flex";
+
+                // setTimeout(()=>{
+                //     modal.classList.add("show");
+                // },10);
+
+                // setTimeout(()=> modal.classList.add("show"), 10);
+                let html = "";
+
+                players.forEach(p1=>{
+
+                    html += `
+                    <div class="relation-card">
+
+                        <h4>👤 ${p1}</h4>
+                    `;
+
+                    players.forEach(p2=>{
+
+                        if(p1 !== p2){
+
+                            let val = relation[p1][p2];
+
+                            let cls = "rel-neutral";
+
+                            if(val > 0){
+                                cls = "rel-positive";
+                            }
+
+                            if(val < 0){
+                                cls = "rel-negative";
+                            }
+
+                            html += `
+                            <div class="relation-item">
+
+                                <span>➡ ${p2}</span>
+
+                                <span class="${cls}">
+                                    ${val}
+                                </span>
+
+                            </div>
+                            `;
+                        }
+                    });
+
+                    html += `</div>`;  
+                });
+                document.getElementById("reportContent")
+                .innerHTML = html;
+
+                let modal =
+                document.getElementById("reportModal");
+
+                modal.style.display = "flex";
+
+                setTimeout(()=>{
+                    modal.classList.add("show");
+                },10);
+            }
+
+            function tutupModal(){
+                let modal = document.getElementById("modalRelasi");
+                modal.classList.remove("show");
+
+                setTimeout(()=>{
+                    modal.style.display = "none";
+                }, 300);
+            }
+
+            function clickOutside(e){
+                if(e.target.id === "modalRelasi"){
+                    tutupModal();
+                }
+            }
+
+            function getRelationClass(value){
+                if(value >= 1) return "friend";
+                if(value <= -1) return "enemy";
+                return "neutral";
+            }
+
+            function getRelationBgClass(value){
+                if(value >= 1) return "friend-bg";
+                if(value <= -1) return "enemy-bg";
+                return "neutral-bg";
+            }
+            function getRelationSafe(a,b){
+
+                if(!relation[a]) return 0;
+
+                if(relation[a][b] == null) return 0;
+
+                return relation[a][b];
+            }
+
+            function openDecisionModal(title, html){
+
+                document.getElementById("decisionTitle")
+                .innerText = title;
+
+                document.getElementById("decisionContent")
+                .innerHTML = html;
+
+                document.getElementById("decisionModal")
+                .classList.add("show");
+            }
+
+            function closeDecisionModal(){
+
+                document.getElementById("decisionModal")
+                .classList.remove("show");
+            }
+            
+            //malam amnesti/comeback
+            async function comebackNight(){
+
+                setGameButtonsDisabled(true);
+
+                // log(`
+                // <hr>
+                // <b>🔥 MALAM COMEBACK 🔥</b>
+                // `);
+                log(`
+                <hr>
+                <b>
+                📅 Hari ke-${dayCount + 1}
+
+                🔥 MALAM AMNESTI 🔥
+                </b>
+                `);
+
+                await delay(DEBUG_DELAY);
+
+                let eliminated =
+                players.filter(p=>status[p]==="KELUAR");
+
+                if(eliminated.length < 3){
+
+                    log("Tidak cukup ex penghuni untuk comeback.");
+
+                    return;
+                }
+
+                log("⏳ Penentuan TOP 6 amnester...");
+                await delay(DEBUG_DELAY);
+
+                // TOP 6
+                let top6 =
+                [...eliminated]
+                .sort(()=>0.5-Math.random())
+                .slice(0,6);
+
+                log("🏆 TOP 6 Amnester:");
+                log(top6.join(", "));
+
+                //await delay(4000);
+
+                log("⏳ Penentuan TOP 3 amnester...");
+                await delay(DEBUG_DELAY);
+
+                // TOP 3
+                let top3 =
+                [...top6]
+                .sort(()=>0.5-Math.random())
+                .slice(0,3);
+
+                log("🔥 TOP 3 Amnester:");
+                log(top3.join(", "));
+
+                // RANDOM MASUK
+                // let comeback =
+                // top3[Math.floor(Math.random()*top3.length)];
+
+                // status[comeback] = "AMAN";
+
+                // eliminatedOrder =
+                // eliminatedOrder.filter(p=>p!==comeback);
+
+                // log("🎉 " + comeback + " kembali ke rumah karantina!");
+
+                await delay(DEBUG_DELAY);
+
+                let comeback =
+                top3[Math.floor(Math.random()*top3.length)];
+
+                status[comeback] = "AMAN";
+                if(!amnesters.includes(comeback)){
+                    amnesters.push(comeback);
+                }
+
+                eliminatedOrder =
+                eliminatedOrder.filter(p=>p!==comeback);
+
+                log("🎉 " + comeback + " kembali ke rumah karantina!");
+
+                await delay(DEBUG_DELAY);
+
+                let final2 =
+                top3.filter(p=>p!==comeback);
+
+                amnestyState.final2 = final2;
+
+                amnestyState.autoComeback = comeback;
+
+                log("🗳️ Voting amnesti dimulai:");
+                log(final2.join(" vs "));
+                // if(status[playerName] !== "KELUAR" && !playerEverEliminated){
+
+                //     let html = "";
+
+                //     final2.forEach(p=>{
+
+                //         html += `
+                //         <button onclick="voteAmnesty('${p}')">
+                //             Pilih ${p}
+
+                //             ❤️ ${
+                //                 getRelationSafe(playerName,p)
+                //             }
+                //         </button><br>
+                //         `;
+                //     });
+
+                //     pendingDecision = {
+                //         type: "amnesty"
+                //     };
+
+                //     saveGame();
+
+                //     // openDecisionModal(
+                //     //     "🔥 Voting Amnesti",
+                //     //     html
+                //     // );
+                //     pendingDecision = {
+                //         type: "amnesty",
+                //         options: final2
+                //     };
+
+                //     startPlayerAmnestyVote();
+
+                //     return;
+                // }
+                // else{
+
+                //     let votes = {};
+
+                //     final2.forEach(p=>{
+                //         votes[p] = 0;
+                //     });
+
+                //     // NPC VOTE
+                //     //let alive = getAlive();
+                //     let alive =
+                //     getAlive().filter(
+                //         p => p !== amnestyState.autoComeback
+                //     );
+
+                //     alive.forEach(voter=>{
+
+                //         // let pick =
+                //         // final2[
+                //         //     Math.floor(Math.random()*final2.length)
+                //         // ];
+                //         let relA =
+                //         getRelationSafe(voter, final2[0]);
+
+                //         let relB =
+                //         getRelationSafe(voter, final2[1]);
+
+                //         let pick;
+
+                //         if(relA > relB){
+
+                //             pick = final2[0];
+
+                //         }else if(relB > relA){
+
+                //             pick = final2[1];
+
+                //         }else{
+
+                //             pick =
+                //             final2[Math.floor(Math.random()*final2.length)];
+                //         }
+
+                //         votes[pick]++;
+                //     });
+
+                //     log("🗳️ Hasil Voting Amnesti:");
+
+                //     final2.forEach(p=>{
+
+                //         log(
+                //             p + " : " +
+                //             votes[p] + " vote"
+                //         );
+                //     });
+
+                //     // WINNER
+                //     // let winner =
+                //     // final2.sort((a,b)=>
+                //     //     votes[b] - votes[a]
+                //     // )[0];
+                //     let maxVote =
+                //     Math.max(...final2.map(p => votes[p]));
+
+                //     let kandidatMenang =
+                //     final2.filter(p => votes[p] === maxVote);
+
+                //     let winner;
+
+                //     if(kandidatMenang.length > 1){
+
+                //         log("⚖️ Vote seri, sistem memilih secara random...");
+                //         await delay(DEBUG_DELAY);
+
+                //         winner =
+                //         kandidatMenang[
+                //             Math.floor(Math.random()*kandidatMenang.length)
+                //         ];
+
+                //     }else{
+
+                //         winner = kandidatMenang[0];
+                //     }
+
+                //     status[winner] = "AMAN";
+                //     if(!amnesters.includes(winner)){
+                //         amnesters.push(winner);
+                //     }
+
+                //     eliminatedOrder =
+                //     eliminatedOrder.filter(p=>p!==winner);
+
+                //     log("🎉 " + winner + " kembali ke rumah!");
+
+                //     updatePlayers();
+
+                //     saveGame();
+                //     isDayProcessing = false;
+                //     setGameButtonsDisabled(false);
+                // }
+                let canPlayerVote = status[playerName] !== "KELUAR" && !playerEverEliminated && !top3.includes(playerName);
+
+                if(canPlayerVote){
+                //if(status[playerName] !== "KELUAR" && !playerEverEliminated){
+
+                    pendingDecision = {
+                        type: "amnesty",
+                        options: final2
+                    };
+
+                    setGameButtonsDisabled(true);
+
+                    saveGame();
+
+                    startPlayerAmnestyVote();
+
+                    return;
+                }
+                else{
+
+                    await voteAmnesty(null);
+                    return;
+                }
+            }
+
+            async function startPlayerAmnestyVote(){
+
+                setGameButtonsDisabled(true);
+
+                log("🗳️ Voting sedang berlangsung...");
+                await delay(1200);
+
+                log("⏳ Kamu sedang memberikan vote...");
+                await delay(1200);
+
+                let html = "";
+
+                pendingDecision.options.forEach(p=>{
+
+                    html += `
+                    <button onclick="voteAmnesty('${p}')">
+                        Pilih ${p}
+
+                        ❤️ ${
+                            getRelationSafe(playerName,p)
+                        }
+                    </button><br>
+                    `;
+                });
+
+                openDecisionModal(
+                    "🔥 Voting Amnesti",
+                    html
+                );
+            }
+
+            //amnesti voting
+            async function voteAmnesty(choice){
+                //pendingDecision = null;
+
+                // saveGame();
+
+                //closeDecisionModal();
+
+                closeDecisionModal();
+
+                isDayProcessing = true;
+
+                setGameButtonsDisabled(true);
+
+                let final2 =
+                amnestyState.final2;
+
+                let votes = {};
+
+                final2.forEach(p=>{
+                    votes[p] = 0;
+                });
+
+                // log("🗳️ Voting sedang berlangsung...");
+                // await delay(1200);
+
+                // PLAYER VOTE
+                // votes[choice]++;
+                let isComebackContestant = amnestyState.final2.includes(playerName) || amnestyState.autoComeback === playerName;
+
+                if(status[playerName] !== "KELUAR" &&!playerEverEliminated &&!isComebackContestant)
+                //if(status[playerName] !== "KELUAR"&&!playerEverEliminated)
+                {
+
+                    // log("⏳ Kamu sedang memberikan vote...");
+                    // await delay(1200);
+
+                    votes[choice]++;
+
+                    log("🗳️ Vote kamu berhasil masuk");
+                    await delay(1200);
+                }
+
+                // NPC VOTE
+                // let alive =
+                // getAlive().filter(p=>p!==playerName);
+                let alive =
+                getAlive().filter(p=>
+
+                    p !== playerName &&
+
+                    p !== amnestyState.autoComeback
+                );
+
+                // alive.forEach(voter=>{
+
+                //     let pick =
+                //     final2[Math.floor(Math.random()*final2.length)];
+
+                //     votes[pick]++;
+                // });
+                for(const voter of alive){
+
+                    log("⏳ " + voter + " sedang voting...");
+                    // await delay(DEBUG_DELAY);
+                    await delay(1200);
+
+                    // let pick =
+                    // final2[Math.floor(Math.random()*final2.length)];
+                    let relA =
+                    getRelationSafe(voter, final2[0]);
+
+                    let relB =
+                    getRelationSafe(voter, final2[1]);
+
+                    let pick;
+
+                    if(relA > relB){
+
+                        pick = final2[0];
+
+                    }else if(relB > relA){
+
+                        pick = final2[1];
+
+                    }else{
+
+                        pick =
+                        final2[Math.floor(Math.random()*final2.length)];
+                    }
+
+                    votes[pick]++;
+
+                    log("🗳️ " + voter + " vote masuk");
+                    // await delay(1200);
+                    await delay(DEBUG_DELAY);
+                }
+
+                // PLAYER terakhir
+                // log("⏳ Kamu sedang memberikan vote...");
+                // await delay(DEBUG_DELAY);
+
+                // votes[choice]++;
+
+                // log("🗳️ Vote kamu berhasil masuk");
+                // await delay(DEBUG_DELAY);
+                
+
+                log("📦 Menghitung hasil voting...");
+                await delay(1800);
+
+                log("🗳️ Hasil Voting Amnesti:");
+
+                final2.forEach(p=>{
+
+                    log(
+                    p + " : " +
+                    votes[p] + " vote"
+                    );
+                });
+
+                // pemenang
+                // let winner =
+                // final2.sort((a,b)=>
+                // votes[b] - votes[a]
+                // )[0];
+                let maxVote =
+                Math.max(...final2.map(p => votes[p]));
+
+                let kandidatMenang =
+                final2.filter(p => votes[p] === maxVote);
+
+                let winner;
+
+                if(kandidatMenang.length > 1){
+
+                    log("⚖️ Vote seri, sistem memilih secara random...");
+                    await delay(DEBUG_DELAY);
+
+                    winner =
+                    kandidatMenang[
+                        Math.floor(Math.random()*kandidatMenang.length)
+                    ];
+
+                }else{
+
+                    winner = kandidatMenang[0];
+                }
+
+                status[winner] = "AMAN";
+                if(!amnesters.includes(winner)){
+                    amnesters.push(winner);
+                }
+
+                eliminatedOrder =
+                eliminatedOrder.filter(p=>p!==winner);
+
+                log("🎉 " + winner + " kembali ke rumah!");
+                // preserveRolesAfterAmnesty = true;
+                // skipRoleAssignmentOnce = true;
+
+                // // ⬅️ sinkronisasi total
+                // roles = {...activeRoles};
+                preserveRolesAfterAmnesty = true;
+                freezeBosAfterAmnesty = true;
+                freezePkAfterAmnesty = true;
+                freezeImunAfterAmnesty = true;
+                amnestyLockDay = dayCount;
+
+                // ⬅️ sync role aktif
+                //roles = {...activeRoles};
+                amnestyFrozenRoles = {
+                    bos: activeRoles.bos,
+                    kunci: activeRoles.kunci,
+                    imun: activeRoles.imun
+                };
+
+                // ⬅️ reset role minggu lalu
+                lastWeekRoles = {
+                    bos: null,
+                    art: roles.art,
+                    imun: null,
+                    kunci: null
+                };
+
+                // ⬅️ tandai role hasil 8 besar
+                roles.fromAmnesty = true;
+
+                updatePlayers();
+
+                pendingDecision = null;
+
+                saveGame();
+                isDayProcessing = false;
+                setGameButtonsDisabled(false);
+
+                
+            }
+
+            // function setGameButtonsDisabled(state){
+
+            //     setNextButtonDisabled(state);
+
+            //     let socialBtn =
+            //     document.getElementById("socialBtn");
+
+            //     socialBtn.disabled = state;
+
+            //     socialBtn.style.opacity =
+            //     state ? "0.5" : "1";
+
+            //     socialBtn.style.cursor =
+            //     state ? "not-allowed" : "pointer";
+            // }
+            // function setGameButtonsDisabled(state){
+
+            //     setNextButtonDisabled(state);
+
+            //     let socialBtn =
+            //     document.getElementById("socialBtn");
+
+            //     // ❌ kalau player sudah keluar
+            //     if(status[playerName] === "KELUAR"){
+
+            //         socialBtn.disabled = true;
+
+            //         socialBtn.style.opacity = "0.5";
+
+            //         socialBtn.style.cursor = "not-allowed";
+
+            //         socialBtn.innerText =
+            //         "❌ Kamu Sudah Terekstradisi";
+
+            //         return;
+            //     }
+
+            //     // ⏳ kalau lagi processing
+            //     if(isDayProcessing || pendingDecision){
+
+            //         socialBtn.disabled = true;
+
+            //         socialBtn.style.opacity = "0.5";
+
+            //         socialBtn.style.cursor = "not-allowed";
+
+            //     }else{
+
+            //         socialBtn.disabled = false;
+
+            //         socialBtn.style.opacity = "1";
+
+            //         socialBtn.style.cursor = "pointer";
+            //     }
+
+            //     socialBtn.innerText =
+            //     "💬 Sosialisasi";
+            // }
+            function setGameButtonsDisabled(state){
+
+                setNextButtonDisabled(state);
+
+                let socialBtn =
+                document.getElementById("socialBtn");
+
+                // ❌ kalau player sudah keluar
+                if(status[playerName] === "KELUAR"){
+
+                    socialBtn.disabled = true;
+
+                    socialBtn.style.opacity = "0.5";
+
+                    socialBtn.style.cursor = "not-allowed";
+
+                    socialBtn.innerText =
+                    "❌ Kamu Sudah Terekstradisi";
+
+                    return;
+                }
+
+                // ⏳ kalau lagi processing
+                if(isDayProcessing || pendingDecision){
+
+                    socialBtn.disabled = true;
+
+                    socialBtn.style.opacity = "0.5";
+
+                    socialBtn.style.cursor = "not-allowed";
+
+                }else{
+
+                    socialBtn.disabled = false;
+
+                    socialBtn.style.opacity = "1";
+
+                    socialBtn.style.cursor = "pointer";
+                }
+
+                socialBtn.innerText =
+                "💬 Sosialisasi";
+            }
+
+            function setNextButtonDisabled(state){
+
+                let btn =
+                document.getElementById("nextBtn");
+                
+                let finalState =
+                state || pendingDecision;
+
+                //btn.disabled = state;
+                btn.disabled = !!finalState;
+
+                btn.style.opacity =
+                finalState ? "0.5" : "1";
+
+                btn.style.cursor =
+                finalState ? "not-allowed" : "pointer";
+            }
+
+            function delay(ms){
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+            // TARUH DI SINI
+            function saveScrollPosition(){
+
+                const logEl =
+                document.getElementById("log");
+
+                localStorage.setItem(
+                    "logScrollTop",
+                    logEl.scrollTop
+                );
+            }
+
+            function restoreScrollPosition(){
+
+                const logEl =
+                document.getElementById("log");
+
+                const saved =
+                localStorage.getItem("logScrollTop");
+
+                if(saved){
+
+                    logEl.scrollTop = parseInt(saved);
+                }
+            }
+            // 🔒 cegah ESC close saat decision penting
+            document.addEventListener("keydown", function(e){
+
+                if(pendingDecision){
+
+                    if(e.key === "Escape"){
+
+                        e.preventDefault();
+                    }
+                }
+            });
+            
+            // EKSTRADISI
+            // function ekstradisi(){
+            async function ekstradisi(){
+                log("🌙 Malam ekstradisi berlangsung...");
+                await delay(DEBUG_DELAY);
+                let alive = getAlive();
+
+                // ❌ keluarkan BOS & KUNCI dari kandidat
+                let kandidat = alive.filter(p => p !== roles.bos && p !== roles.kunci);
+
+                if(getAlive().length > 10){
+
+                    log("⏳ Penentuan Bottom 6...");
+                }
+                await delay(DEBUG_DELAY);
+
+                let shuffled = [...kandidat].sort(()=>0.5-Math.random());
+
+                //let bottom6 = shuffled.slice(0,6);
+                // ⬇️ taruh di sini
+                // let bottomCount = Math.min(6, kandidat.length);
+                // let bottom6 = shuffled.slice(0, bottomCount);
+
+                // log("⚠️ Bottom 6: " + bottom6.join(", "));
+                let aliveCount = getAlive().length;
+
+                let bottom6 = [];
+
+                if(aliveCount > 10){
+
+                    let bottomCount =
+                    Math.min(6, kandidat.length);
+
+                    bottom6 =
+                    shuffled.slice(0, bottomCount);
+
+                    log(
+                        "⚠️ Bottom 6: " +
+                        bottom6.join(", ")
+                    );
+                }
+
+                // GAME → ambil bottom 3
+                // let scores = bottom6.map(p=>[p,randomScore(p)]);
+                // scores.sort((a,b)=>a[1]-b[1]);
+                // GAME → ambil kandidat bottom
+
+                let sourceBottom = [];
+
+                if(aliveCount > 10){
+
+                    sourceBottom = bottom6;
+                }
+                else{
+
+                    // mulai 10 besar → semua kandidat masuk pool
+                    sourceBottom = [...kandidat];
+                }
+
+                if(getAlive().length > 5){
+
+                    log("⏳ Penentuan Bottom 3...");
+                }
+                await delay(DEBUG_DELAY);
+
+                // ambil bottom 3
+                let scores =
+                sourceBottom.map(p=>[
+                    p,
+                    randomScore(p)
+                ]);
+
+                scores.sort((a,b)=>a[1]-b[1]);
+
+                let bottom3 = scores.slice(0,3).map(x=>x[0]);
+                // bottom3.forEach(p=>{
+                //     stats[p].bottom3++;
+                // });
+
+                log("🔥 Bottom 3: " + bottom3.join(", "));
+
+                // 🛡️ RULE IMUN TARUH DI SINI
+                if(bottom3.includes(roles.imun)){
+
+                    //log("🛡️ Pemegang imun masuk Bottom 3!");
+                    log("🛡️ Pemegang imun " +roles.imun +" masuk Bottom 3!");
+
+                    let kandidatTukar = getAlive().filter(p => 
+                        p !== roles.bos && 
+                        p !== roles.kunci && 
+                        p !== roles.imun
+                    );
+
+                    //let pilihan = [...kandidatTukar].sort(()=>0.5-Math.random()).slice(0,3);
+                    // 🛡️ PLAYER = IMUN
+                    if(roles.imun === playerName){
+
+                        pendingDecision = {
+                            type: "imun"
+                        };
+
+                        saveGame();
+
+                        extraditionState.bottom3 = [...bottom3];
+                        extraditionState.imunChoices = [];
+
+                        let html = "";
+
+                        kandidatTukar.forEach(p=>{
+
+                            html += `
+                            <button
+                            onclick="toggleImunChoice('${p}')"
+
+                            id="imunBtn-${p}"
+
+                            data-label="${p} ❤️ ${getRelationSafe(playerName,p)}"
+                            >
+
+                                ${p} ❤️ ${getRelationSafe(playerName,p)}
+
+                            </button><br>
+                            `;
+                        });
+
+                        html += `
+                        <br>
+                        <button onclick="confirmImunChoices()">
+                            ✅ Konfirmasi 3 Nama
+                        </button>
+                        `;
+
+                        openDecisionModal(
+                            "🛡️ Pilih 3 Kandidat Tukar Posisi",
+                            html
+                        );
+
+                        return;
+                    }
+
+                    // NPC IMUN
+                    let pilihan =
+                    [...kandidatTukar]
+                    .slice(0,3);
+
+                    //log("🛡️ Imun memilih: " + pilihan.join(", "));
+                    log("🛡️ " +roles.imun +" memilih: " +pilihan.join(", "));
+
+                    let sudahBottom = pilihan.filter(p => bottom3.includes(p));
+                    let belumBottom = pilihan.filter(p => !bottom3.includes(p));
+
+                    let pengganti = null;
+
+                    if(sudahBottom.length === 2){
+                        pengganti = belumBottom[0];
+                        log("⚡ 2 sudah di Bottom 3 → " + pengganti + " otomatis masuk");
+                    }
+                    else if(sudahBottom.length === 1){
+                        let scores = belumBottom.map(p=>[p,randomScore(p)]);
+                        scores.sort((a,b)=>a[1]-b[1]);
+                        pengganti = scores[0][0];
+                        log("🎮 2 orang tanding → " + pengganti + " kalah");
+                    }
+                    else{
+                        let scores = pilihan.map(p=>[p,randomScore(p)]);
+                        scores.sort((a,b)=>a[1]-b[1]);
+                        pengganti = scores[0][0];
+                        log("🎮 3 orang tanding → " + pengganti + " kalah");
+                    }
+
+                    // 🔁 tukar posisi
+                    bottom3 = bottom3.filter(p => p !== roles.imun);
+                    bottom3.push(pengganti);
+
+                    log("🔁 Imun bertukar dengan: " + pengganti);
+                    log("🔥 Bottom 3 baru: " + bottom3.join(", "));
+                    // bottom3.forEach(p=>{
+
+                    //     if(stats[p]){
+
+                    //         stats[p].bottom3++;
+                    //     }
+                    // });
+                    extraditionState.bottom3 = [...bottom3];
+
+                    //lanjutBossPhase();
+                    await lanjutBossPhase();
+
+
+                    return;
+                    
+                }
+                extraditionState.bottom3 = [...bottom3];
+
+                //lanjutBossPhase();
+                await lanjutBossPhase();
+
+                return;
+
+                // 👑 BOS SAVE (berdasarkan relasi terbaik)
+                // let savedByBos = bottom3.sort((a,b)=>relation[roles.bos][b] - relation[roles.bos][a])[0];
+
+                // log("👑 Bos menyelamatkan: " + savedByBos);
+
+                // let sisa = bottom3.filter(p=>p !== savedByBos);
+                let savedByBos;
+
+                // PLAYER = BOS
+                if(roles.bos === playerName){
+
+                    extraditionState.bottom3 = [...bottom3];
+
+                    let html = "";
+
+                    bottom3.forEach(p=>{
+
+                        html += `
+                        <button onclick="playerSaveByBoss('${p}')">
+
+                            Selamatkan ${p}
+
+                            ❤️ ${
+                                getRelationSafe(playerName,p)
+                            }
+
+                        </button>
+                        `;
+                    });
+
+                    openDecisionModal(
+                        "👑 Kamu adalah BOS",
+                        html
+                    );
+
+                    return;
+                }
+
+                // NPC BOS
+                log("⏳ 👑 Bos " + roles.bos + " sedang memutuskan siapa yang diselamatkan...");
+                await delay(DEBUG_DELAY);
+
+                savedByBos =
+                bottom3.sort((a,b)=>
+                relation[roles.bos][b] - relation[roles.bos][a]
+                )[0];
+
+                log("👑 Bos " + roles.bos + " menyelamatkan: " + savedByBos);
+                relation[roles.bos][savedByBos] += 3;
+                relation[savedByBos][roles.bos] += 3;
+
+                log(
+                    "❤️ Relasi " +
+                    roles.bos +
+                    " dan " +
+                    savedByBos +
+                    " meningkat!"
+                );
+
+                let sisa = bottom3.filter(p=>p !== savedByBos);
+
+                // 🔑 KUNCI SAVE (pilih yg dia paling suka)
+                // let savedByKey = sisa.sort((a,b)=>relation[roles.kunci][b] - relation[roles.kunci][a])[0];
+
+                // log("🔑 Pemegang Kunci menyelamatkan: " + savedByKey);
+
+                // // ❌ yang tersisa dieliminasi
+                // let eliminated = sisa.find(p=>p !== savedByKey);
+
+                // status[eliminated] = "KELUAR";
+
+                // log("❌ Terekstradisi: " + eliminated);
+                // 🔑 PLAYER = PEMEGANG KUNCI
+                if(roles.kunci === playerName){
+
+                    extraditionState.bottom2 = [...sisa];
+
+                    let html = "";
+
+                    sisa.forEach(p=>{
+
+                        html += `
+                        <button onclick="playerEliminateByKey('${p}')">
+
+                            Eliminasi ${p}
+
+                            ❤️ ${
+                                getRelationSafe(playerName,p)
+                            }
+
+                        </button>
+                        `;
+                    });
+
+                    openDecisionModal(
+                        "🔑 Kamu adalah Pemegang Kunci",
+                        html
+                    );
+
+                    return;
+                }
+
+                // 🔑 NPC KUNCI
+                let savedByKey =
+                sisa.sort((a,b)=>
+                relation[roles.kunci][b] -
+                relation[roles.kunci][a]
+                )[0];
+
+                log("⏳ 🔑 Pemegang Kunci " +roles.kunci +" sedang memutuskan siapa yang diselamatkan...");
+                await delay(DEBUG_DELAY);
+
+                log("🔑 Pemegang Kunci " +roles.kunci +" menyelamatkan: " + savedByKey);
+
+                // ❌ yang tersisa dieliminasi
+                let eliminated =
+                sisa.find(p=>p !== savedByKey);
+
+                status[eliminated] = "KELUAR";
+                if(eliminated === playerName){
+
+                    playerEverEliminated = true;
+                }
+                eliminatedOrder.unshift(eliminated);
+                updatePlayers();
+
+
+                log("❌ Terekstradisi: " + eliminated);
+            }
+            // function saveGame(){
+            //     const data = {
+            //         weekDay,
+            //         dayCount,
+            //         players,
+            //         status,
+            //         relation,
+            //         traitsMap,
+            //         roles
+            //     };
+
+            //     localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+            // }
+            // function playerSaveByBoss(name){
+
+            //     closeDecisionModal();
+
+            //     extraditionState.savedByBoss = name;
+
+            //     log("👑 Kamu menyelamatkan: " + name);
+
+            //     let sisa =
+            //     extraditionState.bottom3.filter(p=>p!==name);
+
+            //     // sementara PK masih otomatis
+            //     let savedByKey =
+            //     sisa.sort((a,b)=>
+            //     relation[roles.kunci][b] -
+            //     relation[roles.kunci][a]
+            //     )[0];
+
+            //     log("🔑 Pemegang Kunci menyelamatkan: " + savedByKey);
+
+            //     let eliminated =
+            //     sisa.find(p=>p!==savedByKey);
+
+            //     status[eliminated] = "KELUAR";
+
+            //     log("❌ Terekstradisi: " + eliminated);
+
+            //     updatePlayers();
+
+            //     saveGame();
+            // }
+            async function playEndgameStage(stageName){
+
+                let alive = getAlive();
+
+                log("🎮 " + alive.length + " besar bermain di " + stageName + "...");
+                await delay(DEBUG_DELAY);
+
+                // =========================
+                // BABAK 1
+                // =========================
+
+                log("🔥 Babak 1 dimulai...");
+                await delay(DEBUG_DELAY);
+
+                let shuffled =
+                [...alive].sort(()=>0.5-Math.random());
+
+                let winner1 = shuffled[0];
+
+                log(
+                    "🏆 Pemenang babak 1 " +
+                    stageName +
+                    " = " +
+                    winner1
+                );
+
+                await delay(DEBUG_DELAY);
+
+                // =========================
+                // BABAK TERAKHIR
+                // =========================
+
+                log("⚔️ Babak terakhir dimulai...");
+                await delay(DEBUG_DELAY);
+
+                let remaining =
+                alive.filter(p=>p!==winner1);
+
+                remaining =
+                remaining.sort(()=>0.5-Math.random());
+
+                let finalistsNeeded =
+                alive.length === 4 ? 2 : 1;
+
+                let winnersFinal =
+                remaining.slice(0, finalistsNeeded);
+
+                log(
+                    "🎯 Babak ini dimenangkan oleh: " +
+                    winnersFinal.join(", ")
+                );
+
+                await delay(DEBUG_DELAY);
+
+                let safePlayers =
+                [winner1, ...winnersFinal];
+
+                let eliminated =
+                alive.filter(p=>!safePlayers.includes(p))[0];
+
+                status[eliminated] = "KELUAR";
+
+                eliminatedOrder.unshift(eliminated);
+
+                log("❌ Yang tereliminasi = " + eliminated);
+
+                updatePlayers();
+            }
+
+            async function playerSaveByBoss(name){
+                pendingDecision = null;
+
+                saveGame();
+
+                closeDecisionModal();
+
+                extraditionState.savedByBoss = name;
+
+                log("👑 Kamu menyelamatkan: " + name);
+                relation[playerName][name] += 3;
+                relation[name][playerName] += 3;
+
+                log(
+                    "❤️ Relasi kamu dan " +
+                    name +
+                    " meningkat!"
+                );
+
+                let sisa =
+                extraditionState.bottom3.filter(p=>p!==name);
+
+                sisa.forEach(p=>{
+                    stats[p].bottom2++;
+                });
+
+                extraditionState.bottom2 = [...sisa];
+
+                saveGame();
+
+                // 🔑 PLAYER = PEMEGANG KUNCI
+                if(roles.kunci === playerName){
+
+                    let html = "";
+
+                    sisa.forEach(p=>{
+
+                        html += `
+                        <button onclick="playerEliminateByKey('${p}')">
+
+                            Eliminasi ${p}
+
+                            ❤️ ${
+                                getRelationSafe(playerName,p)
+                            }
+
+                        </button><br>
+                        `;
+                    });
+
+                    openDecisionModal(
+                        "🔑 Kamu adalah Pemegang Kunci",
+                        html
+                    );
+
+                    return;
+                }
+
+                // 🔑 NPC KUNCI
+                let savedByKey =
+                sisa.sort((a,b)=>
+                relation[roles.kunci][b] -
+                relation[roles.kunci][a]
+                )[0];
+
+                log("⏳ 🔑 Pemegang Kunci " +roles.kunci +" sedang memutuskan siapa yang diselamatkan...");
+                await delay(DEBUG_DELAY);
+                log("🔑 Pemegang Kunci " +roles.kunci +" menyelamatkan: " + savedByKey);
+
+                let eliminated =
+                sisa.find(p=>p!==savedByKey);
+
+                status[eliminated] = "KELUAR";
+                if(eliminated === playerName){
+
+                    playerEverEliminated = true;
+                }
+                eliminatedOrder.unshift(eliminated);
+                updatePlayers();
+
+
+                log("❌ Terekstradisi: " + eliminated);
+
+                //updatePlayers();
+
+                saveGame();
+                isDayProcessing = false;
+                setGameButtonsDisabled(false);
+            }
+            function reopenPKPopup(){
+
+                let sisa =
+                extraditionState.bottom2;
+
+                let html = "";
+
+                sisa.forEach(p=>{
+
+                    html += `
+                    <button onclick="playerEliminateByKey('${p}')">
+
+                        Eliminasi ${p}
+
+                        ❤️ ${
+                            getRelationSafe(playerName,p)
+                        }
+
+                    </button><br>
+                    `;
+                });
+
+                openDecisionModal(
+                    "🔑 Kamu adalah Pemegang Kunci",
+                    html
+                );
+            }
+            function playerEliminateByKey(name){
+
+                pendingDecision = null;
+
+                saveGame();
+
+                closeDecisionModal();
+
+                status[name] = "KELUAR";
+                eliminatedOrder.unshift(name);
+                updatePlayers();
+
+
+                log("🔑 Kamu mengekstradisi: " + name);
+                let savedPerson =
+                extraditionState.bottom2.filter(
+                    p => p !== name
+                )[0];
+
+                relation[playerName][savedPerson] += 2;
+                relation[savedPerson][playerName] += 2;
+
+                log(
+                    "❤️ Relasi kamu dan " +
+                    savedPerson +
+                    " meningkat!"
+                );
+
+                //updatePlayers();
+
+                saveGame();
+                isDayProcessing = false;
+                setGameButtonsDisabled(false);
+            }
+            function reopenImunPopup(){
+
+                let kandidatTukar = getAlive().filter(p => 
+                    p !== roles.bos && 
+                    p !== roles.kunci && 
+                    p !== roles.imun
+                );
+
+                let html = "";
+
+                kandidatTukar.forEach(p=>{
+
+                    let checked =
+                    extraditionState.imunChoices.includes(p);
+
+                    html += `
+                    <button
+                    onclick="toggleImunChoice('${p}')"
+                    id="imunBtn-${p}"
+                    data-label="${p} ❤️ ${getRelationSafe(playerName,p)}"
+                    style="
+                        background:
+                        ${checked ? '#10b981' : '#f59e0b'}
+                    "
+                    >
+                        ${checked ? '✅ ' : ''}
+                        ${p} ❤️ ${getRelationSafe(playerName,p)}
+                    </button><br>
+                    `;
+                });
+
+                html += `
+                <br>
+                <button onclick="confirmImunChoices()">
+                    ✅ Konfirmasi 3 Nama
+                </button>
+                `;
+
+                openDecisionModal(
+                    "🛡️ Pilih 3 Kandidat Tukar Posisi",
+                    html
+                );
+            }
+            // function toggleImunChoice(name){
+
+            //     let arr = extraditionState.imunChoices;
+
+            //     if(arr.includes(name)){
+
+            //         extraditionState.imunChoices =
+            //         arr.filter(x=>x!==name);
+
+            //         document
+            //         .getElementById("imunBtn-"+name)
+            //         .style.opacity = "0.5";
+
+            //         return;
+            //     }
+
+            //     if(arr.length >= 3){
+            //         alert("Maksimal 3 nama!");
+            //         return;
+            //     }
+
+            //     arr.push(name);
+
+            //     document
+            //     .getElementById("imunBtn-"+name)
+            //     .style.opacity = "1";
+            // }
+            // function toggleImunChoice(name){
+
+            //     let arr = extraditionState.imunChoices;
+
+            //     let btn =
+            //     document.getElementById("imunBtn-"+name);
+
+            //     // jika sudah dipilih → uncheck
+            //     if(arr.includes(name)){
+
+            //         extraditionState.imunChoices =
+            //         arr.filter(x=>x!==name);
+
+            //         btn.innerHTML = name;
+
+            //         btn.style.background = "#f59e0b";
+
+            //         return;
+            //     }
+
+            //     // maksimal 3
+            //     if(arr.length >= 3){
+
+            //         alert(
+            //         "❌ Gaboleh ceklis imun lebih dari 3.\n\nPilih yang menurutmu layak untuk ditukarkan posisinya 😈"
+            //         );
+
+            //         return;
+            //     }
+
+            //     // pilih
+            //     arr.push(name);
+
+            //     btn.innerHTML = "✅ " + name;
+
+            //     btn.style.background = "#10b981";
+            // }
+            function toggleImunChoice(name){
+
+                // pastikan array selalu ada
+                if(!extraditionState.imunChoices){
+                    extraditionState.imunChoices = [];
+                }
+
+                let btn =
+                document.getElementById("imunBtn-"+name);
+
+                // SUDAH DIPILIH
+                if(extraditionState.imunChoices.includes(name)){
+
+                    extraditionState.imunChoices =
+                    extraditionState.imunChoices
+                    .filter(x=>x!==name);
+
+                    btn.innerHTML = btn.dataset.label;
+
+                    btn.style.background = "#f59e0b";
+                    saveGame();
+
+                    return;
+                }
+
+                // MAX 3
+                if(extraditionState.imunChoices.length >= 3){
+
+                    alert(
+                    "❌ Gaboleh ceklis imun lebih dari 3.\n\nPilih yang menurutmu layak untuk ditukarkan posisinya 😈"
+                    );
+
+                    return;
+                }
+
+                // TAMBAH PILIHAN
+                extraditionState.imunChoices.push(name);
+                saveGame();
+
+                //btn.innerHTML = "✅ " + name;
+                btn.innerHTML ="✅ " + btn.dataset.label;
+                //btn.innerHTML = btn.dataset.label;
+                
+
+                btn.style.background = "#10b981";
+            }
+
+            function confirmImunChoices(){
+
+                pendingDecision = null;
+
+                saveGame();
+
+                let pilihan =
+                extraditionState.imunChoices;
+
+                if(pilihan.length !== 3){
+                    alert("Pilih tepat 3 nama!");
+                    return;
+                }
+
+                closeDecisionModal();
+
+                log("🛡️ Kamu memilih: " + pilihan.join(", "));
+
+                let bottom3 =
+                extraditionState.bottom3;
+
+                let sudahBottom =
+                pilihan.filter(p=>bottom3.includes(p));
+
+                let belumBottom =
+                pilihan.filter(p=>!bottom3.includes(p));
+
+                let pengganti = null;
+
+                if(sudahBottom.length === 2){
+
+                    pengganti = belumBottom[0];
+
+                    log("⚡ 2 sudah Bottom 3 → " +
+                    pengganti + " otomatis masuk");
+
+                }
+
+                else if(sudahBottom.length === 1){
+
+                    let scores =
+                    belumBottom.map(p=>[p,randomScore(p)]);
+
+                    scores.sort((a,b)=>a[1]-b[1]);
+
+                    pengganti = scores[0][0];
+
+                    log("🎮 2 orang tanding → " +
+                    pengganti + " kalah");
+
+                }
+
+                else{
+
+                    let scores =
+                    pilihan.map(p=>[p,randomScore(p)]);
+
+                    scores.sort((a,b)=>a[1]-b[1]);
+
+                    pengganti = scores[0][0];
+
+                    log("🎮 3 orang tanding → " +
+                    pengganti + " kalah");
+                }
+
+                bottom3 =
+                bottom3.filter(p=>p!==playerName);
+
+                bottom3.push(pengganti);
+
+                log("🔁 Kamu bertukar posisi dengan: " +
+                pengganti);
+
+                log("🔥 Bottom 3 baru: " +
+                bottom3.join(", "));
+
+                extraditionState.bottom3 =
+                bottom3;
+
+                // bottom3.forEach(p=>{
+                //     stats[p].bottom3++;
+                // });
+
+                // lanjut BOS phase
+                lanjutBossPhase();
+            }
+
+            async function lanjutBossPhase(){
+                if(getAlive().length <= 4){
+
+                    let eliminated =
+                    extraditionState.bottom3[
+                        Math.floor(
+                            Math.random() *
+                            extraditionState.bottom3.length
+                        )
+                    ];
+
+                    status[eliminated] = "KELUAR";
+
+                    if(eliminated === playerName){
+
+                        playerEverEliminated = true;
+                    }
+
+                    eliminatedOrder.unshift(eliminated);
+                    updatePlayers();
+
+
+                    log(
+                        "🎲 Final stage random eliminasi: "
+                        + eliminated
+                    );
+
+                    let remaining = getAlive();
+
+                    // if(remaining.length === 1){
+
+                    //     log(
+                    //         "🏆 Selamat " +
+                    //         remaining[0] +
+                    //         " menjadi Penghuni Terakhir!"
+                    //     );
+
+                    //     // setGameButtonsDisabled(true);
+
+                    //     // saveGame();
+
+                    //     // isDayProcessing = false;
+
+                    //     // return;
+                    //      updatePlayers();
+
+                    //     saveGame();
+
+                    //     isDayProcessing = false;
+
+                    //     setGameButtonsDisabled(false);
+
+                    //     return;
+                    // }
+                    if(remaining.length === 1){
+
+                        log(
+                            "🏆 Selamat " +
+                            remaining[0] +
+                            " menjadi Penghuni Terakhir!"
+                        );
+
+                        updatePlayers();
+
+                        saveGame();
+
+                        isDayProcessing = false;
+
+                        setGameButtonsDisabled(true);
+
+                    }else{
+
+                        saveGame();
+
+                        isDayProcessing = false;
+
+                        setGameButtonsDisabled(false);
+                    }
+
+                    return;
+
+                    // updatePlayers();
+
+                    // saveGame();
+
+                    // isDayProcessing = false;
+
+                    // setGameButtonsDisabled(false);
+
+                    // return;
+                }
+
+                let bottom3 =
+                extraditionState.bottom3;
+
+                // ✅ FINAL Bottom 3
+                bottom3.forEach(p=>{
+
+                    if(stats[p]){
+
+                        stats[p].bottom3++;
+                    }
+                });
+
+                let savedByBos;
+
+                // PLAYER BOS
+                // if(roles.bos === playerName){
+
+                //     let html = "";
+
+                //     bottom3.forEach(p=>{
+
+                //         html += `
+                //         <button onclick="playerSaveByBoss('${p}')">
+
+                //             Selamatkan ${p}
+
+                //             ❤️ ${
+                //                 getRelationSafe(playerName,p)
+                //             }
+
+                //         </button><br>
+                //         `;
+                //     });
+
+                //     openDecisionModal(
+                //         "👑 Kamu adalah BOS",
+                //         html
+                //     );
+
+                //     return;
+                // }
+                if(roles.bos === playerName){
+                    pendingDecision = {
+                        type: "boss"
+                    };
+
+                    saveGame();
+
+                    let html = "";
+
+                    bottom3.forEach(p=>{
+
+                        html += `
+                        <button onclick="playerSaveByBoss('${p}')">
+
+                            Selamatkan ${p}
+
+                            ❤️ ${
+                                getRelationSafe(playerName,p)
+                            }
+
+                        </button><br>
+                        `;
+                    });
+
+                    openDecisionModal(
+                        "👑 Kamu adalah BOS",
+                        html
+                    );
+
+                    return;
+                }
+
+                // NPC BOS
+                savedByBos =
+                bottom3.sort((a,b)=>
+                relation[roles.bos][b] -
+                relation[roles.bos][a]
+                )[0];
+
+                log("⏳ 👑 Bos " + roles.bos + " sedang memutuskan siapa yang diselamatkan...");
+                await delay(DEBUG_DELAY);
+
+                log("👑 Bos " + roles.bos + " menyelamatkan: " + savedByBos);
+                relation[roles.bos][savedByBos] += 3;
+                relation[savedByBos][roles.bos] += 3;
+
+                log(
+                    "❤️ Relasi " +
+                    roles.bos +
+                    " dan " +
+                    savedByBos +
+                    " meningkat!"
+                );
+
+                let sisa =
+                bottom3.filter(p=>p!==savedByBos);
+
+                // ✅ catat bottom 2
+                sisa.forEach(p=>{
+
+                    if(stats[p]){
+
+                        stats[p].bottom2++;
+                    }
+                });
+
+                // PLAYER PK
+                if(roles.kunci === playerName){
+
+                    pendingDecision = {
+                        type: "pk"
+                    };
+
+                    saveGame();
+
+                    extraditionState.bottom2 = [...sisa];
+
+
+                    let html = "";
+
+                    sisa.forEach(p=>{
+
+                        html += `
+                        <button onclick="playerEliminateByKey('${p}')">
+
+                            Eliminasi ${p}
+
+                            ❤️ ${
+                                getRelationSafe(playerName,p)
+                            }
+
+                        </button><br>
+                        `;
+                    });
+
+                    openDecisionModal(
+                        "🔑 Kamu adalah Pemegang Kunci",
+                        html
+                    );
+
+                    return;
+                }
+
+                // NPC PK
+                let savedByKey =
+                sisa.sort((a,b)=>
+                relation[roles.kunci][b] -
+                relation[roles.kunci][a]
+                )[0];
+
+                log("⏳ 🔑 Pemegang Kunci " +roles.kunci +" sedang memutuskan siapa yang diselamatkan...");
+                await delay(DEBUG_DELAY);
+                log("🔑 Pemegang Kunci " + roles.kunci + " menyelamatkan: " + savedByKey);
+
+                relation[roles.kunci][savedByKey] += 2;
+                relation[savedByKey][roles.kunci] += 2;
+
+                log(
+                    "❤️ Relasi " +
+                    roles.kunci +
+                    " dan " +
+                    savedByKey +
+                    " meningkat!"
+                );
+
+                let eliminated =
+                sisa.find(p=>p!==savedByKey);
+
+                status[eliminated] = "KELUAR";
+                if(eliminated === playerName){
+
+                    playerEverEliminated = true;
+                }
+
+                eliminatedOrder.unshift(eliminated);
+                updatePlayers();
+
+
+                log("❌ Terekstradisi: " + eliminated);
+
+                //updatePlayers();
+
+                saveGame();
+                isDayProcessing = false;
+                setGameButtonsDisabled(false);
+            }
+
+            function loadGame(){
+                const data = localStorage.getItem(SAVE_KEY);
+
+                if(data){
+                    let parsed = JSON.parse(data);
+
+                    weekDay = parsed.weekDay;
+                    //dayCount = parsed.dayCount || 1;
+                    dayCount = parsed.dayCount ?? 0;
+                    players = parsed.players;
+                    status = parsed.status;
+                    relation = parsed.relation;
+                    traitsMap = parsed.traitsMap;
+                    eliminatedOrder = parsed.eliminatedOrder || [];
+                    amnesters = parsed.amnesters || [];
+                    roles = parsed.roles;
+                    activeRoles = parsed.activeRoles || activeRoles;
+                    freezeBosAfterAmnesty =
+                    parsed.freezeBosAfterAmnesty || false;
+
+                    freezePkAfterAmnesty =
+                    parsed.freezePkAfterAmnesty || false;
+
+                    freezeImunAfterAmnesty =
+                    parsed.freezeImunAfterAmnesty || false;
+
+                    amnestyFrozenRoles =
+                    parsed.amnestyFrozenRoles || {
+                        bos:null,
+                        kunci:null,
+                        imun:null
+                    };
+
+                    preserveRolesAfterAmnesty =
+                    parsed.preserveRolesAfterAmnesty || false;
+
+                    lastWeekRoles =
+                    parsed.lastWeekRoles || {
+                        bos:null,
+                        art:null,
+                        imun:null,
+                        kunci:null
+                    };
+                    pendingDecision =parsed.pendingDecision || null;
+                    extraditionState = parsed.extraditionState || extraditionState;
+                    amnestyState =parsed.amnestyState || amnestyState;
+                    stats = parsed.stats || stats;
+                    //document.getElementById("log").innerHTML = parsed.logHTML || "";
+                    document.getElementById("log").innerHTML =
+                    (parsed.logHTML || "")
+                    .replaceAll(
+                        "<p>💾 Game berhasil diload!</p>",
+                        ""
+                    )
+                    .replaceAll(
+                        "💾 Game berhasil diload!",
+                        ""
+                    );
+
+                    // log("💾 Game berhasil diload!");
+                    let el = document.getElementById("log");
+
+                    if(!el.innerHTML.includes("💾 Game berhasil diload!")){
+
+                        el.innerHTML +=
+                        "<p>💾 Game berhasil diload!</p>";
+                    }
+
+                    updatePlayers();
+
+                    const alive = getAlive();
+
+                    // =========================
+                    // PLAYER SUDAH KELUAR
+                    // =========================
+                    if(
+                        status[playerName] === "KELUAR" ||
+                        playerEverEliminated
+                    ){
+
+                        const socialBtn =
+                        document.getElementById("socialBtn");
+
+                        socialBtn.disabled = true;
+
+                        socialBtn.style.opacity = "0.5";
+
+                        socialBtn.style.cursor = "not-allowed";
+
+                        socialBtn.innerHTML =
+                        "❌ Kamu Sudah Terekstradisi";
+                    }
+
+                    // =========================
+                    // SUDAH ADA PEMENANG
+                    // =========================
+                    // if(alive.length <= 1){
+
+                    //     isDayProcessing = true;
+
+                    //     pendingDecision = true;
+
+                    //     setGameButtonsDisabled(true);
+
+                    //     const nextBtn =
+                    //     document.getElementById("nextBtn");
+
+                    //     nextBtn.disabled = true;
+
+                    //     nextBtn.style.opacity = "0.5";
+
+                    //     nextBtn.style.cursor = "not-allowed";
+                    // }
+                    if(alive.length <= 1){
+
+                        isDayProcessing = true;
+
+                        pendingDecision = true;
+
+                        setGameButtonsDisabled(true);
+
+                        const nextBtn =
+                        document.getElementById("nextBtn");
+
+                        nextBtn.disabled = true;
+
+                        nextBtn.style.opacity = "0.5";
+
+                        nextBtn.style.cursor = "not-allowed";
+
+                        // game sudah tamat
+                        if(pendingDecision){
+
+                            isDayProcessing = true;
+
+                            setGameButtonsDisabled(true);
+
+                            nextBtn.disabled = true;
+                            document.getElementById( "socialBtn").disabled = true;
+                        }
+                    }
+                    // TARUH DI SINI
+                    setTimeout(()=>{
+
+                        restoreScrollPosition();
+
+                    },50);
+                }
+            }
+            function resetGame(){
+                if(confirm("Yakin mau reset game?")){
+                    localStorage.removeItem(SAVE_KEY);
+                    localStorage.removeItem("playerName");
+                    localStorage.removeItem("playerGender");
+                    localStorage.removeItem("comebackDone");
+                    location.reload();
+                }
+            }
+            // function saveGame(){
+            //     const data = {
+            //         weekDay,
+            //         players,
+            //         status,
+            //         relation,
+            //         traitsMap,
+            //         roles,
+            //         logHTML: document.getElementById("log").innerHTML
+            //     };
+
+            //     localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+            // }
+            function saveGame(){
+                const data = {
+                    weekDay,
+                    dayCount,
+                    players,
+                    status,
+                    relation,
+                    traitsMap,
+                    roles,
+                    activeRoles,
+                    freezeBosAfterAmnesty,
+                    freezePkAfterAmnesty,
+                    freezeImunAfterAmnesty,
+
+                    amnestyFrozenRoles,
+
+                    preserveRolesAfterAmnesty,
+
+                    lastWeekRoles,
+                    eliminatedOrder,
+                    amnesters,
+                    pendingDecision,
+                    extraditionState,
+                    amnestyState,
+                    stats,
+                    
+                    logHTML: document.getElementById("log").innerHTML
+                };
+
+                localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+            }
+            // loadGame();
+            // updatePlayers();
+            // //nextDay();
+            // //saveGame();
+
+            // // let week = Math.ceil(dayCount / 7);
+
+            // // document.getElementById("day").innerText =
+            // // "Hari ke-" + dayCount + " | Minggu ke-" + week + " (Hari " + weekDay + ")";
+            // renderDay();
+            if(playerName){
+
+                document.getElementById("nameModal")
+                .style.display = "none";
+
+                initGame();
+                setTimeout(()=>{
+
+                    if(!pendingDecision) return;
+
+                    // 👑 BOS
+                    if(pendingDecision.type === "boss"){
+
+                        let html = "";
+
+                        extraditionState.bottom3.forEach(p=>{
+
+                            html += `
+                            <button onclick="playerSaveByBoss('${p}')">
+
+                                Selamatkan ${p}
+
+                                ❤️ ${getRelationSafe(playerName,p)}
+
+                            </button><br>
+                            `;
+                        });
+
+                        openDecisionModal(
+                            "👑 Kamu adalah BOS",
+                            html
+                        );
+                    }
+
+                    else if(pendingDecision.type === "imun"){
+
+                        reopenImunPopup();
+                    }
+
+                    else if(pendingDecision.type === "pk"){
+
+                        reopenPKPopup();
+                    }
+                    else if(pendingDecision.type === "amnesty"){
+
+                        let html = "";
+
+                        amnestyState.final2.forEach(p=>{
+
+                            html += `
+                            <button onclick="voteAmnesty('${p}')">
+
+                                Pilih ${p}
+
+                                ❤️ ${getRelationSafe(playerName,p)}
+
+                            </button><br>
+                            `;
+                        });
+
+                        openDecisionModal(
+                            "🔥 Voting Amnesti",
+                            html
+                        );
+                    }
+
+                },300);
+
+            }else{
+
+                document.getElementById("day").innerText =
+                // "Game Belum Dimulai";
+                "Perkenalan Rumah Karantina";
+
+            }
+        </script>
+        <!-- <div id="modalRelasi" class="modal" onclick="clickOutside(event)">
+            <div class="modal-content">
+                <span class="close" onclick="tutupModal()">&times;</span>
+                <h2>📊 Relasi Penghuni</h2>
+                <div id="isiRelasi"></div>
+            </div>
+        </div> -->
+        
+        <!-- <div id="modalRelasi" class="modal" onclick="clickOutside(event)">
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+
+                    <h2>📊 Relasi Penghuni</h2>
+
+                    <button onclick="tutupModal()">✖</button>
+
+                </div>
+
+                <div id="isiRelasi"></div>
+
+            </div>
+
+        </div> -->
+        <div id="modalRelasi" class="modal">
+
+            <div class="modal-content">
+
+                <span
+                class="close"
+                onclick="tutupModal()">
+                    ✖
+                </span>
+
+                <h2>📊 Relasi Penghuni</h2>
+
+                <div id="isiRelasi"></div>
+
+            </div>
+
+        </div>
+
+        <div class="log" id="log"></div>
+
+        <div id="decisionModal" class="modal-overlay">
+
+            <div class="players-modal-content">
+
+                <div class="modal-header">
+                    <h3 id="decisionTitle">🎭 Keputusan</h3>
+
+                    <!-- <button onclick="closeDecisionModal()">✖</button> -->
+                </div>
+
+                <div id="decisionContent"></div>
+
+            </div>
+
+        </div>
+    </body>
+    
+</html>
