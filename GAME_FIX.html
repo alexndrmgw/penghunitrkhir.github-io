@@ -1218,6 +1218,7 @@
             let players = [];
             let status = {};
             let relation = {};
+            let specialRelations = {};
             let reputation = {};
             let amnestyPopularity = {};
             let rawPopularity = {};
@@ -1620,12 +1621,19 @@
                     if(!relation[n]){
                         relation[n] = {};
                     }
+                    if(!specialRelations[n]){
+                        specialRelations[n] = {};
+                    }
 
                     names.forEach(m=>{
 
                         if(n !== m && relation[n][m] == null){
 
                             relation[n][m] = 0;
+                        }
+                        if(n !== m && !specialRelations[n][m]){
+
+                            specialRelations[n][m] = null;
                         }
                     });
                 });
@@ -1817,7 +1825,23 @@
                         </div>
                         📍 Kota: ${cityMap[p]}<br>
                         
-                        ❤️ Ke Kamu: ${p !== playerName ? rel : "-"}<br>
+                        ${p !== playerName
+                        ? `❤️ Ke Kamu: ${rel}<br>`
+                        : ""}
+                        ${p !== playerName
+                        && specialRelations[p]
+                        && specialRelations[p][playerName]
+                        ? `
+                        <br>
+                        ⭐ ${
+                            specialRelations[p][playerName] === "bestie"
+                            ? "🧑‍🤝‍🧑 Bestie"
+                            : specialRelations[p][playerName] === "rival"
+                            ? "💢 Rival"
+                            : "🤝 Dekat"
+                        }
+                        <br>`
+                        : ""}
                         
                         
                         <span class="role">${role}</span>
@@ -1988,7 +2012,9 @@
 
                         if(currentChange < 0){
 
-                            return 3;
+                            // return 3;
+                            return 2;
+                            
                         }
 
                         return 1;
@@ -1999,7 +2025,8 @@
 
                         if(currentChange > 0){
 
-                            return 2;
+                            // return 2;
+                            return 1;
                         }
 
                         return 0;
@@ -2065,6 +2092,45 @@
             //         });
             //     });
             // }
+            function updateSpecialRelations(){
+
+                let alive = getAlive();
+
+                alive.forEach(a=>{
+
+                    alive.forEach(b=>{
+
+                        if(a === b) return;
+
+                        let rel = relation[a][b];
+
+                        // 🤝 BESTIE
+                        if(rel >= 65){
+
+                            specialRelations[a][b] = "bestie";
+                        }
+
+                        // 💢 RIVAL
+                        else if(rel <= -45){
+
+                            specialRelations[a][b] = "rival";
+                        }
+
+                        // 🫶 DEKAT
+                        else if(rel >= 35){
+
+                            specialRelations[a][b] = "close";
+                        }
+
+                        // reset
+                        else{
+
+                            specialRelations[a][b] = null;
+                        }
+                    });
+                });
+            }
+
             function applyRelationshipDecay(){
 
                 let alive = getAlive();
@@ -2207,6 +2273,104 @@
                 }
 
                 recalculateReputation();
+            }
+            async function applyRoleConsequences(role,target,type){
+
+                let alive = getAlive();
+                let totalReaction = 0;
+
+                for(let p of alive){
+
+                    if(p === role) continue;
+                    if(p === target) continue;
+
+                    let closeness =
+                    relation[p][target] || 0;
+
+                    // =====================
+                    // SAVE CONSEQUENCE
+                    // =====================
+
+                    if(type === "save"){
+
+                        // teman target suka role
+                        if(closeness >= 12){
+
+                            let buff =
+                            Math.floor(Math.random()*3)+2;
+
+                            relation[p][role] += buff;
+                            relation[role][p] += 1;
+                            totalReaction++;
+
+                            log(
+                                `❤️ ${p} menghargai keputusan ${role}`
+                            );
+
+                            // await delay(500);
+                        }
+
+                        // musuh target iri
+                        else if(closeness <= -12){
+
+                            relation[p][role] -= 2;
+                            totalReaction++;
+
+                            log(
+                                `😒 ${p} merasa keputusan ${role} tidak adil`
+                            );
+
+                            // await delay(500);
+                        }
+                    }
+
+                    // =====================
+                    // EXTRADISI CONSEQUENCE
+                    // =====================
+
+                    else if(type === "eliminate"){
+
+                        // teman korban marah
+                        if(closeness >= 12){
+
+                            let debuff =
+                            Math.floor(Math.random()*4)+2;
+
+                            relation[p][role] -= debuff;
+                            totalReaction++;
+
+                            log(
+                                `😡 ${p} kecewa dengan keputusan ${role}`
+                            );
+
+                            // await delay(500);
+                        }
+
+                        // musuh korban senang
+                        else if(closeness <= -12){
+
+                            relation[p][role] += 2;
+                            totalReaction++;
+
+                            log(
+                                `😏 ${p} diam-diam senang ${target} keluar`
+                            );
+
+                            // await delay(500);
+                        }
+                    }
+                }
+
+                if(totalReaction === 0){
+
+                    log(
+                        "😶 Penghuni lain masih memilih diam..."
+                    );
+
+                    // await delay(500);
+                }
+                updateSpecialRelations();
+                updatePlayers();
             }
 
             function startAmnestyWeek(){
@@ -2378,6 +2542,239 @@
 
                 return [...arr]
                 .sort(()=>Math.random()-0.5);
+            }
+
+            async function randomHouseEvent(){
+
+                let alive = getAlive();
+
+                if(alive.length < 4) return;
+
+                let roll = Math.random();
+
+                // =========================
+                // ⚡ DRAMA RUMAH
+                // =========================
+
+                if(roll < 0.33){
+
+                    let p1 =
+                    alive[Math.floor(Math.random()*alive.length)];
+
+                    let p2 =
+                    alive[Math.floor(Math.random()*alive.length)];
+
+                    while(p1 === p2){
+
+                        p2 =
+                        alive[Math.floor(Math.random()*alive.length)];
+                    }
+
+                    let damage =
+                    Math.floor(Math.random()*8) + 5;
+
+                    relation[p1][p2] -= damage;
+                    relation[p2][p1] -= damage;
+
+                    addReputation(p1,-2);
+                    addReputation(p2,-2);
+
+                    log("⚡ DRAMA RUMAH TERJADI!");
+                    await delay(700);
+
+                    log(
+                        `💥 ${p1} dan ${p2} terlibat konflik besar!`
+                    );
+
+                    await delay(700);
+
+                    log(
+                        `💔 Hubungan mereka memburuk (-${damage})`
+                    );
+                }
+
+                // =========================
+                // 🎉 PESTA RUMAH
+                // =========================
+
+                else if(roll < 0.66){
+
+                    log("🎉 Ada bintang tamu datang, dan mengadakan pesta dirumah karantina!!!");
+                    await delay(700);
+
+                    let totalBuff =
+                    Math.floor(Math.random()*4)+2;
+
+                    for(let i=0; i<totalBuff; i++){
+
+                        let p1 =
+                        alive[Math.floor(Math.random()*alive.length)];
+
+                        let p2 =
+                        alive[Math.floor(Math.random()*alive.length)];
+
+                        if(p1 === p2) continue;
+
+                        let bonus =
+                        Math.floor(Math.random()*5)+2;
+
+                        relation[p1][p2] += bonus;
+                        relation[p2][p1] += bonus;
+                        updateSpecialRelations();
+
+                        addReputation(p1,1);
+                        addReputation(p2,1);
+
+                        log(
+                            `❤️ ${p1} makin dekat dengan ${p2} (+${bonus})`
+                        );
+
+                        await delay(500);
+                    }
+                }
+
+                // =========================
+                // 🐍 ADU DOMBA
+                // =========================
+
+                else{
+
+                    let licikPlayers =
+                    alive.filter(
+                        p => traitsMap[p] === "Licik"
+                    );
+
+                    if(licikPlayers.length <= 0) return;
+
+                    let provoker =
+                    licikPlayers[
+                        Math.floor(Math.random()*licikPlayers.length)
+                    ];
+
+                    let target =
+                    alive[
+                        Math.floor(Math.random()*alive.length)
+                    ];
+
+                    while(target === provoker){
+
+                        target =
+                        alive[
+                            Math.floor(Math.random()*alive.length)
+                        ];
+                    }
+
+                    log(
+                        `🐍 ${provoker} mulai menghasut penghuni lain...`
+                    );
+
+                    await delay(700);
+
+                    let affected =
+                    alive.filter(
+                        p => p !== target &&
+                        p !== provoker
+                    );
+
+                    affected.forEach(p=>{
+
+                        let hate =
+                        Math.floor(Math.random()*5)+2;
+
+                        relation[p][target] -= hate;
+                    });
+
+                    addReputation(target,-3);
+
+                    log(
+                        `🗣️ Nama ${target} mulai menjadi bahan gosip rumah`
+                    );
+
+                    await delay(700);
+
+                    log(
+                        `📉 Reputasi ${target} menurun`
+                    );
+                }
+                updateSpecialRelations();
+
+                updatePlayers();
+
+                saveGame();
+            }
+
+            async function autoConflictEvent(){
+
+                let alive = getAlive();
+
+                if(alive.length < 4) return;
+
+                let pairs = [];
+
+                // cari pasangan relation buruk
+                alive.forEach(a=>{
+
+                    alive.forEach(b=>{
+
+                        if(a === b) return;
+
+                        let rel = relation[a][b];
+
+                        // relation sudah buruk
+                        if(rel <= -12){
+
+                            pairs.push([a,b,rel]);
+                        }
+                    });
+                });
+
+                if(pairs.length <= 0) return;
+
+                // random konflik
+                let picked =
+                pairs[
+                    Math.floor(Math.random()*pairs.length)
+                ];
+
+                let a = picked[0];
+                let b = picked[1];
+
+                log(`⚡ ${a} mulai kesal dengan ${b}`);
+                await delay(700);
+
+                let damage =
+                Math.floor(Math.random()*6)+3;
+
+                relation[a][b] -= damage;
+                relation[b][a] -= damage;
+
+                // emosional lebih brutal
+                if(
+                    traitsMap[a] === "Emosional" ||
+                    traitsMap[b] === "Emosional"
+                ){
+
+                    relation[a][b] -= 3;
+                    relation[b][a] -= 3;
+
+                    damage += 3;
+                }
+
+                log(
+                    `💥 ${a} dan ${b} terlibat adu mulut besar (-${damage})`
+                );
+
+                await delay(700);
+
+                addReputation(a,-2);
+                addReputation(b,-2);
+
+                log(
+                    `📉 Reputasi ${a} dan ${b} menurun`
+                );
+                updateSpecialRelations();
+
+                updatePlayers();
             }
 
             function renderDay(){
@@ -2649,8 +3046,24 @@
 
                     startAmnestyWeek();
                 }
-                // NPC sosial otomatis tiap hari
-                runNpcSocials();
+                
+                // hanya hari normal rumah
+                let nextWeekDay = weekDay + 1;
+
+                if(endgameMode){
+
+                    if(nextWeekDay > 2){
+                        nextWeekDay = 1;
+                    }
+
+                }else{
+
+                    if(nextWeekDay > 7){
+                        nextWeekDay = 1;
+                    }
+                }
+
+                
                 // polling amnesti berjalan
                 if(amnestyMode){
 
@@ -2782,6 +3195,38 @@
                 "Hari ke-" + previewDay +
                 " | Minggu ke-" + previewWeek +
                 " (Hari " + displayWeekDay + ")";
+
+                // let allowRandomEvent = !endgameMode && nextWeekDay !== 6;
+                // // if(allowRandomEvent){
+
+                // //     if(Math.random() < 0.45){
+
+                // //         await randomHouseEvent();
+                // //     }
+                // // }
+                // // if(allowRandomEvent){
+
+                // //     if(Math.random() < 0.30){
+
+                // //         await autoConflictEvent();
+                // //     }
+                // // }
+                // if(allowRandomEvent){
+
+                //     let roll = Math.random();
+
+                //     // 🎉 EVENT BESAR
+                //     if(roll < 0.45){
+
+                //         await randomHouseEvent();
+                //     }
+
+                //     // ⚡ KONFLIK OTOMATIS
+                //     else if(roll < 0.70){
+
+                //         await autoConflictEvent();
+                //     }
+                // }
 
                 // renderDay();
 
@@ -3105,6 +3550,7 @@
 
                     // hubungan perlahan memudar
                     applyRelationshipDecay();
+                    updateSpecialRelations();
 
 
                     // dayCount++;
@@ -3253,6 +3699,8 @@
                         }
 
                         await delay(DEBUG_DELAY);
+                        log("🎮👑 Games pemilihan BOSS sedang berlangsung... ");
+                        await delay(750);
 
                         // roles.bos = bosRank[0].name;
                         // let bosTop3 =
@@ -3384,6 +3832,8 @@
                         }
 
                         await delay(DEBUG_DELAY);
+                        log("🎮🧹 Games pemilihan ART sedang berlangsung... ");
+                        await delay(750);
 
                         // roles.art = artRank[0].name;
                         // let artBottom3 =
@@ -3529,6 +3979,10 @@
                             // &&
                             // activeRoles.imun !== p
                         );
+
+                        log("🎮🔑 Games pemilihan Pemegang Kunci berlangsung...");
+
+                        await delay(900);
 
                         
 
@@ -3720,6 +4174,8 @@
                         }
 
                         await delay(DEBUG_DELAY);
+                        log("🎮🛡️ Games pemilihan imun sedang berlangsung... ");
+                        await delay(750);
 
                         // roles.imun = imunRank[0].name;
                         // let imunBottom3 =
@@ -3823,10 +4279,14 @@
                                 let a = winningTeam[i];
                                 let b = winningTeam[j];
 
-                                relation[a][b] += 2;
-                                relation[b][a] += 2;
+                                let buff =Math.random() < 0.5 ? 1 : 2;
+
+                                relation[a][b] += buff;
+                                relation[b][a] += buff;
                             }
                         }
+                        updateSpecialRelations();
+                        // updatePlayers();
 
                         log(
                             "❤️ Relasi sesama anggota tim pemenang meningkat!"
@@ -3963,6 +4423,14 @@
                     log("☕ Hari santai di rumah, para penghuni menghabiskan waktu setelah malam ekstradisi.");
                 }
 
+                // NPC sosial otomatis tiap hari
+                runNpcSocials();
+                // if(Math.random() < 0.45){
+
+                //     await randomHouseEvent();
+                // }
+                updateSpecialRelations();
+
                 updatePlayers();
                 // dayCount++; // ⬅️ TAMBAH INI
 
@@ -3972,6 +4440,23 @@
                 dayCount++;
 
                 weekDay++;
+
+                
+                // if(allowRandomEvent){
+
+                //     if(Math.random() < 0.45){
+
+                //         await randomHouseEvent();
+                //     }
+                // }
+                // if(allowRandomEvent){
+
+                //     if(Math.random() < 0.30){
+
+                //         await autoConflictEvent();
+                //     }
+                // }
+                
                 
 
                 if(endgameMode){
@@ -3988,6 +4473,25 @@
                 }
                 
                 renderDay();
+
+                let allowRandomEvent = !endgameMode && weekDay !== 6;
+                if(allowRandomEvent){
+
+                    let roll = Math.random();
+
+                    // 🎉 EVENT BESAR
+                    if(roll < 0.45){
+
+                        await randomHouseEvent();
+                    }
+
+                    // ⚡ KONFLIK OTOMATIS
+                    else if(roll < 0.70){
+
+                        await autoConflictEvent();
+                    }
+                }
+
                 simulateHouseRelations();
                 dailySocialCount = 0;
                 saveGame();
@@ -4093,9 +4597,9 @@
                         ];
 
                         // base
-                        // let change =
-                        // Math.floor(Math.random()*7) - 3;
-                        let change = Math.floor(Math.random()*11)-5;
+                        let change =
+                        Math.floor(Math.random()*7) - 3;
+                        // let change = Math.floor(Math.random()*11)-5;
 
                         // trait player
                         change +=
@@ -4116,6 +4620,7 @@
                         // update relation
                         relation[playerName][target] += change;
                         relation[target][playerName] += change;
+                        updateSpecialRelations();
 
                         // =========================
                         // LOG PLAYER ONLY
@@ -4180,10 +4685,10 @@
 
                     if(p1 === p2) continue;
 
-                    // let npcChange =
-                    // Math.floor(Math.random()*7) - 3;
                     let npcChange =
-                    Math.floor(Math.random()*9)-4;
+                    Math.floor(Math.random()*7) - 3;
+                    // let npcChange =
+                    // Math.floor(Math.random()*9)-4;
 
                     npcChange +=
                     getSocialModifier(p1, npcChange);
@@ -4212,6 +4717,8 @@
                         addReputation(p2, -1);
                     }
                 }
+
+                updateSpecialRelations();
 
                 updatePlayers();
 
@@ -4268,6 +4775,8 @@
                     }
                 }
             }
+
+            
 
             // function simulateHouseRelations(){
 
@@ -4396,11 +4905,11 @@
 
                             let cls = "rel-neutral";
 
-                            if(val > 0){
+                            if(val >= 55){
                                 cls = "rel-positive";
                             }
 
-                            if(val < 0){
+                            if(val <= -25){
                                 cls = "rel-negative";
                             }
 
@@ -4448,15 +4957,15 @@
                 }
             }
 
-            function getRelationClass(value){
-                if(value >= 10) return "friend";
-                if(value <= -10) return "enemy";
-                return "neutral";
-            }
+            // function getRelationClass(value){
+            //     if(value >= 60) return "friend";
+            //     if(value <= -30) return "enemy";
+            //     return "neutral";
+            // }
 
             function getRelationBgClass(value){
-                if(value >= 10) return "friend-bg";
-                if(value <= -10) return "enemy-bg";
+                if(value >= 55) return "friend-bg";
+                if(value <= -25) return "enemy-bg";
                 return "neutral-bg";
             }
             function getRelationSafe(a,b){
@@ -4573,7 +5082,7 @@
 
                 // log("🎉 " + comeback + " kembali ke rumah karantina!");
 
-                await delay(DEBUG_DELAY);
+                await delay(750);
 
                 let comeback =
                 top3[Math.floor(Math.random()*top3.length)];
@@ -4889,7 +5398,7 @@
 
                     log("🗳️ " + voter + " vote masuk");
                     // await delay(1200);
-                    await delay(DEBUG_DELAY);
+                    await delay(750);
                 }
 
                 // PLAYER terakhir
@@ -4931,7 +5440,7 @@
                 if(kandidatMenang.length > 1){
 
                     log("⚖️ Vote seri, sistem memilih secara random...");
-                    await delay(DEBUG_DELAY);
+                    await delay(750);
 
                     winner =
                     kandidatMenang[
@@ -5170,7 +5679,7 @@
 
                     log("⏳ Penentuan Bottom 6...");
                 }
-                await delay(DEBUG_DELAY);
+                await delay(650);
 
                 let shuffled = [...kandidat].sort(()=>0.5-Math.random());
 
@@ -5219,7 +5728,7 @@
 
                     log("⏳ Penentuan Bottom 3...");
                 }
-                await delay(DEBUG_DELAY);
+                await delay(650);
 
                 // ambil bottom 3
                 let scores =
@@ -5355,6 +5864,11 @@
                     [...kandidatTukar]
                     .slice(0,3);
 
+                    await delay(DEBUG_DELAY);
+                    log("⏳ 🛡️ Pemegang imun " + roles.imun + " sedang memilih penghuni untuk ditukarkan posisinya...");
+                    await delay(750);
+                
+
                     //log("🛡️ Imun memilih: " + pilihan.join(", "));
                     log("🛡️ " +roles.imun +" memilih: " +pilihan.join(", "));
 
@@ -5362,6 +5876,8 @@
                     let belumBottom = pilihan.filter(p => !bottom3.includes(p));
 
                     let pengganti = null;
+
+                    await delay(1000);
 
                     if(sudahBottom.length === 2){
                         pengganti = belumBottom[0];
@@ -5385,6 +5901,7 @@
                     bottom3.push(pengganti);
 
                     log("🔁 Imun bertukar dengan: " + pengganti);
+                    await delay(1000);   
                     log("🔥 Bottom 3 baru: " + bottom3.join(", "));
                     // bottom3.forEach(p=>{
 
@@ -5449,7 +5966,7 @@
 
                 // NPC BOS
                 log("⏳ 👑 Bos " + roles.bos + " sedang memutuskan siapa yang diselamatkan...");
-                await delay(DEBUG_DELAY);
+                await delay(1000);
 
                 savedByBos =
                 bottom3.sort((a,b)=>
@@ -5457,8 +5974,13 @@
                 )[0];
 
                 log("👑 Bos " + roles.bos + " menyelamatkan: " + savedByBos);
-                relation[roles.bos][savedByBos] += 6;
-                relation[savedByBos][roles.bos] += 6;
+                // relation[roles.bos][savedByBos] += 6;
+                // relation[savedByBos][roles.bos] += 6;
+                let boost = Math.floor(Math.random()*3)+4;
+
+                relation[roles.bos][savedByBos] += boost;
+                relation[savedByBos][roles.bos] += boost;
+                updateSpecialRelations();
 
                 log(
                     "❤️ Relasi " +
@@ -5466,6 +5988,17 @@
                     " dan " +
                     savedByBos +
                     " meningkat!"
+                );
+                await delay(700);
+
+                log("👀 Penghuni mulai menilai keputusan Bos...");
+
+                await delay(700);
+
+                await applyRoleConsequences(
+                    roles.bos,
+                    savedByBos,
+                    "save"
                 );
 
                 let sisa = bottom3.filter(p=>p !== savedByBos);
@@ -5519,7 +6052,7 @@
                 )[0];
 
                 log("⏳ 🔑 Pemegang Kunci " +roles.kunci +" sedang memutuskan siapa yang diselamatkan...");
-                await delay(DEBUG_DELAY);
+                await delay(1000);
 
                 log("🔑 Pemegang Kunci " +roles.kunci +" menyelamatkan: " + savedByKey);
 
@@ -5533,6 +6066,7 @@
                     playerEverEliminated = true;
                 }
                 eliminatedOrder.unshift(eliminated);
+                updateSpecialRelations();
                 updatePlayers();
 
 
@@ -5542,6 +6076,17 @@
                     endgameMode = true;
 
                 }
+                await delay(700);
+
+                log("👀 Penghuni mulai bereaksi atas ekstradisi ini...");
+
+                await delay(700);
+
+                await applyRoleConsequences(
+                    roles.kunci,
+                    eliminated,
+                    "eliminate"
+                );
             }
             // function saveGame(){
             //     const data = {
@@ -5599,7 +6144,7 @@
                 // =========================
 
                 log("🔥 Babak 1 dimulai...");
-                await delay(DEBUG_DELAY);
+                await delay(700);
 
                 let shuffled =
                 [...alive].sort(()=>0.5-Math.random());
@@ -5613,14 +6158,14 @@
                     winner1
                 );
 
-                await delay(DEBUG_DELAY);
+                await delay(700);
 
                 // =========================
                 // BABAK TERAKHIR
                 // =========================
 
                 log("⚔️ Babak terakhir dimulai...");
-                await delay(DEBUG_DELAY);
+                await delay(700);
 
                 let remaining =
                 alive.filter(p=>p!==winner1);
@@ -5639,7 +6184,7 @@
                     winnersFinal.join(", ")
                 );
 
-                await delay(DEBUG_DELAY);
+                await delay(700);
 
                 let safePlayers =
                 [winner1, ...winnersFinal];
@@ -5666,13 +6211,29 @@
                 extraditionState.savedByBoss = name;
 
                 log("👑 Kamu menyelamatkan: " + name);
-                relation[playerName][name] += 6;
-                relation[name][playerName] += 6;
+                let boost2 = Math.floor(Math.random()*3)+4;
+
+                relation[playerName][name] += boost2;
+                relation[name][playerName] += boost2;
+                updateSpecialRelations();
+
+                // relation[playerName][name] += 6;
+                // relation[name][playerName] += 6;
 
                 log(
                     "❤️ Relasi kamu dan " +
                     name +
                     " meningkat!"
+                );
+
+                log("👀 Penghuni mulai menilai keputusan Bos...");
+
+                await delay(700);
+
+                await applyRoleConsequences(
+                    playerName,
+                    name,
+                    "save"
                 );
 
                 let sisa =
@@ -5722,7 +6283,7 @@
                 )[0];
 
                 log("⏳ 🔑 Pemegang Kunci " +roles.kunci +" sedang memutuskan siapa yang diselamatkan...");
-                await delay(DEBUG_DELAY);
+                await delay(1000);
                 log("🔑 Pemegang Kunci " +roles.kunci +" menyelamatkan: " + savedByKey);
 
                 let eliminated =
@@ -5738,6 +6299,17 @@
 
 
                 log("❌ Terekstradisi: " + eliminated);
+                await delay(700);
+
+                log("👀 Penghuni mulai bereaksi atas ekstradisi ini...");
+
+                await delay(700);
+
+                await applyRoleConsequences(
+                    roles.kunci,
+                    eliminated,
+                    "eliminate"
+                );
 
                 //updatePlayers();
 
@@ -5772,7 +6344,7 @@
                     html
                 );
             }
-            function playerEliminateByKey(name){
+            async function playerEliminateByKey(name){
 
                 pendingDecision = null;
 
@@ -5791,13 +6363,28 @@
                     p => p !== name
                 )[0];
 
-                relation[playerName][savedPerson] += 4;
-                relation[savedPerson][playerName] += 4;
+                let keyBoost2 =Math.floor(Math.random()*2)+3;
+
+                relation[playerName][savedPerson] += keyBoost2;
+                relation[savedPerson][playerName] += keyBoost2;
+                updateSpecialRelations();
+
+                // relation[playerName][savedPerson] += 4;
+                // relation[savedPerson][playerName] += 4;
 
                 log(
                     "❤️ Relasi kamu dan " +
                     savedPerson +
                     " meningkat!"
+                );
+                log("👀 Penghuni mulai bereaksi atas ekstradisi ini...");
+
+                await delay(700);
+
+                await applyRoleConsequences(
+                    playerName,
+                    name,
+                    "eliminate"
                 );
 
                 //updatePlayers();
@@ -6220,11 +6807,16 @@
                 )[0];
 
                 log("⏳ 👑 Bos " + roles.bos + " sedang memutuskan siapa yang diselamatkan...");
-                await delay(DEBUG_DELAY);
+                await delay(1000);
 
                 log("👑 Bos " + roles.bos + " menyelamatkan: " + savedByBos);
-                relation[roles.bos][savedByBos] += 6;
-                relation[savedByBos][roles.bos] += 6;
+                let boost = Math.floor(Math.random()*3)+4;
+
+                relation[roles.bos][savedByBos] += boost;
+                relation[savedByBos][roles.bos] += boost;
+                // relation[roles.bos][savedByBos] += 6;
+                // relation[savedByBos][roles.bos] += 6;
+                updateSpecialRelations();
 
                 log(
                     "❤️ Relasi " +
@@ -6232,6 +6824,17 @@
                     " dan " +
                     savedByBos +
                     " meningkat!"
+                );
+                await delay(700);
+
+                log("👀 Penghuni mulai menilai keputusan Bos...");
+
+                await delay(700);
+
+                await applyRoleConsequences(
+                    roles.bos,
+                    savedByBos,
+                    "save"
                 );
 
                 let sisa =
@@ -6291,11 +6894,16 @@
                 )[0];
 
                 log("⏳ 🔑 Pemegang Kunci " +roles.kunci +" sedang memutuskan siapa yang diselamatkan...");
-                await delay(DEBUG_DELAY);
+                await delay(1000);
                 log("🔑 Pemegang Kunci " + roles.kunci + " menyelamatkan: " + savedByKey);
 
-                relation[roles.kunci][savedByKey] += 4;
-                relation[savedByKey][roles.kunci] += 4;
+                // relation[roles.kunci][savedByKey] += 4;
+                // relation[savedByKey][roles.kunci] += 4;
+                let keyBoost =Math.floor(Math.random()*2)+3;
+
+                relation[roles.kunci][savedByKey] += keyBoost;
+                relation[savedByKey][roles.kunci] += keyBoost;
+                updateSpecialRelations();
 
                 log(
                     "❤️ Relasi " +
@@ -6319,6 +6927,17 @@
 
 
                 log("❌ Terekstradisi: " + eliminated);
+                await delay(700);
+
+                log("👀 Penghuni mulai bereaksi atas ekstradisi ini...");
+
+                await delay(700);
+
+                await applyRoleConsequences(
+                    roles.kunci,
+                    eliminated,
+                    "eliminate"
+                );
 
                 //updatePlayers();
 
@@ -6339,6 +6958,7 @@
                     players = parsed.players;
                     status = parsed.status;
                     relation = parsed.relation;
+                    specialRelations =parsed.specialRelations || {};
                     reputation = parsed.reputation || {};
                     traitsMap = parsed.traitsMap;
                     cityMap = parsed.cityMap || {};
@@ -6410,7 +7030,12 @@
                         "<p>💾 Game berhasil diload!</p>";
                     }
 
+                    updateSpecialRelations();
+
                     updatePlayers();
+
+
+                    renderDay();
 
                     const alive = getAlive();
 
@@ -6520,6 +7145,7 @@
                     players,
                     status,
                     relation,
+                    specialRelations,
                     reputation,
                     traitsMap,
                     cityMap,
