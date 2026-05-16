@@ -2560,8 +2560,8 @@
 
                         // syarat circle
                         if(
-                            relAB >= 65 &&
-                            relBA >= 65
+                            relAB >= 50 &&
+                            relBA >= 50
                         ){
 
                             let gangA =
@@ -3025,7 +3025,7 @@
                 relation[playerName][target] || 0;
 
                 // harus bestie
-                if(rel < 65){
+                if(rel <= 50){
 
                     let reject =
                     Math.floor(Math.random()*6)+5;
