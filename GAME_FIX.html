@@ -178,7 +178,7 @@
             opacity: 0;
             transition: opacity 0.3s ease;
         } */
-        .modal {
+        /* .modal {
             display: none;
             position: fixed;
             z-index: 999;
@@ -195,15 +195,41 @@
 
             opacity: 0;
             transition: opacity 0.3s ease;
+        } */
+        .modal {
+
+            display: none;
+
+            position: fixed;
+
+            inset: 0;
+
+            z-index: 999999;
+
+            width: 100%;
+
+            height: 100%;
+
+            background: rgba(0,0,0,0.7);
+
+            justify-content: center;
+
+            align-items: center;
+
+            opacity: 0;
+
+            transition: opacity 0.3s ease;
         }
 
         .modal.show {
-            display: block;
+            /* display: block; */
+            display: flex;
             opacity: 1;
         }
 
         .modal-content {
             position: relative;
+            z-index: 1000000;
             background: #1f2937;
             margin: 5% auto;
             padding: 20px;
@@ -1135,7 +1161,12 @@
 
                     <label>🎭 Trait</label>
 
-                    <select id="playerTrait" required>
+                    <select
+                    id="playerTrait"
+                    required
+                    onchange="updateTraitDescription()"
+                    >
+                        
 
                         <option value="">
                             Pilih Trait
@@ -1158,6 +1189,19 @@
                         </option>
 
                     </select>
+                    <div id="traitDescription"
+                    style="
+                    margin-top:10px;
+                    padding:12px;
+                    border-radius:12px;
+                    background:#111827;
+                    font-size:13px;
+                    line-height:1.5;
+                    color:#d1d5db;
+                    border:1px solid rgba(255,255,255,0.08);
+                    ">
+                        Pilih trait untuk melihat detail kemampuan.
+                    </div>
 
                 </div>
                 <div class="select-group">
@@ -1209,9 +1253,9 @@
 
                         <button id="nextBtn" onclick="nextDay()">➡️ Ganti Hari</button>
 
-                        <button id="socialBtn" onclick="socialize()">
+                        <!-- <button id="socialBtn" onclick="socialize()">
                             💬 Sosialisasi
-                        </button>
+                        </button> -->
 
                         <button onclick="lihatRelasi()">
                             ❤️ Skor Relasi
@@ -1239,6 +1283,26 @@
            
 
             </div>
+            <!-- 2026-05-15: rework sosialisasi,  dan modal sosialisasi peserta mobile  -->
+            <div id="socialModal" class="modal">
+
+                <div class="modal-content">
+
+                    <span
+                    class="close"
+                    onclick="closeAllSocialUI(event)">
+                        ✖
+                    </span>
+
+                    <h2 id="socialTitle">
+                        💬 Sosialisasi
+                    </h2>
+
+                    <div id="socialContent"></div>
+
+                </div>
+
+            </div>
             <div id="reportModal" class="modal">
 
                 <div class="modal-content">
@@ -1257,6 +1321,19 @@
                     <h2>📊 Report Penghuni</h2>
 
                     <div id="reportContent"></div>
+
+                </div>
+
+            </div>
+            <div id="npcRequestModal" class="modal">
+
+                <div class="modal-content">
+
+                    <h2 id="npcRequestTitle">
+                        💌 Permintaan Penghuni
+                    </h2>
+
+                    <div id="npcRequestContent"></div>
 
                 </div>
 
@@ -1312,9 +1389,11 @@
             };
             
 
-            playerName =localStorage.getItem("playerName") || "";
+            // playerName =localStorage.getItem("playerName") || "";
 
-            playerGender =localStorage.getItem("playerGender") || "";
+            // playerGender =localStorage.getItem("playerGender") || "";
+            playerName = localStorage.getItem("playerName") || "";
+            playerGender = localStorage.getItem("playerGender") || "";
 
             let traits = ["Strategis","Emosional","Santai","Licik"];
 
@@ -1330,10 +1409,14 @@
             ];
 
             let players = [];
+            let names = [];
             let status = {};
             let relation = {};
             let specialRelations = {};
             let gangs = [];
+            let dating = {};
+            let eliminatedMeta = {};
+            let socialTarget = null;
             let reputation = {};
             let amnestyPopularity = {};
             let rawPopularity = {};
@@ -1395,6 +1478,7 @@
                 savedByKey: null
             };
             let pendingDecision = null;
+            let npcRequest = null;
             //amnesti comeback random
             //let comebackDone = false;
             let comebackDone = localStorage.getItem("comebackDone") === "true";
@@ -1690,8 +1774,36 @@
                     }
                     if(reputation[n] == null){
 
-                        rawPopularity[n] = 5;
-                        reputation[n] = 0;
+                        let basePopularity =
+                        Math.floor(Math.random() * 21) + 40;
+
+                        // bonus trait
+                        switch(traitsMap[n]){
+
+                            case "Strategis":
+                                basePopularity += 10;
+                                break;
+
+                            case "Licik":
+                                basePopularity += 6;
+                                break;
+
+                            case "Santai":
+                                basePopularity += 2;
+                                break;
+
+                            case "Emosional":
+                                basePopularity -= 4;
+                                break;
+                        }
+
+                        // minimum safeguard
+                        if(basePopularity < 10){
+                            basePopularity = 10;
+                        }
+
+                        rawPopularity[n] = basePopularity;
+                        // reputation[n] = 0;
                     }
                     // ✅ TAMBAH INI
                     // stats[n] = {
@@ -1788,6 +1900,14 @@
                 //     updatePlayers();
                 //     renderDay();
                 // }
+                // recalculateReputation();
+                // hanya hitung ulang kalau belum ada save reputasi
+                if(
+                    Object.keys(reputation).length === 0
+                ){
+                    recalculateReputation();
+                }
+
 
                 updatePlayers();
                 renderDay();
@@ -1812,6 +1932,23 @@
             //     // sembunyikan semua dulu
             //     document.querySelector(".container").style.display = "none";
             // }
+            // if(hasSave){
+
+            //     try{
+
+            //         loadGame();
+
+            //     }catch(e){
+
+            //         localStorage.removeItem(SAVE_KEY);
+
+            //         document.querySelector(".container").style.display = "none";
+
+            //         document.getElementById("day").innerText =
+            //         "Perkenalan Rumah Karantina";
+            //     }
+
+            // }
             if(hasSave){
 
                 try{
@@ -1820,15 +1957,14 @@
 
                 }catch(e){
 
+                    console.error(e);
+
+                    alert(e);
+
                     localStorage.removeItem(SAVE_KEY);
-
-                    document.querySelector(".container").style.display = "none";
-
-                    document.getElementById("day").innerText =
-                    "Perkenalan Rumah Karantina";
                 }
-
-            }else{
+            }
+            else{
 
                 document.querySelector(".container").style.display = "none";
 
@@ -1919,7 +2055,11 @@
                     }
 
                     // let rel = p !== "KAMU" ? relation[p]["KAMU"] : 0;
-                    let rel = p !== playerName ? relation[p][playerName] : 0;
+                    // let rel = p !== playerName ? relation[p][playerName] : 0;
+                    let rel =
+                    p !== playerName
+                    ? (relation[p]?.[playerName] || 0)
+                    : 0;
 
                     let bgClass = "";
                     if(status[p] !== "KELUAR"){
@@ -1943,11 +2083,37 @@
                         ${p !== playerName
                         ? `❤️ Ke Kamu: ${rel}<br>`
                         : ""}
-                        ${gangs.find(g=>g.members.includes(p))
-                        ? `<br>👥 ${
-                            gangs.find(g=>g.members.includes(p)).name
-                        }<br>`
-                        : ""}
+
+                        ${
+                        status[p] !== "KELUAR"
+                        ? (
+                            gangs.find(g=>g.members.includes(p))
+                            ? `<br>👥 ${
+                                gangs.find(g=>g.members.includes(p)).name
+                            }<br>`
+                            : ""
+                        )
+                        : (
+                            eliminatedMeta[p]?.gang
+                            ? `<br>👥 ${
+                                eliminatedMeta[p].gang
+                            } yang terekstradisi<br>`
+                            : ""
+                        )
+                        }
+                        ${
+                        status[p] !== "KELUAR"
+                        ? (
+                            dating[p]
+                            ? `❤️ Pacar ${dating[p]}<br>`
+                            : ""
+                        )
+                        : (
+                            eliminatedMeta[p]?.dating
+                            ? `💔 Pacar ${eliminatedMeta[p].dating} yang terekstradisi<br>`
+                            : ""
+                        )
+                        }
                         ${p !== playerName
                         && specialRelations[p]
                         && specialRelations[p][playerName]
@@ -1965,6 +2131,33 @@
                         
                         
                         <span class="role">${role}</span>
+                        
+                        ${p !== playerName && status[p] !== "KELUAR"
+                        ? `
+                        <div style="
+                        margin-top:10px;
+                        display:flex;
+                        flex-wrap:wrap;
+                        gap:6px;
+                        ">
+
+                        <button
+                        onclick="openSocialModal('${p}')"
+                        ${status[playerName] === "KELUAR"
+                            ? "disabled"
+                            : ""
+                        }
+                        >
+                        ${
+                        status[playerName] === "KELUAR"
+                        ? "❌ Kamu Sudah Terekstradisi"
+                        : "💬 Sosialisasi"
+                        }
+                        </button>
+
+                        </div>
+                        `
+                        : ""}
                     </div>`;
                 });
 
@@ -2107,6 +2300,71 @@
                     default:
                         return "❓";
                 }
+            }
+            function updateTraitDescription(){
+
+                let trait =
+                document.getElementById("playerTrait").value;
+
+                let el =
+                document.getElementById("traitDescription");
+
+                let text = "";
+
+                switch(trait){
+
+                    case "Strategis":
+
+                        text = `
+                        🧠 <b>Strategis</b><br>
+                        ✔️ Mudah membangun aliansi<br>
+                        ✔️ Reputasi lebih stabil<br>
+                        ✔️ Lebih mudah jadi pemimpin<br>
+                        ❌ Tidak terlalu kuat dalam konflik emosional
+                        `;
+                        break;
+
+                    case "Licik":
+
+                        text = `
+                        🐍 <b>Licik</b><br>
+                        ✔️ Cepat membentuk koneksi sosial<br>
+                        ✔️ Manipulasi relasi lebih efektif<br>
+                        ✔️ Mudah membuat geng<br>
+                        ❌ Bisa diam-diam dibenci penghuni lain
+                        `;
+                        break;
+
+                    case "Santai":
+
+                        text = `
+                        😴 <b>Santai</b><br>
+                        ✔️ Jarang terlibat konflik besar<br>
+                        ✔️ Relasi lebih stabil<br>
+                        ✔️ Aman untuk bertahan lama<br>
+                        ❌ Sulit mendominasi permainan
+                        `;
+                        break;
+
+                    case "Emosional":
+
+                        text = `
+                        😡 <b>Emosional</b><br>
+                        ✔️ Hubungan bisa naik sangat cepat<br>
+                        ✔️ Drama besar bisa menguntungkan<br>
+                        ✔️ Mudah jadi pusat perhatian<br>
+                        ❌ Relasi mudah hancur<br>
+                        ❌ Konflik lebih sering terjadi
+                        `;
+                        break;
+
+                    default:
+
+                        text =
+                        "Pilih trait untuk melihat detail kemampuan.";
+                }
+
+                el.innerHTML = text;
             }
             function getSocialModifier(player, currentChange){
 
@@ -2252,40 +2510,114 @@
             }
             function updateGangs(){
 
-                gangs = [];
-
                 let alive = getAlive();
-                let used = [];
+
+                // =====================
+                // hapus member mati
+                // =====================
+
+                gangs.forEach(g=>{
+
+                    g.members =
+                    g.members.filter(
+                        m => alive.includes(m)
+                    );
+                });
+
+                // hapus geng sisa 1
+                gangs =
+                gangs.filter(g =>
+                    g.members.length >= 2
+                );
+
+                // =====================
+                // AUTO GENG NPC
+                // =====================
 
                 alive.forEach(a=>{
-
-                    if(used.includes(a)) return;
-
-                    let group = [a];
 
                     alive.forEach(b=>{
 
                         if(a === b) return;
-
+                        // ❌ jangan auto gang kalau melibatkan player
                         if(
-                            relation[a][b] >= 60 &&
-                            relation[b][a] >= 60
+                            a === playerName ||
+                            b === playerName
+                        ){
+                            return;
+                        }
+
+                        // jangan spam
+                        if(Math.random() > 0.15){
+                            return;
+                        }
+
+                        let relAB =
+                        relation[a][b] || 0;
+
+                        let relBA =
+                        relation[b][a] || 0;
+
+                        // syarat circle
+                        if(
+                            relAB >= 65 &&
+                            relBA >= 65
                         ){
 
-                            group.push(b);
+                            let gangA =
+                            gangs.find(g =>
+                                g.members.includes(a)
+                            );
+
+                            let gangB =
+                            gangs.find(g =>
+                                g.members.includes(b)
+                            );
+
+                            // belum punya geng
+                            if(!gangA && !gangB){
+
+                                let newGang = {
+
+                                    name:
+                                    "Circle " + a,
+
+                                    members:[a,b]
+                                };
+
+                                gangs.push(newGang);
+
+                                log(
+                                `👥 ${a} dan ${b} membentuk ${newGang.name}`
+                                );
+                            }
+
+                            // a punya geng
+                            else if(
+                                gangA &&
+                                !gangB &&
+                                gangA.members.length < 4
+                            ){
+
+                                gangA.members.push(b);
+
+                                log(
+                                `🤝 ${b} masuk ${gangA.name}`
+                                );
+                            }
                         }
                     });
-
-                    if(group.length >= 2){
-
-                        gangs.push({
-                            name: "Circle " + a,
-                            members: group
-                        });
-
-                        used.push(...group);
-                    }
                 });
+
+                // updatePlayers();
+            }
+
+            function getPartner(player){
+                return dating[player] || null;
+            }
+
+            function hasPartner(player){
+                return !!dating[player];
             }
 
             function applyRelationshipDecay(){
@@ -2430,6 +2762,46 @@
                 }
 
                 recalculateReputation();
+            }
+            function resetWeeklyReputation(){
+
+                let alive = getAlive();
+
+                alive.forEach(p=>{
+
+                    let basePopularity =
+                    Math.floor(Math.random() * 21) + 40;
+
+                    // efek trait
+                    switch(traitsMap[p]){
+
+                        case "Strategis":
+                            basePopularity += 10;
+                            break;
+
+                        case "Licik":
+                            basePopularity += 6;
+                            break;
+
+                        case "Santai":
+                            basePopularity += 2;
+                            break;
+
+                        case "Emosional":
+                            basePopularity -= 4;
+                            break;
+                    }
+
+                    // BONUS dari legacy minggu lalu
+                    basePopularity +=
+                    Math.floor((legacyReputation[p] || 0) * 0.3);
+
+                    rawPopularity[p] = basePopularity;
+                });
+
+                recalculateReputation();
+
+                // log("📺 Reputasi publik minggu baru telah direset!");
             }
             async function applyRoleConsequences(role,target,type){
 
@@ -2612,6 +2984,324 @@
             function getAlive(){
                 return players.filter(p=>status[p]!=="KELUAR");
             }
+            function removeDating(player){
+
+                let partner = dating[player];
+
+                if(partner){
+
+                    delete dating[player];
+                    delete dating[partner];
+
+                    log(`💔 ${player} dan ${partner} berpisah`);
+                }
+            }
+            function removePlayerFromGang(player){
+
+                gangs.forEach(g=>{
+
+                    g.members =
+                    g.members.filter(m=>m !== player);
+                });
+
+                // hapus geng kalau member sisa 1
+                gangs =
+                gangs.filter(g=>g.members.length >= 2);
+            }
+
+            function inviteToGang(target){
+                if(dailySocialCount >= 20){
+
+                    log(
+                    "❌ Tidak bisa membentuk geng, silahkan coba lagi besok"
+                    );
+
+                    closeAllSocialUI();
+
+                    return;
+                }
+
+                let rel =
+                relation[playerName][target] || 0;
+
+                // harus bestie
+                if(rel < 65){
+
+                    let reject =
+                    Math.floor(Math.random()*6)+5;
+
+                    relation[playerName][target] -= reject;
+                    relation[target][playerName] -= reject;
+
+                    log(
+                    `😒 ${target} menolak ajakan geng dari ${playerName} (-${reject})`
+                    );
+
+                    updateSpecialRelations();
+                    updatePlayers();
+                    saveGame();
+
+                    closeSocialModal();
+
+                    return;
+                }
+
+                let playerGang =
+                gangs.find(g=>g.members.includes(playerName));
+
+                let targetGang =
+                gangs.find(g=>g.members.includes(target));
+
+                // target sudah punya geng
+                if(targetGang){
+
+                    log(`⚠️ ${target} sudah punya circle lain`);
+
+                    closeSocialModal();
+
+                    return;
+                }
+
+                // belum punya geng → bikin baru
+                if(!playerGang){
+
+                    playerGang = {
+
+                        name: "Circle " + playerName,
+
+                        members: [playerName]
+                    };
+
+                    gangs.push(playerGang);
+                }
+
+                // max 4
+                if(playerGang.members.length >= 4){
+
+                    log("⚠️ Circle kamu sudah penuh");
+
+                    closeSocialModal();
+
+                    return;
+                }
+
+                // recruit
+                playerGang.members.push(target);
+                dailySocialCount++;
+
+                let bonus =
+                Math.floor(Math.random()*6)+4;
+
+                relation[playerName][target] += bonus;
+                relation[target][playerName] += bonus;
+
+                log(
+                `👥 ${target} resmi masuk ${playerGang.name}`
+                );
+
+                log(
+                `🤝 Hubungan kalian meningkat (+${bonus})`
+                );
+
+                updateSpecialRelations();
+                updatePlayers();
+                saveGame();
+
+                closeSocialModal();
+            }
+
+            function kickFromGang(target){
+
+                let playerGang =
+                gangs.find(g=>g.members.includes(playerName));
+
+                if(!playerGang){
+
+                    closeSocialModal();
+                    return;
+                }
+
+                playerGang.members =
+                playerGang.members.filter(
+                    m => m !== target
+                );
+
+                let damage =
+                Math.floor(Math.random()*16)+25;
+
+                relation[playerName][target] -= damage;
+                relation[target][playerName] -= damage;
+
+                log(
+                `💥 ${target} dikeluarkan dari ${playerGang.name}`
+                );
+
+                log(
+                `💔 Hubungan kalian memburuk (-${damage})`
+                );
+
+                // bubar kalau sisa 1
+                if(playerGang.members.length < 2){
+
+                    log(
+                    `👥 ${playerGang.name} bubar`
+                    );
+
+                    gangs =
+                    gangs.filter(g=>g !== playerGang);
+                }
+
+                updateSpecialRelations();
+                updatePlayers();
+                saveGame();
+
+                closeSocialModal();
+            }
+
+            function startDating(target){
+                if(dailySocialCount >= 20){
+
+                    log(
+                    "❌ Tidak bisa mengajak pacaran, silahkan coba lagi besok"
+                    );
+
+                    closeAllSocialUI();
+
+                    return;
+                }
+
+                // beda gender wajib
+                if(
+                    genderMap[playerName] === genderMap[target]
+                ){
+
+                    log("❌ Kamu tidak bisa pacaran dengan gender yang sama");
+
+                    closeSocialModal();
+
+                    return;
+                }
+
+                let rel =
+                relation[playerName][target] || 0;
+
+                // minimal dekat dulu
+                if(rel < 45){
+
+                    let reject =
+                    Math.floor(Math.random()*8)+5;
+
+                    relation[playerName][target] -= reject;
+                    relation[target][playerName] -= reject;
+
+                    log(
+                    `💔 ${target} menolak perasaan ${playerName} (-${reject})`
+                    );
+
+                    updatePlayers();
+                    saveGame();
+
+                    closeSocialModal();
+
+                    return;
+                }
+
+                // =====================
+                // putus kasar dulu
+                // =====================
+
+                let oldPartner =
+                dating[playerName];
+
+                if(oldPartner){
+
+                    delete dating[oldPartner];
+
+                    relation[playerName][oldPartner] -= 20;
+                    relation[oldPartner][playerName] -= 20;
+
+                    log(
+                    `💥 ${playerName} memutuskan ${oldPartner} demi ${target}`
+                    );
+                }
+
+                let targetOldPartner =
+                dating[target];
+
+                if(targetOldPartner){
+
+                    delete dating[targetOldPartner];
+
+                    relation[target][targetOldPartner] -= 20;
+                    relation[targetOldPartner][target] -= 20;
+
+                    log(
+                    `💥 ${target} meninggalkan ${targetOldPartner}`
+                    );
+                }
+
+                // reset lama
+                delete dating[playerName];
+                delete dating[target];
+
+                // pasangan baru
+                dating[playerName] = target;
+                dating[target] = playerName;
+                dailySocialCount++;
+
+                let bonus =
+                Math.floor(Math.random()*8)+8;
+
+                relation[playerName][target] += bonus;
+                relation[target][playerName] += bonus;
+
+                log(
+                `❤️ ${playerName} resmi pacaran dengan ${target}`
+                );
+
+                log(
+                `💕 Hubungan kalian meningkat (+${bonus})`
+                );
+
+                updateSpecialRelations();
+                updatePlayers();
+                saveGame();
+
+                closeSocialModal();
+            }
+
+            function breakUp(target){
+
+                if(dating[playerName] !== target){
+
+                    closeSocialModal();
+
+                    return;
+                }
+
+                delete dating[playerName];
+                delete dating[target];
+
+                let damage =
+                Math.floor(Math.random()*10)+8;
+
+                relation[playerName][target] -= damage;
+                relation[target][playerName] -= Math.floor(damage/2);
+
+                log(
+                `💔 ${playerName} dan ${target} resmi putus`
+                );
+
+                log(
+                `😢 Hubungan kalian menurun (-${damage})`
+                );
+
+                updateSpecialRelations();
+                updatePlayers();
+                saveGame();
+
+                closeSocialModal();
+            }
 
             function pickTop(list, lowest=false){
                 let arr = list.map(p=>[p,randomScore(p)]);
@@ -2752,8 +3442,10 @@
                     relation[p1][p2] -= damage;
                     relation[p2][p1] -= damage;
 
-                    addReputation(p1,-2);
-                    addReputation(p2,-2);
+                    // addReputation(p1,-2);
+                    // addReputation(p2,-2);
+                    addReputation(p1,-12);
+                    addReputation(p2,-12);
 
                     log("⚡ DRAMA RUMAH TERJADI!");
                     await delay(700);
@@ -2798,8 +3490,10 @@
                         relation[p2][p1] += bonus;
                         updateSpecialRelations();
 
-                        addReputation(p1,1);
-                        addReputation(p2,1);
+                        // addReputation(p1,1);
+                        // addReputation(p2,1);
+                        addReputation(p1,8);
+                        addReputation(p2,8);
 
                         log(
                             `❤️ ${p1} makin dekat dengan ${p2} (+${bonus})`
@@ -2860,7 +3554,8 @@
                         relation[p][target] -= hate;
                     });
 
-                    addReputation(target,-3);
+                    // addReputation(target,-3);
+                    addReputation(target,-15);
 
                     log(
                         `🗣️ Nama ${target} mulai menjadi bahan gosip rumah`
@@ -2944,8 +3639,10 @@
 
                 await delay(700);
 
-                addReputation(a,-2);
-                addReputation(b,-2);
+                // addReputation(a,-2);
+                // addReputation(b,-2);
+                addReputation(a,-10);
+                addReputation(b,-10);
 
                 log(
                     `📉 Reputasi ${a} dan ${b} menurun`
@@ -2953,6 +3650,227 @@
                 updateSpecialRelations();
 
                 updateGangs();
+
+                updatePlayers();
+            }
+            async function npcRelationshipAI(){
+
+                let alive = getAlive();
+                // ⚠️ masih ada popup request
+                if(npcRequest){
+                    return;
+                }
+
+                // =====================
+                // NPC PACARAN
+                // =====================
+
+                for(let a of alive){
+
+                    for(let b of alive){
+
+                        if(a === b) continue;
+
+                        // jangan ganggu player
+                        if(a === playerName) continue;
+                        if(b === playerName) continue;
+
+                        // beda gender
+                        if(genderMap[a] === genderMap[b]){
+                            continue;
+                        }
+
+                        let relAB =
+                        relation[a][b] || 0;
+
+                        let relBA =
+                        relation[b][a] || 0;
+                        // =====================
+                        // NPC INVITE PLAYER GANG
+                        // =====================
+
+                        if(
+                            b === playerName &&
+                            !gangs.find(g=>g.members.includes(playerName))
+                        ){
+
+                            let gangA =
+                            gangs.find(g=>g.members.includes(a));
+
+                            if(
+                                gangA &&
+                                relAB >= 75 &&
+                                Math.random() < 0.05
+                            ){
+
+                                // openNpcRequest({
+
+                                //     type:"gang",
+
+                                //     from:a,
+
+                                //     gang:gangA.name
+                                // });
+                                log(
+                                `👥 ${a} ingin mengajakmu masuk ${gangA.name}`
+                                );
+
+                                setTimeout(()=>{
+
+                                    openNpcRequest({
+
+                                        type:"gang",
+
+                                        from:a,
+
+                                        gang:gangA.name
+                                    });
+
+                                },1200);
+
+                                return;
+                            }
+                        }
+                        // =====================
+                        // NPC CONFESS
+                        // =====================
+
+                        let oppositeGender =
+                        genderMap[a] !== genderMap[b];
+
+                        if(
+                            b === playerName &&
+                            oppositeGender &&
+                            !dating[playerName] &&
+                            relAB >= 85 &&
+                            Math.random() < 0.03
+                        ){
+
+                            // openNpcRequest({
+
+                            //     type:"dating",
+
+                            //     from:a
+                            // });
+                            log(
+                            `💘 ${a} terlihat ingin menyatakan sesuatu padamu`
+                            );
+
+                            setTimeout(()=>{
+
+                                openNpcRequest({
+
+                                    type:"dating",
+
+                                    from:a
+                                });
+
+                            },1200);
+
+                            return;
+                        }
+                        // ======================
+                        // NPC PACARAN
+                        // ======================
+
+                        // let oppositeGender =
+                        // genderMap[a] !== genderMap[b];
+
+                        let alreadyDating =
+                        dating[a] || dating[b];
+
+                        if(
+                            oppositeGender &&
+                            !alreadyDating &&
+                            relAB >= 80 &&
+                            relBA >= 80 &&
+                            Math.random() < 0.08
+                        ){
+
+                            dating[a] = b;
+                            dating[b] = a;
+
+                            relation[a][b] += 10;
+                            relation[b][a] += 10;
+
+                            log(
+                                `💘 ${a} dan ${b} resmi pacaran`
+                            );
+                        }
+
+                        // syarat jadian
+                        if(
+                            relAB >= 58 &&
+                            relBA >= 58
+                        ){
+
+                            // random biar gak instant
+                            if(Math.random() > 0.08){
+                                continue;
+                            }
+
+                            // putusin pasangan lama
+                            // removeDating(a);
+                            // removeDating(b);
+                            if(dating[a]){
+                                removeDating(a);
+                            }
+
+                            if(dating[b]){
+                                removeDating(b);
+                            }
+
+                            dating[a] = b;
+                            dating[b] = a;
+
+                            log(
+                            `❤️ ${a} dan ${b} mulai resmi pacaran`
+                            );
+                            return;
+
+                            let buff =
+                            Math.floor(Math.random()*5)+4;
+
+                            relation[a][b] += buff;
+                            relation[b][a] += buff;
+                        }
+                    }
+                }
+
+                // =====================
+                // NPC PUTUS
+                // =====================
+
+                alive.forEach(a=>{
+
+                    let partner =
+                    dating[a];
+
+                    if(!partner) return;
+
+                    // hanya proses 1x
+                    if(a > partner) return;
+
+                    let rel =
+                    relation[a][partner];
+
+                    // hubungan toxic
+                    if(rel <= 10){
+
+                        if(Math.random() < 0.25){
+
+                            delete dating[a];
+                            delete dating[partner];
+
+                            log(
+                            `💔 ${a} dan ${partner} resmi putus`
+                            );
+
+                            relation[a][partner] -= 8;
+                            relation[partner][a] -= 8;
+                        }
+                    }
+                });
 
                 updatePlayers();
             }
@@ -3154,6 +4072,352 @@
             //     .style.display = "none";
             // }
 
+            function openSocialModal(target){
+
+                socialTarget = target;
+
+                let modal =
+                document.getElementById("socialModal");
+
+                document.getElementById("socialTitle")
+                .innerText =
+                "💬 Sosialisasi dengan " + target;
+
+                let content = "";
+
+                // =========================
+                // SOSIALISASI BIASA
+                // =========================
+
+                // content += `
+                // <button
+                // onclick="socializeWithTarget('${target}')">
+                //     💬 Sosialisasi Biasa
+                // </button>
+                // `;
+
+                // // =========================
+                // // GENG
+                // // =========================
+
+                // let playerGang =
+                // gangs.find(g=>g.members.includes(playerName));
+
+                // let targetGang =
+                // gangs.find(g=>g.members.includes(target));
+
+                // let isSameGang =
+                // playerGang &&
+                // targetGang &&
+                // playerGang === targetGang;
+
+                // let rel =
+                // relation[playerName][target];
+
+                // // bentuk geng
+                // if(
+                //     rel >= 80 &&
+                //     !isSameGang
+                // ){
+
+                //     content += `
+                //     <button
+                //     onclick="inviteToGang('${target}')">
+                //         👥 Bentuk Geng
+                //     </button>
+                //     `;
+                // }
+
+                // // keluarkan dari geng
+                // if(isSameGang){
+
+                //     content += `
+                //     <button
+                //     onclick="kickFromGang('${target}')">
+                //         ❌ Keluarkan dari Geng
+                //     </button>
+                //     `;
+                // }
+                // let sameGang =
+                // gangs.find(g=>g.members.includes(playerName))
+                // ===
+                // gangs.find(g=>g.members.includes(target));
+                let playerGang =
+                gangs.find(g=>g.members.includes(playerName));
+
+                let targetGang =
+                gangs.find(g=>g.members.includes(target));
+
+                let sameGang =
+                playerGang &&
+                targetGang &&
+                playerGang === targetGang;
+
+                // let targetGang =
+                // gangs.find(g=>g.members.includes(target));
+
+                content += `
+
+                <button onclick="socializeWithTarget('${target}')">
+                💬 Sosialisasi Biasa
+                </button>
+
+                ${
+                !sameGang
+                ? `
+                <button onclick="inviteToGang('${target}')">
+                👥 Bentuk Geng
+                </button>
+                `
+                : ""
+                }
+
+                ${
+                targetGang
+                && sameGang
+                && target !== playerName
+                ? `
+                <button onclick="kickFromGang('${target}')">
+                ❌ Keluarkan dari Geng
+                </button>
+                `
+                : ""
+                }
+                `;
+
+                // =========================
+                // PACARAN
+                // =========================
+
+                let oppositeGender =
+                genderMap[playerName] !== genderMap[target];
+
+                let alreadyDating =
+                dating[playerName] === target;
+
+                if(oppositeGender){
+
+                    if(!alreadyDating){
+
+                        content += `
+                        <button
+                        onclick="startDating('${target}')">
+                            ❤️ Ajak Pacaran
+                        </button>
+                        `;
+                    }
+
+                    else{
+
+                        content += `
+                        <button
+                        onclick="breakUp('${target}')">
+                            💔 Putus
+                        </button>
+                        `;
+                    }
+                }
+
+                document.getElementById("socialContent")
+                .innerHTML = content;
+
+                modal.style.display = "flex";
+
+                setTimeout(()=>{
+                    modal.classList.add("show");
+                },10);
+            }
+            function openNpcRequest(data){
+                // ⚠️ jangan buka popup baru kalau masih ada request
+                if(npcRequest) return;
+
+                npcRequest = data;
+
+                let modal =
+                document.getElementById("npcRequestModal");
+
+                let content =
+                document.getElementById("npcRequestContent");
+
+                // =====================
+                // GENG INVITE
+                // =====================
+
+                if(data.type === "gang"){
+
+                    content.innerHTML = `
+                    <p>
+                    👥 <b>${data.from}</b>
+                    ingin mengajakmu masuk
+                    <b>${data.gang}</b>
+                    </p>
+
+                    <button onclick="acceptNpcRequest()">
+                        ✅ Terima
+                    </button>
+
+                    <button onclick="rejectNpcRequest()">
+                        ❌ Tolak
+                    </button>
+                    `;
+                }
+
+                // =====================
+                // PACARAN
+                // =====================
+
+                else if(data.type === "dating"){
+
+                    content.innerHTML = `
+                    <p>
+                    💘 <b>${data.from}</b>
+                    menyatakan perasaannya padamu
+                    </p>
+
+                    <button onclick="acceptNpcRequest()">
+                        ❤️ Terima
+                    </button>
+
+                    <button onclick="rejectNpcRequest()">
+                        💔 Tolak
+                    </button>
+                    `;
+                }
+
+                modal.style.display = "flex";
+
+                setTimeout(()=>{
+                    modal.classList.add("show");
+                },10);
+            }
+
+            function acceptNpcRequest(){
+
+                if(!npcRequest) return;
+
+                // =====================
+                // GENG
+                // =====================
+
+                if(npcRequest.type === "gang"){
+
+                    let gang =
+                    gangs.find(g=>g.name === npcRequest.gang);
+
+                    if(gang){
+
+                        gang.members.push(playerName);
+
+                        relation[playerName][npcRequest.from] += 10;
+                        relation[npcRequest.from][playerName] += 10;
+
+                        log(
+                        `👥 Kamu resmi bergabung dengan ${gang.name}`
+                        );
+                    }
+                }
+
+                // =====================
+                // PACARAN
+                // =====================
+
+                else if(npcRequest.type === "dating"){
+
+                    dating[playerName] =
+                    npcRequest.from;
+
+                    dating[npcRequest.from] =
+                    playerName;
+
+                    relation[playerName][npcRequest.from] += 12;
+                    relation[npcRequest.from][playerName] += 12;
+
+                    log(
+                    `❤️ Kamu resmi pacaran dengan ${npcRequest.from}`
+                    );
+                }
+
+                closeNpcRequest();
+
+                updatePlayers();
+
+                saveGame();
+            }
+
+            function rejectNpcRequest(){
+
+                if(!npcRequest) return;
+
+                relation[npcRequest.from][playerName] -= 12;
+
+                log(
+                `💔 Kamu menolak permintaan ${npcRequest.from}`
+                );
+
+                closeNpcRequest();
+
+                updatePlayers();
+
+                saveGame();
+            }
+
+            function closeNpcRequest(){
+
+                let modal =
+                document.getElementById("npcRequestModal");
+
+                modal.classList.remove("show");
+
+                setTimeout(()=>{
+
+                    modal.style.display = "none";
+
+                },250);
+
+                npcRequest = null;
+            }
+
+            // function closeSocialModal(){
+
+            //     let modal =
+            //     document.getElementById("socialModal");
+
+            //     modal.classList.remove("show");
+
+            //     setTimeout(()=>{
+            //         modal.style.display = "none";
+            //     },300);
+            // }
+            
+            function closeSocialModal(event){
+
+                if(
+                    event &&
+                    event.target.id !== "socialModal"
+                ){
+                    return;
+                }
+
+                let modal =
+                document.getElementById("socialModal");
+
+                modal.classList.remove("show");
+
+                setTimeout(()=>{
+                    modal.style.display = "none";
+                },300);
+            }
+            function closeAllSocialUI(){
+
+                closeSocialModal();
+
+                // mobile only
+                if(window.innerWidth <= 768){
+
+                    closePlayersModal();
+                }
+            }
+
             function closeReport(){
 
                 let modal =
@@ -3185,8 +4449,15 @@
                 let reportModal =
                 document.getElementById("reportModal");
 
+                let socialModal =
+                document.getElementById("socialModal");
+
                 if(e.target === reportModal){
                     closeReport();
+                }
+                if(e.target === socialModal){
+                    // closeSocialModal();
+                    closeAllSocialUI();
                 }
 
                 // ✅ relation modal boleh close
@@ -3204,6 +4475,7 @@
 
             // DAY SYSTEM
             async function nextDay(){
+                dailySocialCount = 0;
                 if(isDayProcessing) return;
                 if(pendingDecision) return;
 
@@ -3691,8 +4963,20 @@
                                 let runnerUp =
                                 finalists.find(p => p !== finalWinner);
 
-                                status[runnerUp] = "KELUAR";
+                                eliminatedMeta[runnerUp] = {
 
+                                    dating: dating[runnerUp] || null,
+
+                                    gang:
+                                    gangs.find(g=>g.members.includes(runnerUp))
+                                    ?.name || null
+                                };
+                                removeDating(runnerUp);
+                                removePlayerFromGang(runnerUp);
+
+
+                                status[runnerUp] = "KELUAR";
+                                
                                 eliminatedOrder.unshift(runnerUp);
 
                                 updatePlayers();
@@ -4592,13 +5876,15 @@
 
                 else if(!endgameMode && weekDay===7){
                     // reset reputasi perlahan tiap minggu
-                    players.forEach(p=>{
+                    // players.forEach(p=>{
 
-                        rawPopularity[p] =
-                        100 / getAlive().length;
-                    });
+                    //     rawPopularity[p] =
+                    //     100 / getAlive().length;
+                    // });
 
-                    recalculateReputation();
+                    
+                    resetWeeklyReputation();
+                    // recalculateReputation();
                     // log("📊 Polling reputasi rumah telah direset.");
                     log("☕ Hari santai di rumah, para penghuni menghabiskan waktu setelah malam ekstradisi.");
                 }
@@ -4609,16 +5895,37 @@
 
                 //     await randomHouseEvent();
                 // }
+                // NPC mulai pacaran / putus
+                await npcRelationshipAI();    
                 updateSpecialRelations();
-                updateGangs();
+                
 
-                updatePlayers();
+                  
+
                 // dayCount++; // ⬅️ TAMBAH INI
 
                 // ⬇️ pindahin ke bawah
                 // weekDay++;
                 // if(weekDay>7) weekDay=1;
                 dayCount++;
+
+                let allowRandomEvent = !endgameMode && weekDay !== 6;
+                if(allowRandomEvent){
+
+                    let roll = Math.random();
+
+                    // 🎉 EVENT BESAR
+                    if(roll < 0.45){
+
+                        await randomHouseEvent();
+                    }
+
+                    // ⚡ KONFLIK OTOMATIS
+                    else if(roll < 0.70){
+
+                        await autoConflictEvent();
+                    }
+                }
 
                 weekDay++;
 
@@ -4655,25 +5962,12 @@
                 
                 renderDay();
 
-                let allowRandomEvent = !endgameMode && weekDay !== 6;
-                if(allowRandomEvent){
-
-                    let roll = Math.random();
-
-                    // 🎉 EVENT BESAR
-                    if(roll < 0.45){
-
-                        await randomHouseEvent();
-                    }
-
-                    // ⚡ KONFLIK OTOMATIS
-                    else if(roll < 0.70){
-
-                        await autoConflictEvent();
-                    }
-                }
+                
+                
 
                 simulateHouseRelations();
+                updateGangs();
+                updatePlayers();
                 dailySocialCount = 0;
                 saveGame();
                 //isDayProcessing = false;
@@ -4749,6 +6043,94 @@
 
             //     saveGame();
             // }
+
+            async function socializeWithTarget(target){
+
+                // closeSocialModal();
+                closeAllSocialUI();
+
+                if(dailySocialCount >= 20){
+
+                    log("❌ Kamu sudah terlalu banyak bersosialisasi hari ini, silahkan bersosialisasi besok.");
+
+                    return;
+                }
+
+                // dailySocialCount++;
+
+                let change =
+                Math.floor(Math.random()*9)-4;
+
+                // bonus chemistry
+                if(
+                    traitsMap[playerName] === traitsMap[target]
+                ){
+                    change += 2;
+                }
+
+                // 👥 bonus sesama geng
+                let sameGang =
+                gangs.some(g =>
+                    g.members.includes(playerName)
+                    &&
+                    g.members.includes(target)
+                );
+                // ❤️ bonus pacaran
+                let isDating =
+                dating[playerName] === target;
+
+                if(isDating && change > 0){
+
+                    change += 6;
+                }
+
+                if(sameGang && change > 0){
+
+                    change += 4;
+                }
+
+                relation[playerName][target] += change;
+                relation[target][playerName] += Math.floor(change/2);
+
+                // =========================
+                // RESULT
+                // =========================
+
+                if(change >= 6){
+
+                    log(
+                        `💖 Kamu jadi sangat dekat dengan ${target} (+${change})`
+                    );
+                }
+
+                else if(change >= 1){
+
+                    log(
+                        `🤝 Kamu makin dekat dengan ${target} (+${change})`
+                    );
+                }
+
+                else if(change <= -6){
+
+                    log(
+                        `💥 Kamu bertengkar hebat dengan ${target} (${change})`
+                    );
+                }
+
+                else{
+
+                    log(
+                        `⚡ Kamu bersitegang dengan ${target} (${change})`
+                    );
+                }
+
+                updateSpecialRelations();
+                updatePlayers();
+                dailySocialCount++;
+
+                saveGame();
+            }
+
             //update new socialize
             function socialize(){
 
@@ -5827,48 +7209,66 @@
             //     socialBtn.innerText =
             //     "💬 Sosialisasi";
             // }
+            // function setGameButtonsDisabled(state){
+
+            //     setNextButtonDisabled(state);
+
+            //     let socialBtn =
+            //     document.getElementById("socialBtn");
+
+            //     // ❌ kalau player sudah keluar
+            //     if(status[playerName] === "KELUAR"){
+
+            //         socialBtn.disabled = true;
+
+            //         socialBtn.style.opacity = "0.5";
+
+            //         socialBtn.style.cursor = "not-allowed";
+
+            //         socialBtn.innerText =
+            //         "❌ Kamu Sudah Terekstradisi";
+
+            //         return;
+            //     }
+
+            //     // ⏳ kalau lagi processing
+            //     if(isDayProcessing || pendingDecision){
+
+            //         socialBtn.disabled = true;
+
+            //         socialBtn.style.opacity = "0.5";
+
+            //         socialBtn.style.cursor = "not-allowed";
+
+            //     }else{
+
+            //         socialBtn.disabled = false;
+
+            //         socialBtn.style.opacity = "1";
+
+            //         socialBtn.style.cursor = "pointer";
+            //     }
+
+            //     socialBtn.innerText =
+            //     "💬 Sosialisasi";
+            // }
             function setGameButtonsDisabled(state){
 
-                setNextButtonDisabled(state);
+                const nextBtn =
+                document.getElementById("nextBtn");
 
-                let socialBtn =
+                if(nextBtn){
+
+                    nextBtn.disabled = state;
+                }
+
+                const socialBtn =
                 document.getElementById("socialBtn");
 
-                // ❌ kalau player sudah keluar
-                if(status[playerName] === "KELUAR"){
+                if(socialBtn){
 
-                    socialBtn.disabled = true;
-
-                    socialBtn.style.opacity = "0.5";
-
-                    socialBtn.style.cursor = "not-allowed";
-
-                    socialBtn.innerText =
-                    "❌ Kamu Sudah Terekstradisi";
-
-                    return;
+                    socialBtn.disabled = state;
                 }
-
-                // ⏳ kalau lagi processing
-                if(isDayProcessing || pendingDecision){
-
-                    socialBtn.disabled = true;
-
-                    socialBtn.style.opacity = "0.5";
-
-                    socialBtn.style.cursor = "not-allowed";
-
-                }else{
-
-                    socialBtn.disabled = false;
-
-                    socialBtn.style.opacity = "1";
-
-                    socialBtn.style.cursor = "pointer";
-                }
-
-                socialBtn.innerText =
-                "💬 Sosialisasi";
             }
 
             function setNextButtonDisabled(state){
@@ -6323,8 +7723,19 @@
                 // ❌ yang tersisa dieliminasi
                 let eliminated =
                 sisa.find(p=>p !== savedByKey);
+                eliminatedMeta[eliminated] = {
+
+                    dating: dating[eliminated] || null,
+
+                    gang:
+                    gangs.find(g=>g.members.includes(eliminated))
+                    ?.name || null
+                };
+                removeDating(eliminated);
+                removePlayerFromGang(eliminated);
 
                 status[eliminated] = "KELUAR";
+                
                 if(eliminated === playerName){
 
                     playerEverEliminated = true;
@@ -6456,9 +7867,20 @@
 
                 let eliminated =
                 alive.filter(p=>!safePlayers.includes(p))[0];
+                eliminatedMeta[eliminated] = {
+
+                    dating: dating[eliminated] || null,
+
+                    gang:
+                    gangs.find(g=>g.members.includes(eliminated))
+                    ?.name || null
+                };
+                removeDating(eliminated);
+                removePlayerFromGang(eliminated);
+
 
                 status[eliminated] = "KELUAR";
-
+                
                 eliminatedOrder.unshift(eliminated);
 
                 log("❌ Yang tereliminasi = " + eliminated);
@@ -6554,7 +7976,19 @@
                 let eliminated =
                 sisa.find(p=>p!==savedByKey);
 
+                eliminatedMeta[eliminated] = {
+
+                    dating: dating[eliminated] || null,
+
+                    gang:
+                    gangs.find(g=>g.members.includes(eliminated))
+                    ?.name || null
+                };
+                removeDating(eliminated);
+                removePlayerFromGang(eliminated);
+
                 status[eliminated] = "KELUAR";
+                
                 if(eliminated === playerName){
 
                     playerEverEliminated = true;
@@ -6617,7 +8051,20 @@
 
                 closeDecisionModal();
 
+                eliminatedMeta[name] = {
+
+                    dating: dating[name] || null,
+
+                    gang:
+                    gangs.find(g=>g.members.includes(name))
+                    ?.name || null
+                };
+
+                removeDating(name);
+                removePlayerFromGang(name);
+
                 status[name] = "KELUAR";
+                
                 eliminatedOrder.unshift(name);
                 updatePlayers();
 
@@ -6910,7 +8357,19 @@
                         )
                     ];
 
+                    eliminatedMeta[eliminated] = {
+
+                        dating: dating[eliminated] || null,
+
+                        gang:
+                        gangs.find(g=>g.members.includes(eliminated))
+                        ?.name || null
+                    };
+                    removeDating(eliminated);
+                    removePlayerFromGang(eliminated);
+
                     status[eliminated] = "KELUAR";
+                    
 
                     if(eliminated === playerName){
 
@@ -7181,7 +8640,20 @@
                 let eliminated =
                 sisa.find(p=>p!==savedByKey);
 
+                eliminatedMeta[eliminated] = {
+
+                    dating: dating[eliminated] || null,
+
+                    gang:
+                    gangs.find(g=>g.members.includes(eliminated))
+                    ?.name || null
+                };
+
+                removeDating(eliminated);
+                removePlayerFromGang(eliminated);
+
                 status[eliminated] = "KELUAR";
+               
                 if(eliminated === playerName){
 
                     playerEverEliminated = true;
@@ -7224,11 +8696,17 @@
                     status = parsed.status;
                     relation = parsed.relation;
                     gangs = parsed.gangs || [];
+                    dating = parsed.dating || {};
+                    // dailySocialCount = parsed.dailySocialCount || 0;
+                    dailySocialCount = parsed.dailySocialCount ?? 0;
                     specialRelations =parsed.specialRelations || {};
+                    rawPopularity = parsed.rawPopularity || {};
                     reputation = parsed.reputation || {};
+                    legacyReputation = parsed.legacyReputation || {};
                     traitsMap = parsed.traitsMap;
                     cityMap = parsed.cityMap || {};
                     playerGender = parsed.playerGender || "";
+                    playerEverEliminated = parsed.playerEverEliminated || false;
                     eliminatedOrder = parsed.eliminatedOrder || [];
                     amnesters = parsed.amnesters || [];
                     amnestyMode =
@@ -7310,23 +8788,24 @@
                     // =========================
                     // PLAYER SUDAH KELUAR
                     // =========================
-                    if(
-                        status[playerName] === "KELUAR" ||
-                        playerEverEliminated
-                    ){
+                    // if(
+                    //     status[playerName] === "KELUAR" ||
+                    //     playerEverEliminated
+                    // ){
 
-                        const socialBtn =
-                        document.getElementById("socialBtn");
+                    //     // const socialBtn =
+                    //     // document.getElementById("socialBtn");
 
-                        socialBtn.disabled = true;
+                    //     // socialBtn.disabled = true;
 
-                        socialBtn.style.opacity = "0.5";
+                    //     // socialBtn.style.opacity = "0.5";
 
-                        socialBtn.style.cursor = "not-allowed";
+                    //     // socialBtn.style.cursor = "not-allowed";
 
-                        socialBtn.innerHTML =
-                        "❌ Kamu Sudah Terekstradisi";
-                    }
+                    //     // socialBtn.innerHTML =
+                    //     // "❌ Kamu Sudah Terekstradisi";
+                    //     updatePlayers();
+                    // }
 
                     // =========================
                     // SUDAH ADA PEMENANG
@@ -7373,7 +8852,7 @@
                             setGameButtonsDisabled(true);
 
                             nextBtn.disabled = true;
-                            document.getElementById( "socialBtn").disabled = true;
+                            // document.getElementById( "socialBtn").disabled = true;
                         }
                     }
                     // TARUH DI SINI
@@ -7413,9 +8892,14 @@
                     players,
                     status,
                     relation,
+                    playerEverEliminated,
                     specialRelations,
                     gangs,
+                    dating,
+                    dailySocialCount,
+                    rawPopularity,
                     reputation,
+                    legacyReputation,
                     traitsMap,
                     cityMap,
                     roles,
