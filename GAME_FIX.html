@@ -235,13 +235,41 @@
         }
 
         /* CARD RELATION BACKGROUND */
-        .friend-bg {
+        /* ⭐ BESTIE */
+        .bestie-bg{
+
+            background: linear-gradient(
+                135deg,
+                #312e81,
+                #4c1d95
+            );
+
+            border: 1px solid #a855f7;
+
+            box-shadow:
+            0 0 18px rgba(168,85,247,0.35);
+        }
+        /* .friend-bg {
             background: #064e3b;
             border: 1px solid #22c55e;
             box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+        } */
+         /* 🤝 FRIEND */
+        .friend-bg{
+
+            background: linear-gradient(
+                135deg,
+                #064e3b,
+                #065f46
+            );
+
+            border: 1px solid #22c55e;
+
+            box-shadow:
+            0 0 14px rgba(34,197,94,0.28);
         }
 
-        .enemy-bg {
+        /* .enemy-bg {
             background: #450a0a;
             border: 1px solid #ef4444;
             box-shadow: 0 4px 12px rgba(0,0,0,0.25);
@@ -250,6 +278,43 @@
         .neutral-bg {
             background: #1f2937;
             box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+        } */
+         /* 💢 ENEMY */
+        .enemy-bg{
+
+            background: linear-gradient(
+                135deg,
+                #450a0a,
+                #7f1d1d
+            );
+
+            border: 1px solid #ef4444;
+
+            box-shadow:
+            0 0 14px rgba(239,68,68,0.28);
+        }
+
+        /* ☠️ RIVAL */
+        .rival-bg{
+
+            background: linear-gradient(
+                135deg,
+                #3f0000,
+                #1f0000
+            );
+
+            border: 1px solid #dc2626;
+
+            box-shadow:
+            0 0 20px rgba(220,38,38,0.45);
+        }
+
+        /* 😐 NEUTRAL */
+        .neutral-bg{
+
+            background: #1f2937;
+
+            border: 1px solid rgba(255,255,255,0.05);
         }
         
 
@@ -899,7 +964,7 @@
             font-size:14px;
         }
 
-        .rel-positive{
+        /* .rel-positive{
             color:#4ade80;
             font-weight:bold;
         }
@@ -911,6 +976,55 @@
 
         .rel-neutral{
             color:#d1d5db;
+        } */
+         /* ⭐ BESTIE */
+        .rel-bestie{
+
+            color:#c084fc;
+
+            font-weight:bold;
+            text-shadow:0 0 8px rgba(192,132,252,.5);
+        }
+
+        /* 🤝 FRIEND */
+        .rel-friend{
+
+            color:#4ade80;
+
+            font-weight:bold;
+            text-shadow:0 0 8px rgba(74,222,128,.35);
+        }
+
+        /* 💢 ENEMY */
+        .rel-enemy{
+
+            color:#f87171;
+
+            font-weight:bold;
+        }
+
+        /* ☠️ RIVAL */
+        .rel-rival{
+
+            color:#ef4444;
+
+            font-weight:bold;
+            text-shadow:0 0 8px rgba(239,68,68,.4);
+        }
+
+        /* 😐 NEUTRAL */
+        .rel-neutral{
+
+            color:#d1d5db;
+        }
+
+        .relation-item span small{
+
+            margin-left:6px;
+
+            font-size:12px;
+
+            opacity:0.9;
         }
 
         .modal-overlay.closing{
@@ -1219,6 +1333,7 @@
             let status = {};
             let relation = {};
             let specialRelations = {};
+            let gangs = [];
             let reputation = {};
             let amnestyPopularity = {};
             let rawPopularity = {};
@@ -1828,6 +1943,11 @@
                         ${p !== playerName
                         ? `❤️ Ke Kamu: ${rel}<br>`
                         : ""}
+                        ${gangs.find(g=>g.members.includes(p))
+                        ? `<br>👥 ${
+                            gangs.find(g=>g.members.includes(p)).name
+                        }<br>`
+                        : ""}
                         ${p !== playerName
                         && specialRelations[p]
                         && specialRelations[p][playerName]
@@ -2130,6 +2250,43 @@
                     });
                 });
             }
+            function updateGangs(){
+
+                gangs = [];
+
+                let alive = getAlive();
+                let used = [];
+
+                alive.forEach(a=>{
+
+                    if(used.includes(a)) return;
+
+                    let group = [a];
+
+                    alive.forEach(b=>{
+
+                        if(a === b) return;
+
+                        if(
+                            relation[a][b] >= 60 &&
+                            relation[b][a] >= 60
+                        ){
+
+                            group.push(b);
+                        }
+                    });
+
+                    if(group.length >= 2){
+
+                        gangs.push({
+                            name: "Circle " + a,
+                            members: group
+                        });
+
+                        used.push(...group);
+                    }
+                });
+            }
 
             function applyRelationshipDecay(){
 
@@ -2287,6 +2444,13 @@
                     let closeness =
                     relation[p][target] || 0;
 
+                    // 👥 cek apakah satu geng
+                    let sameGang =
+                    gangs.some(g =>
+                        g.members.includes(p) &&
+                        g.members.includes(target)
+                    );
+
                     // =====================
                     // SAVE CONSEQUENCE
                     // =====================
@@ -2330,18 +2494,29 @@
 
                     else if(type === "eliminate"){
 
-                        // teman korban marah
-                        if(closeness >= 12){
+                        // teman korban marah dan satu geng akan sangat marah
+                        if(closeness >= 12 || sameGang){
 
                             let debuff =
                             Math.floor(Math.random()*4)+2;
 
+                            // 👥 member geng lebih sakit hati
+                            if(sameGang){
+                                debuff += 4;
+                            }
+
                             relation[p][role] -= debuff;
                             totalReaction++;
 
-                            log(
-                                `😡 ${p} kecewa dengan keputusan ${role}`
-                            );
+                            if(sameGang){
+                                log(
+                                    `👥😡 ${p} marah besar karena member gengnya (${target}) diekstradisi!`
+                                );
+                            }else{
+                                log(
+                                    `😡 ${p} kecewa dengan keputusan ${role}`
+                                );
+                            }
 
                             // await delay(500);
                         }
@@ -2370,6 +2545,7 @@
                     // await delay(500);
                 }
                 updateSpecialRelations();
+                updateGangs();
                 updatePlayers();
             }
 
@@ -2698,6 +2874,8 @@
                 }
                 updateSpecialRelations();
 
+                updateGangs();
+
                 updatePlayers();
 
                 saveGame();
@@ -2773,6 +2951,8 @@
                     `📉 Reputasi ${a} dan ${b} menurun`
                 );
                 updateSpecialRelations();
+
+                updateGangs();
 
                 updatePlayers();
             }
@@ -4430,6 +4610,7 @@
                 //     await randomHouseEvent();
                 // }
                 updateSpecialRelations();
+                updateGangs();
 
                 updatePlayers();
                 // dayCount++; // ⬅️ TAMBAH INI
@@ -4720,6 +4901,8 @@
 
                 updateSpecialRelations();
 
+                updateGangs();
+
                 updatePlayers();
 
                 saveGame();
@@ -4903,20 +5086,76 @@
 
                             let val = relation[p1][p2];
 
+                            // let cls = "rel-neutral";
+
+                            // if(val >= 55){
+                            //     cls = "rel-positive";
+                            // }
+
+                            // if(val <= -25){
+                            //     cls = "rel-negative";
+                            // }
                             let cls = "rel-neutral";
 
-                            if(val >= 55){
-                                cls = "rel-positive";
+                            // 🤝 FRIEND
+                            if(val >= 60){
+
+                                cls = "rel-friend";
                             }
 
-                            if(val <= -25){
-                                cls = "rel-negative";
+                            // 💢 ENEMY
+                            if(val <= -20){
+
+                                cls = "rel-enemy";
+                            }
+
+                            // ⭐ BESTIE
+                            if(val >= 80){
+
+                                cls = "rel-bestie";
+                            }
+
+                            // ☠️ RIVAL
+                            if(val <= -45){
+
+                                cls = "rel-rival";
+                            }
+                            
+                            let specialText = "";
+
+                            let special = specialRelations[p1][p2];
+
+                            if(special === "bestie"){
+
+                                specialText = `
+                                <span class="rel-bestie">
+                                    (🧑‍🤝‍🧑 bestie)
+                                </span>
+                                `;
+                            }
+
+                            else if(special === "close"){
+
+                                specialText = `
+                                <span class="rel-friend">
+                                    (🤝 dekat)
+                                </span>
+                                `;
+                            }
+
+                            else if(special === "rival"){
+
+                                specialText = `
+                                <span class="rel-rival">
+                                    (💢 rival)
+                                </span>
+                                `;
                             }
 
                             html += `
                             <div class="relation-item">
 
-                                <span>➡ ${p2}</span>
+                                <span>➡ ${p2}${specialText}</span>
 
                                 <span class="${cls}">
                                     ${val}
@@ -4964,8 +5203,33 @@
             // }
 
             function getRelationBgClass(value){
-                if(value >= 55) return "friend-bg";
-                if(value <= -25) return "enemy-bg";
+                // if(value >= 55) return "friend-bg";
+                // if(value <= -25) return "enemy-bg";
+                // return "neutral-bg";
+                // ⭐ BESTIE
+                if(value >= 80){
+
+                    return "bestie-bg";
+                }
+
+                // 🤝 FRIEND
+                if(value >= 60){
+
+                    return "friend-bg";
+                }
+
+                // ☠️ RIVAL
+                if(value <= -45){
+
+                    return "rival-bg";
+                }
+
+                // 💢 ENEMY
+                if(value <= -20){
+
+                    return "enemy-bg";
+                }
+
                 return "neutral-bg";
             }
             function getRelationSafe(a,b){
@@ -6067,6 +6331,7 @@
                 }
                 eliminatedOrder.unshift(eliminated);
                 updateSpecialRelations();
+                updateGangs();
                 updatePlayers();
 
 
@@ -6958,6 +7223,7 @@
                     players = parsed.players;
                     status = parsed.status;
                     relation = parsed.relation;
+                    gangs = parsed.gangs || [];
                     specialRelations =parsed.specialRelations || {};
                     reputation = parsed.reputation || {};
                     traitsMap = parsed.traitsMap;
@@ -7031,6 +7297,8 @@
                     }
 
                     updateSpecialRelations();
+
+                    updateGangs();
 
                     updatePlayers();
 
@@ -7146,6 +7414,7 @@
                     status,
                     relation,
                     specialRelations,
+                    gangs,
                     reputation,
                     traitsMap,
                     cityMap,
