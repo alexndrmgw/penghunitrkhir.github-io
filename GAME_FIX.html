@@ -1442,6 +1442,7 @@
             let specialRelations = {};
             let gangs = [];
             let dating = {};
+            let revengeTarget = {};
             let eliminatedMeta = {};
             let socialTarget = null;
             let reputation = {};
@@ -1491,7 +1492,7 @@
             };
             let eliminatedOrder = [];
             let stats = {};
-            
+            let bossStreak = {};
             let amnesters = [];
             let amnestyMode = false;
             let amnestyStarted = false;
@@ -2742,6 +2743,67 @@
                     // );
                 }
             }
+            function processRevengeSystem(){
+
+                let alive = getAlive();
+
+                alive.forEach(p=>{
+
+                    if(!revengeTarget[p]) return;
+
+                    Object.keys(revengeTarget[p]).forEach(enemy=>{
+
+                        let revenge =
+                        revengeTarget[p][enemy];
+
+                        if(!revenge) return;
+
+                        // target sudah keluar
+                        if(status[enemy] === "KELUAR"){
+
+                            delete revengeTarget[p][enemy];
+                            return;
+                        }
+
+                        // dendam perlahan reda
+                        revenge.anger -= 1;
+
+                        // masih dendam
+                        if(revenge.anger > 0){
+
+                            relation[p][enemy] -= 2;
+
+                            // 😡 emosional lebih brutal
+                            if(
+                                traitsMap[p] === "Emosional"
+                            ){
+                                relation[p][enemy] -= 2;
+                            }
+
+                            // 😴 santai lebih cepat move on
+                            if(
+                                traitsMap[p] === "Santai"
+                            ){
+                                revenge.anger -= 1;
+                            }
+
+                            // log random
+                            if(Math.random() < 0.25){
+
+                                log(
+                                `🔥 ${p} masih menyimpan dendam kepada ${enemy}`
+                                );
+                            }
+                        }
+
+                        // dendam habis
+                        else{
+
+                            delete revengeTarget[p][enemy];
+                        }
+                    });
+                });
+            }
 
             function recalculateReputation(){
 
@@ -2969,7 +3031,30 @@
                                 debuff += 4;
                             }
 
+                            // 👑 Boss ditakuti → penghuni susah membenci
+                            if(
+                                activeRoles.bos === role &&
+                                bossStreak[role] >= 7
+                            ){
+                                debuff = Math.floor(debuff * 0.4);
+                            }
+
+
                             relation[p][role] -= debuff;
+                            // 🔥 simpan dendam ke PK
+                            if(!revengeTarget[p]){
+
+                                revengeTarget[p] = {};
+                            }
+
+                            revengeTarget[p][role] = {
+
+                                target: role,
+
+                                reason: target,
+
+                                anger: debuff * 2
+                            };
                             totalReaction++;
 
                             if(sameGang){
@@ -4141,7 +4226,10 @@
                         🛡️ Imun: ${stats[p].imun}x<br>
                         🧹 ART: ${stats[p].art}x<br>
                         🔥 Bottom 3: ${stats[p].bottom3}x<br>
-                        ⚠️ Bottom 2: ${stats[p].bottom2}x
+                        ⚠️ Bottom 2: ${stats[p].bottom2}x<br>
+                        🌟 Legacy: ${
+                            Math.floor(legacyReputation[p] || 0)
+                        }
                     </div>
                     `;
                 });
@@ -5286,10 +5374,50 @@
                         pickWeighted(bosTop3);
 
                         stats[roles.bos].bos++;
+                        // 👑 legacy reputation BOS
+                        legacyReputation[roles.bos] =
+                        (legacyReputation[roles.bos] || 0) + 4;
+
+                        // 👑 bonus publik langsung
+                        addReputation(roles.bos, 8);
+
+                        // 👑 bos veteran makin dikenal
+                        if(stats[roles.bos].bos >= 2){
+
+                            addReputation(
+                                roles.bos,
+                                stats[roles.bos].bos * 2
+                            );
+
+                            log(
+                            `👑 ${roles.bos} makin dikenal publik sebagai BOS xxx kali`
+                            );
+                        }
 
                         activeRoles.bos = roles.bos;
 
                         log("👑 Bos: "+roles.bos);
+                        // 👑 Boss streak tracker
+                        players.forEach(p=>{
+
+                            if(!bossStreak[p]){
+                                bossStreak[p] = 0;
+                            }
+
+                            if(activeRoles.bos === p){
+
+                                bossStreak[p]++;
+
+                            }else{
+
+                                bossStreak[p] = 0;
+                            }
+                        });
+                        if(activeRoles.bos && bossStreak[activeRoles.bos] >= 7){
+                            log(
+                            `👑⚠️ ${activeRoles.bos} mulai ditakuti seluruh penghuni rumah`
+                            );
+                        }
                         addReputation(roles.bos, 8);
                     }
                 }
@@ -5551,6 +5679,12 @@
                         kandidat[Math.floor(Math.random()*kandidat.length)];
 
                         stats[roles.kunci].pk++;
+                        // 🔑 legacy reputation PK
+                        legacyReputation[roles.kunci] =
+                        (legacyReputation[roles.kunci] || 0) + 2;
+
+                        // 🔑 boost publik mingguan
+                        addReputation(roles.kunci, 5);
 
                         activeRoles.kunci = roles.kunci;
 
@@ -5962,6 +6096,7 @@
 
                     renderDay();
 
+
                     simulateHouseRelations();
 
                     dailySocialCount = 0;
@@ -6059,6 +6194,7 @@
                 
                 renderDay();
                 npcDailyBonding();
+                processRevengeSystem();
 
                 
                 
@@ -6620,7 +6756,7 @@
 
                                 specialText = `
                                 <span class="rel-friend">
-                                    (🤝 friend)
+                                    (👥 friend)
                                 </span>
                                 `;
                             }
@@ -6629,7 +6765,7 @@
 
                                 specialText = `
                                 <span class="rel-close">
-                                    (👥 close friend)
+                                    (🤝 close friend)
                                 </span>
                                 `;
                             }
@@ -8829,6 +8965,9 @@
                     relation = parsed.relation;
                     gangs = parsed.gangs || [];
                     dating = parsed.dating || {};
+                    revengeTarget =parsed.revengeTarget || {};
+                    bossStreak = parsed.bossStreak ?? 0;
+                    eliminatedMeta =parsed.eliminatedMeta || {};
                     // dailySocialCount = parsed.dailySocialCount || 0;
                     dailySocialCount = parsed.dailySocialCount ?? 0;
                     specialRelations =parsed.specialRelations || {};
@@ -9028,6 +9167,9 @@
                     specialRelations,
                     gangs,
                     dating,
+                    revengeTarget,
+                    eliminatedMeta,
+                    bossStreak,
                     dailySocialCount,
                     rawPopularity,
                     reputation,
