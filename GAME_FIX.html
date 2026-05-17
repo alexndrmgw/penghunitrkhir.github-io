@@ -295,6 +295,21 @@
             0 0 14px rgba(34,197,94,0.28);
         }
 
+        /* 🫶 CLOSE */
+        .close-bg{
+
+            background: linear-gradient(
+                135deg,
+                #1e3a8a,
+                #1d4ed8
+            );
+
+            border: 1px solid #60a5fa;
+
+            box-shadow:
+            0 0 12px rgba(96,165,250,0.28);
+        }
+
         /* .enemy-bg {
             background: #450a0a;
             border: 1px solid #ef4444;
@@ -1037,6 +1052,17 @@
             font-weight:bold;
             text-shadow:0 0 8px rgba(239,68,68,.4);
         }
+        
+        /* 🫶 CLOSE */
+        .rel-close{
+
+            color:#60a5fa;
+
+            font-weight:bold;
+
+            text-shadow:
+            0 0 6px rgba(96,165,250,.35);
+        }
 
         /* 😐 NEUTRAL */
         .rel-neutral{
@@ -1318,7 +1344,8 @@
                         ✖
                     </span>
 
-                    <h2>📊 Report Penghuni</h2>
+                    <!-- <h2>📊 Report Penghuni</h2> -->
+                     <h2 id="reportTitle">📊 Report Penghuni</h2>
 
                     <div id="reportContent"></div>
 
@@ -1464,6 +1491,7 @@
             };
             let eliminatedOrder = [];
             let stats = {};
+            
             let amnesters = [];
             let amnestyMode = false;
             let amnestyStarted = false;
@@ -2251,7 +2279,7 @@
                 base += getTraitModifier(p);
 
                 // reputasi lebih penting
-                base += reputation[p] * 1.5;
+                base += reputation[p] * 0.8;
 
                 return Math.floor(base);
             }
@@ -2488,17 +2516,25 @@
                             specialRelations[a][b] = "bestie";
                         }
 
+                        
+                        // 🫶 close
+                        else if(rel >= 60){
+
+                            specialRelations[a][b] = "close";
+                        }
+
+                        // 🫶 DEKAT
+                        else if(rel >= 35){
+
+                            specialRelations[a][b] = "friend";
+                        }
+
                         // 💢 RIVAL
                         else if(rel <= -45){
 
                             specialRelations[a][b] = "rival";
                         }
 
-                        // 🫶 DEKAT
-                        else if(rel >= 35){
-
-                            specialRelations[a][b] = "close";
-                        }
 
                         // reset
                         else{
@@ -2548,7 +2584,7 @@
                         }
 
                         // jangan spam
-                        if(Math.random() > 0.15){
+                        if(Math.random() > 0.45){
                             return;
                         }
 
@@ -2635,7 +2671,8 @@
                         // POSITIF perlahan turun
                         if(value > 0){
 
-                            relation[a][b] -= 0.5;
+                            // relation[a][b] -= 0.5;
+                            relation[a][b] -= 0.1;
 
                             if(relation[a][b] < 0){
 
@@ -2646,7 +2683,8 @@
                         // NEGATIF jangan cepat hilang
                         else if(value < 0){
 
-                            relation[a][b] += 0.1;
+                            // relation[a][b] += 0.1;
+                            relation[a][b] += 0.3;
 
                             if(relation[a][b] > 0){
 
@@ -2655,6 +2693,54 @@
                         }
                     });
                 });
+            }
+            function npcDailyBonding(){
+
+                let alive = getAlive();
+                let bondingCount =Math.floor(alive.length / 3);
+
+                for(let i=0;i<bondingCount;i++){
+
+                    let a =
+                    alive[Math.floor(Math.random()*alive.length)];
+
+                    let b =
+                    alive[Math.floor(Math.random()*alive.length)];
+
+                    if(a === b) continue;
+
+                    let gain =
+                    Math.floor(Math.random()*3)+1;
+
+                    // 😴 Santai lebih gampang bonding
+                    if(
+                        traitsMap[a] === "Santai"
+                    ){
+                        gain += 1;
+                    }
+
+
+                    if(
+                        traitsMap[a] === "Emosional"
+                    ){
+                        gain += Math.floor(Math.random()*3)-1;
+                    }
+                    
+
+                    if(
+                        specialRelations[a][b] === "bestie"
+                    ){
+                        gain += 2;
+                    }
+
+                    relation[a][b] += gain;
+
+                    relation[b][a] += Math.floor(gain/2);
+
+                    // log(
+                    // `💬 ${a} menghabiskan waktu bersama ${b}`
+                    // );
+                }
             }
 
             function recalculateReputation(){
@@ -2803,7 +2889,7 @@
 
                 // log("📺 Reputasi publik minggu baru telah direset!");
             }
-            async function applyRoleConsequences(role,target,type){
+            async function applyRoleConsequences(role,target,type,targetGangName = null){
 
                 let alive = getAlive();
                 let totalReaction = 0;
@@ -2817,10 +2903,16 @@
                     relation[p][target] || 0;
 
                     // 👥 cek apakah satu geng
+                    // let sameGang =
+                    // gangs.some(g =>
+                    //     g.members.includes(p) &&
+                    //     g.members.includes(target)
+                    // );
                     let sameGang =
+                    targetGangName &&
                     gangs.some(g =>
-                        g.members.includes(p) &&
-                        g.members.includes(target)
+                        g.name === targetGangName &&
+                        g.members.includes(p)
                     );
 
                     // =====================
@@ -3010,7 +3102,7 @@
             }
 
             function inviteToGang(target){
-                if(dailySocialCount >= 20){
+                if(dailySocialCount >= 10){
 
                     log(
                     "❌ Tidak bisa membentuk geng, silahkan coba lagi besok"
@@ -3025,7 +3117,7 @@
                 relation[playerName][target] || 0;
 
                 // harus bestie
-                if(rel <= 50){
+                if(rel <= 35){
 
                     let reject =
                     Math.floor(Math.random()*6)+5;
@@ -3159,7 +3251,7 @@
             }
 
             function startDating(target){
-                if(dailySocialCount >= 20){
+                if(dailySocialCount >= 10){
 
                     log(
                     "❌ Tidak bisa mengajak pacaran, silahkan coba lagi besok"
@@ -3186,7 +3278,7 @@
                 relation[playerName][target] || 0;
 
                 // minimal dekat dulu
-                if(rel < 45){
+                if(rel < 30){
 
                     let reject =
                     Math.floor(Math.random()*8)+5;
@@ -3961,6 +4053,7 @@
             }
 
             function showReport(){
+                document.getElementById("reportTitle").innerHTML ="📊 Report Penghuni";
 
                 //let ranking = [...players]
                 // .sort((a,b)=>{
@@ -4972,6 +5065,10 @@
                                     ?.name || null
                                 };
                                 removeDating(runnerUp);
+                                let targetGangName =
+                                gangs.find(g =>
+                                    g.members.includes(target)
+                                )?.name || null;
                                 removePlayerFromGang(runnerUp);
 
 
@@ -5961,6 +6058,7 @@
                 }
                 
                 renderDay();
+                npcDailyBonding();
 
                 
                 
@@ -6049,7 +6147,7 @@
                 // closeSocialModal();
                 closeAllSocialUI();
 
-                if(dailySocialCount >= 20){
+                if(dailySocialCount >= 10){
 
                     log("❌ Kamu sudah terlalu banyak bersosialisasi hari ini, silahkan bersosialisasi besok.");
 
@@ -6452,6 +6550,7 @@
                 // },10);
 
                 // setTimeout(()=> modal.classList.add("show"), 10);
+                document.getElementById("reportTitle").innerHTML ="❤️ Skor Relasi";
                 let html = "";
 
                 players.forEach(p1=>{
@@ -6479,28 +6578,29 @@
                             // }
                             let cls = "rel-neutral";
 
-                            // 🤝 FRIEND
-                            if(val >= 60){
-
-                                cls = "rel-friend";
-                            }
-
-                            // 💢 ENEMY
-                            if(val <= -20){
-
-                                cls = "rel-enemy";
-                            }
-
-                            // ⭐ BESTIE
                             if(val >= 80){
 
                                 cls = "rel-bestie";
                             }
 
-                            // ☠️ RIVAL
-                            if(val <= -45){
+                            else if(val >= 60){
+
+                                cls = "rel-friend";
+                            }
+
+                            else if(val >= 35){
+
+                                cls = "rel-close";
+                            }
+
+                            else if(val <= -45){
 
                                 cls = "rel-rival";
+                            }
+
+                            else if(val <= -30){
+
+                                cls = "rel-enemy";
                             }
                             
                             let specialText = "";
@@ -6516,11 +6616,20 @@
                                 `;
                             }
 
-                            else if(special === "close"){
+                            else if(special === "friend"){
 
                                 specialText = `
                                 <span class="rel-friend">
-                                    (🤝 dekat)
+                                    (🤝 friend)
+                                </span>
+                                `;
+                            }
+
+                            else if(special === "close"){
+
+                                specialText = `
+                                <span class="rel-close">
+                                    (👥 close friend)
                                 </span>
                                 `;
                             }
@@ -6584,31 +6693,25 @@
             //     return "neutral";
             // }
 
-            function getRelationBgClass(value){
-                // if(value >= 55) return "friend-bg";
-                // if(value <= -25) return "enemy-bg";
-                // return "neutral-bg";
-                // ⭐ BESTIE
-                if(value >= 80){
+           function getRelationBgClass(value){
 
+                if(value >= 80){
                     return "bestie-bg";
                 }
 
-                // 🤝 FRIEND
                 if(value >= 60){
-
                     return "friend-bg";
                 }
 
-                // ☠️ RIVAL
-                if(value <= -45){
+                if(value >= 35){
+                    return "close-bg";
+                }
 
+                if(value <= -45){
                     return "rival-bg";
                 }
 
-                // 💢 ENEMY
-                if(value <= -20){
-
+                if(value <= -30){
                     return "enemy-bg";
                 }
 
@@ -7516,7 +7619,7 @@
                         `;
 
                         openDecisionModal(
-                            "🛡️ Pilih 3 Kandidat Tukar Posisi",
+                            "🛡️ Kamu adalah pemegang imun, pilih 3 Kandidat Tukar Posisi",
                             html
                         );
 
@@ -7610,7 +7713,7 @@
                         html += `
                         <button onclick="playerSaveByBoss('${p}')">
 
-                            Selamatkan ${p}
+                            ${p}
 
                             (❤️ ${
                                 getRelationSafe(playerName,p)
@@ -7621,7 +7724,7 @@
                     });
 
                     openDecisionModal(
-                        "👑 Kamu adalah BOS",
+                        "👑 Kamu adalah BOS, siapa yang akan kamu selamatkan?",
                         html
                     );
 
@@ -7690,7 +7793,7 @@
                         html += `
                         <button onclick="playerEliminateByKey('${p}')">
 
-                            Eliminasi ${p}
+                            ${p}
 
                             (❤️ ${
                                 getRelationSafe(playerName,p)
@@ -7701,7 +7804,7 @@
                     });
 
                     openDecisionModal(
-                        "🔑 Kamu adalah Pemegang Kunci",
+                        "🔑 Kamu adalah Pemegang Kunci, siapa yang akan kamu ekstradisi?",
                         html
                     );
 
@@ -7732,9 +7835,14 @@
                     ?.name || null
                 };
                 removeDating(eliminated);
+                let targetGangName =
+                gangs.find(g =>
+                    g.members.includes(target)
+                )?.name || null;
                 removePlayerFromGang(eliminated);
 
                 status[eliminated] = "KELUAR";
+                npcDailyBonding();
                 
                 if(eliminated === playerName){
 
@@ -7876,10 +7984,15 @@
                     ?.name || null
                 };
                 removeDating(eliminated);
+                let targetGangName =
+                gangs.find(g =>
+                    g.members.includes(target)
+                )?.name || null;
                 removePlayerFromGang(eliminated);
 
 
                 status[eliminated] = "KELUAR";
+                npcDailyBonding();
                 
                 eliminatedOrder.unshift(eliminated);
 
@@ -7944,7 +8057,7 @@
                         html += `
                         <button onclick="playerEliminateByKey('${p}')">
 
-                            Eliminasi ${p}
+                            ${p}
 
                             (❤️ ${
                                 getRelationSafe(playerName,p)
@@ -7955,7 +8068,7 @@
                     });
 
                     openDecisionModal(
-                        "🔑 Kamu adalah Pemegang Kunci",
+                        "🔑 Kamu adalah Pemegang Kunci, siapa yang akan kamu ekstradisi?",
                         html
                     );
 
@@ -7985,9 +8098,14 @@
                     ?.name || null
                 };
                 removeDating(eliminated);
+                let targetGangName =
+                gangs.find(g =>
+                    g.members.includes(target)
+                )?.name || null;
                 removePlayerFromGang(eliminated);
 
                 status[eliminated] = "KELUAR";
+                npcDailyBonding();
                 
                 if(eliminated === playerName){
 
@@ -8028,7 +8146,7 @@
                     html += `
                     <button onclick="playerEliminateByKey('${p}')">
 
-                        Eliminasi ${p}
+                        ${p}
 
                         (❤️ ${
                             getRelationSafe(playerName,p)
@@ -8039,7 +8157,7 @@
                 });
 
                 openDecisionModal(
-                    "🔑 Kamu adalah Pemegang Kunci",
+                    "🔑 Kamu adalah Pemegang Kunci, siapa yang akan kamu ekstradisi?",
                     html
                 );
             }
@@ -8061,9 +8179,14 @@
                 };
 
                 removeDating(name);
+                let targetGangName =
+                gangs.find(g =>
+                    g.members.includes(target)
+                )?.name || null;
                 removePlayerFromGang(name);
 
                 status[name] = "KELUAR";
+                npcDailyBonding();
                 
                 eliminatedOrder.unshift(name);
                 updatePlayers();
@@ -8144,7 +8267,7 @@
                 `;
 
                 openDecisionModal(
-                    "🛡️ Pilih 3 Kandidat Tukar Posisi",
+                    "🛡️ Kamu adalah pemegang imun, pilih 3 Kandidat Tukar Posisi",
                     html
                 );
             }
@@ -8366,10 +8489,14 @@
                         ?.name || null
                     };
                     removeDating(eliminated);
+                    let targetGangName =
+                    gangs.find(g =>
+                        g.members.includes(target)
+                    )?.name || null;
                     removePlayerFromGang(eliminated);
 
                     status[eliminated] = "KELUAR";
-                    
+                    npcDailyBonding();
 
                     if(eliminated === playerName){
 
@@ -8505,7 +8632,7 @@
                         html += `
                         <button onclick="playerSaveByBoss('${p}')">
 
-                            Selamatkan ${p}
+                            ${p}
 
                             (❤️ ${
                                 getRelationSafe(playerName,p)
@@ -8516,7 +8643,7 @@
                     });
 
                     openDecisionModal(
-                        "👑 Kamu adalah BOS",
+                        "👑 Kamu adalah BOS, siapa yang akan kamu selamatkan?",
                         html
                     );
 
@@ -8592,7 +8719,7 @@
                         html += `
                         <button onclick="playerEliminateByKey('${p}')">
 
-                            Eliminasi ${p}
+                            ${p}
 
                             (❤️ ${
                                 getRelationSafe(playerName,p)
@@ -8603,7 +8730,7 @@
                     });
 
                     openDecisionModal(
-                        "🔑 Kamu adalah Pemegang Kunci",
+                        "🔑 Kamu adalah Pemegang Kunci, siapa yang akan kamu ekstradisi?",
                         html
                     );
 
@@ -8650,9 +8777,14 @@
                 };
 
                 removeDating(eliminated);
+                let targetGangName =
+                gangs.find(g =>
+                    g.members.includes(target)
+                )?.name || null;
                 removePlayerFromGang(eliminated);
 
                 status[eliminated] = "KELUAR";
+                npcDailyBonding();
                
                 if(eliminated === playerName){
 
@@ -8962,7 +9094,7 @@
                             html += `
                             <button onclick="playerSaveByBoss('${p}')">
 
-                                Selamatkan ${p}
+                                ${p}
 
                                 (❤️ ${getRelationSafe(playerName,p)})  
 
@@ -8971,7 +9103,7 @@
                         });
 
                         openDecisionModal(
-                            "👑 Kamu adalah BOS",
+                            "👑 Kamu adalah BOS, siapa yang akan kamu selamatkan?",
                             html
                         );
                     }
