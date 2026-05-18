@@ -2980,12 +2980,18 @@
                     //     g.members.includes(p) &&
                     //     g.members.includes(target)
                     // );
+                    // let sameGang =
+                    // targetGangName &&
+                    // gangs.some(g =>
+                    //     g.name === targetGangName &&
+                    //     g.members.includes(p)
+                    // );
                     let sameGang =
+
                     targetGangName &&
-                    gangs.some(g =>
-                        g.name === targetGangName &&
-                        g.members.includes(p)
-                    );
+
+                    gangs.find(g=>g.name===targetGangName)
+                    ?.members.includes(p);
 
                     // =====================
                     // SAVE CONSEQUENCE
@@ -3044,7 +3050,8 @@
                             // 👑 Boss ditakuti → penghuni susah membenci
                             if(
                                 activeRoles.bos === role &&
-                                bossStreak[role] >= 7
+                                // bossStreak[role] >= 7
+                                stats[role].bos >= 4
                             ){
                                 debuff = Math.floor(debuff * 0.4);
                             }
@@ -3069,7 +3076,7 @@
 
                             if(sameGang){
                                 log(
-                                    `👥😡 ${p} marah besar karena member gengnya (${target}) diekstradisi!`
+                                    `👥😡 ${p} marah besar karena member gengnya (${target}) diekstradisi ${role}`
                                 );
                             }else{
                                 log(
@@ -5440,7 +5447,8 @@
                                 bossStreak[p] = 0;
                             }
                         });
-                        if(activeRoles.bos && bossStreak[activeRoles.bos] >= 7){
+                        // if(activeRoles.bos && bossStreak[activeRoles.bos] >= 7){
+                        if(activeRoles.bos && stats[activeRoles.bos].bos >= 4){
                             log(
                             `👑⚠️ ${activeRoles.bos} mulai ditakuti seluruh penghuni rumah`
                             );
@@ -8134,7 +8142,15 @@
                 gangs.find(g =>
                     g.members.includes(eliminated)
                 )?.name || null;
-                removePlayerFromGang(eliminated);
+
+                // await applyRoleConsequences(
+                //     roles.kunci,
+                //     eliminated,
+                //     "eliminate",
+                //     targetGangName
+                // );
+
+                // removePlayerFromGang(eliminated);
 
                 status[eliminated] = "KELUAR";
                 npcDailyBonding();
@@ -8164,8 +8180,10 @@
                 await applyRoleConsequences(
                     roles.kunci,
                     eliminated,
-                    "eliminate"
+                    "eliminate",
+                    targetGangName
                 );
+                removePlayerFromGang(eliminated);
             }
             // function saveGame(){
             //     const data = {
@@ -8283,6 +8301,13 @@
                 gangs.find(g =>
                     g.members.includes(eliminated)
                 )?.name || null;
+
+                await applyRoleConsequences(
+                    roles.kunci,
+                    eliminated,
+                    "eliminate",
+                    targetGangName
+                );
                 removePlayerFromGang(eliminated);
 
 
@@ -8420,7 +8445,15 @@
                 gangs.find(g =>
                     g.members.includes(eliminated)
                 )?.name || null;
-                removePlayerFromGang(eliminated);
+
+                // await applyRoleConsequences(
+                //     roles.kunci,
+                //     eliminated,
+                //     "eliminate",
+                //     targetGangName
+                // );
+
+                // removePlayerFromGang(eliminated);
 
                 status[eliminated] = "KELUAR";
                 npcDailyBonding();
@@ -8443,8 +8476,10 @@
                 await applyRoleConsequences(
                     roles.kunci,
                     eliminated,
-                    "eliminate"
+                    "eliminate",
+                    targetGangName
                 );
+                removePlayerFromGang(eliminated);
 
                 //updatePlayers();
 
@@ -8523,8 +8558,16 @@
                 removeDating(name);
                 let targetGangName =
                 gangs.find(g =>
-                    g.members.includes(eliminated)
+                    g.members.includes(name)
                 )?.name || null;
+
+                await applyRoleConsequences(
+                    roles.kunci,
+                    name,
+                    "eliminate",
+                    targetGangName
+                );
+
                 removePlayerFromGang(name);
 
                 status[name] = "KELUAR";
@@ -8861,6 +8904,12 @@
                     gangs.find(g =>
                         g.members.includes(eliminated)
                     )?.name || null;
+                    await applyRoleConsequences(
+                        roles.kunci,
+                        eliminated,
+                        "eliminate",
+                        targetGangName
+                    );
                     removePlayerFromGang(eliminated);
 
                     status[eliminated] = "KELUAR";
@@ -9198,7 +9247,15 @@
                 gangs.find(g =>
                     g.members.includes(eliminated)
                 )?.name || null;
-                removePlayerFromGang(eliminated);
+
+                // await applyRoleConsequences(
+                //     roles.kunci,
+                //     eliminated,
+                //     "eliminate",
+                //     targetGangName
+                // );
+                
+                // removePlayerFromGang(eliminated);
 
                 status[eliminated] = "KELUAR";
                 npcDailyBonding();
@@ -9222,8 +9279,10 @@
                 await applyRoleConsequences(
                     roles.kunci,
                     eliminated,
-                    "eliminate"
+                    "eliminate",
+                    targetGangName
                 );
+                removePlayerFromGang(eliminated);
 
                 //updatePlayers();
 
