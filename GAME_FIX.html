@@ -129,6 +129,8 @@
             color: #111;
 
             filter: grayscale(20%);
+            pointer-events:none;
+            transform:none;
         }
 
         /* .log {
@@ -2172,7 +2174,9 @@
 
                         <button
                         onclick="openSocialModal('${p}')"
-                        ${status[playerName] === "KELUAR"
+                        ${
+                            status[playerName] === "KELUAR"
+                            || !canInteract()
                             ? "disabled"
                             : ""
                         }
@@ -2233,6 +2237,12 @@
                 
                 
 
+            }
+            function canInteract(){
+
+                return !isDayProcessing
+                && !pendingDecision
+                && !npcRequest;
             }
 
             // GAME LOGIC
@@ -3644,7 +3654,11 @@
 
                 else if(roll < 0.66){
 
-                    log("🎉 Ada bintang tamu datang, dan mengadakan pesta dirumah karantina!!!");
+                    // log("🎉 Ada pesta di rumah karantina, bintang tamu juga hadir ke dalam rumah karantina!!!");
+                    log("🎉 Para penghuni mengadakan pesta besar di rumah karantina malam ini!");
+                    await delay(1000);
+
+                    log("🌟 Seorang bintang tamu spesial datang dan langsung jadi pusat perhatian!");
                     await delay(700);
 
                     let totalBuff =
@@ -4254,6 +4268,14 @@
             // }
 
             function openSocialModal(target){
+                if(!canInteract()){
+
+                    log(
+                    "⏳ Kamu tidak bisa bersosialisasi saat event sedang berlangsung"
+                    );
+
+                    return;
+                }
 
                 socialTarget = target;
 
@@ -4656,11 +4678,14 @@
 
             // DAY SYSTEM
             async function nextDay(){
+
+
                 dailySocialCount = 0;
                 if(isDayProcessing) return;
                 if(pendingDecision) return;
 
                 isDayProcessing = true;
+                updatePlayers();
                 setGameButtonsDisabled(true);
                 let alive = getAlive();
                 // =======================
@@ -5155,7 +5180,7 @@
                                 removeDating(runnerUp);
                                 let targetGangName =
                                 gangs.find(g =>
-                                    g.members.includes(target)
+                                    g.members.includes(runnerUp)
                                 )?.name || null;
                                 removePlayerFromGang(runnerUp);
 
@@ -5185,7 +5210,7 @@
                         }
                     }
 
-                    updatePlayers();
+                    // updatePlayers();
 
                     dayCount++;
 
@@ -5215,6 +5240,8 @@
                     saveGame();
 
                     isDayProcessing = false;
+
+                    updatePlayers();
 
                     setGameButtonsDisabled(false);
 
@@ -5348,7 +5375,7 @@
                         }
 
                         await delay(DEBUG_DELAY);
-                        log("🎮👑 Games pemilihan BOSS sedang berlangsung... ");
+                        log("🎮👑 Games pemilihan BOS sedang berlangsung... ");
                         await delay(750);
 
                         // roles.bos = bosRank[0].name;
@@ -5390,7 +5417,7 @@
                             );
 
                             log(
-                            `👑 ${roles.bos} makin dikenal publik sebagai BOS xxx kali`
+                            `👑 ${roles.bos} makin dikenal publik sebagai BOS ${stats[roles.bos].bos} kali`
                             );
                         }
 
@@ -5684,7 +5711,19 @@
                         (legacyReputation[roles.kunci] || 0) + 2;
 
                         // 🔑 boost publik mingguan
-                        addReputation(roles.kunci, 5);
+                        addReputation(roles.kunci, 4);
+                        // 🔑 PK veteran mulai dikenal publik
+                        if(stats[roles.kunci].pk >= 2){
+
+                            addReputation(
+                                roles.kunci,
+                                stats[roles.kunci].pk
+                            );
+
+                            log(
+                            `🔑 ${roles.kunci} mulai dikenal publik sebagai Pemegang Kunci sebanyak ${stats[roles.kunci].pk} kali`
+                            );
+                        }
 
                         activeRoles.kunci = roles.kunci;
 
@@ -6018,7 +6057,7 @@
                         comebackDone = true;
                         localStorage.setItem("comebackDone", "true");
 
-                        updatePlayers();
+                        // updatePlayers();
 
                         dayCount++;
 
@@ -6031,6 +6070,7 @@
 
                         // ✅ aktifkan lagi tombol
                         isDayProcessing = false;
+                        updatePlayers();
                         setGameButtonsDisabled(false);
 
                         return;
@@ -6078,11 +6118,12 @@
                         // updatePlayers();
                         weekDay = 1;
 
-                        updatePlayers();
+                        // updatePlayers();
 
                         saveGame();
 
                         isDayProcessing = false;
+                        updatePlayers();
 
                         setGameButtonsDisabled(false);
 
@@ -6201,12 +6242,13 @@
 
                 simulateHouseRelations();
                 updateGangs();
-                updatePlayers();
+                // updatePlayers();
                 dailySocialCount = 0;
                 saveGame();
                 //isDayProcessing = false;
                 // ✅ aktifkan lagi tombol
                 isDayProcessing = false;
+                updatePlayers();
                 setGameButtonsDisabled(false);
             }
 
@@ -6752,20 +6794,20 @@
                                 `;
                             }
 
-                            else if(special === "friend"){
+                            else if(special === "close"){
 
                                 specialText = `
                                 <span class="rel-friend">
-                                    (👥 friend)
+                                    (👥 close friend)
                                 </span>
                                 `;
                             }
 
-                            else if(special === "close"){
+                            else if(special === "friend"){
 
                                 specialText = `
                                 <span class="rel-close">
-                                    (🤝 close friend)
+                                    (🤝 friend)
                                 </span>
                                 `;
                             }
@@ -6864,8 +6906,10 @@
 
             function openDecisionModal(title, html){
 
+                // document.getElementById("decisionTitle")
+                // .innerText = title;
                 document.getElementById("decisionTitle")
-                .innerText = title;
+                .innerHTML = title;
 
                 document.getElementById("decisionContent")
                 .innerHTML = html;
@@ -7182,8 +7226,32 @@
                     `;
                 });
 
+                // openDecisionModal(
+                //     "🔥 Voting Amnesti",
+                //     html
+                // );
                 openDecisionModal(
-                    "🔥 Voting Amnesti",
+
+                    `
+                    <div>
+                        <div style="
+                            font-size:28px;
+                            font-weight:bold;
+                            margin-bottom:6px;
+                        ">
+                            🔥 Voting Amnesti
+                        </div>
+
+                        <div style="
+                            font-size:16px;
+                            opacity:0.85;
+                            font-weight:500;
+                        ">
+                            Pilih penghuni yang kamu inginkan untuk kembali ke rumah karantina
+                        </div>
+                    </div>
+                    `,
+
                     html
                 );
             }
@@ -7379,12 +7447,13 @@
                 // ⬅️ tandai role hasil 8 besar
                 roles.fromAmnesty = true;
 
-                updatePlayers();
+                // updatePlayers();
 
                 pendingDecision = null;
 
                 saveGame();
                 isDayProcessing = false;
+                updatePlayers();
                 setGameButtonsDisabled(false);
 
                 
@@ -7754,8 +7823,31 @@
                         </button>
                         `;
 
+                        // openDecisionModal(
+                        //     "🛡️ Kamu adalah pemegang imun, pilih 3 Kandidat Tukar Posisi",
+                        //     html
+                        // );
                         openDecisionModal(
-                            "🛡️ Kamu adalah pemegang imun, pilih 3 Kandidat Tukar Posisi",
+                            `
+                            <div>
+                                <div style="
+                                    font-size:28px;
+                                    font-weight:bold;
+                                    margin-bottom:6px;
+                                ">
+                                    🛡️ Kamu adalah pemegang imun
+                                </div>
+
+                                <div style="
+                                    font-size:16px;
+                                    opacity:0.85;
+                                    font-weight:500;
+                                ">
+                                     pilih 3 Kandidat untuk ditukar Posisinya
+                                </div>
+                            </div>
+                            `,
+
                             html
                         );
 
@@ -7763,8 +7855,28 @@
                     }
 
                     // NPC IMUN
+                    // let pilihan =
+                    // [...kandidatTukar]
+                    // .slice(0,3);
+                    // NPC IMUN
                     let pilihan =
                     [...kandidatTukar]
+
+                    .filter(p => {
+
+                        // player lebih jarang dipilih imun
+                        if(
+                            p === playerName &&
+                            Math.random() < 0.65
+                        ){
+                            return false;
+                        }
+
+                        return true;
+                    })
+
+                    .sort(()=>0.5-Math.random())
+
                     .slice(0,3);
 
                     await delay(DEBUG_DELAY);
@@ -7859,8 +7971,32 @@
                         `;
                     });
 
+                    // openDecisionModal(
+                    //     "👑 Kamu adalah BOS, siapa yang akan kamu selamatkan?",
+                    //     html
+                    // );
                     openDecisionModal(
-                        "👑 Kamu adalah BOS, siapa yang akan kamu selamatkan?",
+
+                        `
+                        <div>
+                            <div style="
+                                font-size:28px;
+                                font-weight:bold;
+                                margin-bottom:6px;
+                            ">
+                                👑 Kamu adalah BOS
+                            </div>
+
+                            <div style="
+                                font-size:16px;
+                                opacity:0.85;
+                                font-weight:500;
+                            ">
+                                siapa yang akan kamu selamatkan?
+                            </div>
+                        </div>
+                        `,
+
                         html
                     );
 
@@ -7939,8 +8075,31 @@
                         `;
                     });
 
+                    // openDecisionModal(
+                    //     "🔑 Kamu adalah Pemegang Kunci, siapa yang akan kamu ekstradisi?",
+                    //     html
+                    // );
                     openDecisionModal(
-                        "🔑 Kamu adalah Pemegang Kunci, siapa yang akan kamu ekstradisi?",
+                        `
+                        <div>
+                            <div style="
+                                font-size:28px;
+                                font-weight:bold;
+                                margin-bottom:6px;
+                            ">
+                                🔑 Kamu adalah Pemegang Kunci
+                            </div>
+
+                            <div style="
+                                font-size:16px;
+                                opacity:0.85;
+                                font-weight:500;
+                            ">
+                                    siapa yang akan kamu ekstradisi?
+                            </div>
+                        </div>
+                        `,
+
                         html
                     );
 
@@ -7973,7 +8132,7 @@
                 removeDating(eliminated);
                 let targetGangName =
                 gangs.find(g =>
-                    g.members.includes(target)
+                    g.members.includes(eliminated)
                 )?.name || null;
                 removePlayerFromGang(eliminated);
 
@@ -8122,7 +8281,7 @@
                 removeDating(eliminated);
                 let targetGangName =
                 gangs.find(g =>
-                    g.members.includes(target)
+                    g.members.includes(eliminated)
                 )?.name || null;
                 removePlayerFromGang(eliminated);
 
@@ -8203,8 +8362,31 @@
                         `;
                     });
 
+                    // openDecisionModal(
+                    //     "🔑 Kamu adalah Pemegang Kunci, siapa yang akan kamu ekstradisi?",
+                    //     html
+                    // );
                     openDecisionModal(
-                        "🔑 Kamu adalah Pemegang Kunci, siapa yang akan kamu ekstradisi?",
+                        `
+                        <div>
+                            <div style="
+                                font-size:28px;
+                                font-weight:bold;
+                                margin-bottom:6px;
+                            ">
+                                🔑 Kamu adalah Pemegang Kunci
+                            </div>
+
+                            <div style="
+                                font-size:16px;
+                                opacity:0.85;
+                                font-weight:500;
+                            ">
+                                    siapa yang akan kamu ekstradisi?
+                            </div>
+                        </div>
+                        `,
+
                         html
                     );
 
@@ -8236,7 +8418,7 @@
                 removeDating(eliminated);
                 let targetGangName =
                 gangs.find(g =>
-                    g.members.includes(target)
+                    g.members.includes(eliminated)
                 )?.name || null;
                 removePlayerFromGang(eliminated);
 
@@ -8248,7 +8430,7 @@
                     playerEverEliminated = true;
                 }
                 eliminatedOrder.unshift(eliminated);
-                updatePlayers();
+                // updatePlayers();
 
 
                 log("❌ Terekstradisi: " + eliminated);
@@ -8268,6 +8450,7 @@
 
                 saveGame();
                 isDayProcessing = false;
+                updatePlayers();
                 setGameButtonsDisabled(false);
             }
             function reopenPKPopup(){
@@ -8292,8 +8475,31 @@
                     `;
                 });
 
+                // openDecisionModal(
+                //     "🔑 Kamu adalah Pemegang Kunci, siapa yang akan kamu ekstradisi?",
+                //     html
+                // );
                 openDecisionModal(
-                    "🔑 Kamu adalah Pemegang Kunci, siapa yang akan kamu ekstradisi?",
+                    `
+                    <div>
+                        <div style="
+                            font-size:28px;
+                            font-weight:bold;
+                            margin-bottom:6px;
+                        ">
+                            🔑 Kamu adalah Pemegang Kunci
+                        </div>
+
+                        <div style="
+                            font-size:16px;
+                            opacity:0.85;
+                            font-weight:500;
+                        ">
+                                siapa yang akan kamu ekstradisi?
+                        </div>
+                    </div>
+                    `,
+
                     html
                 );
             }
@@ -8317,7 +8523,7 @@
                 removeDating(name);
                 let targetGangName =
                 gangs.find(g =>
-                    g.members.includes(target)
+                    g.members.includes(eliminated)
                 )?.name || null;
                 removePlayerFromGang(name);
 
@@ -8325,7 +8531,7 @@
                 npcDailyBonding();
                 
                 eliminatedOrder.unshift(name);
-                updatePlayers();
+                // updatePlayers();
 
 
                 log("🔑 Kamu mengekstradisi: " + name);
@@ -8362,6 +8568,7 @@
 
                 saveGame();
                 isDayProcessing = false;
+                updatePlayers();
                 setGameButtonsDisabled(false);
             }
             function reopenImunPopup(){
@@ -8402,10 +8609,35 @@
                 </button>
                 `;
 
+                // openDecisionModal(
+                //     "🛡️ Kamu adalah pemegang imun, pilih 3 Kandidat Tukar Posisi",
+                //     html
+                // );
+
                 openDecisionModal(
-                    "🛡️ Kamu adalah pemegang imun, pilih 3 Kandidat Tukar Posisi",
+                    `
+                    <div>
+                        <div style="
+                            font-size:28px;
+                            font-weight:bold;
+                            margin-bottom:6px;
+                        ">
+                            🛡️ Kamu adalah pemegang imun
+                        </div>
+
+                        <div style="
+                            font-size:16px;
+                            opacity:0.85;
+                            font-weight:500;
+                        ">
+                                pilih 3 Kandidat untuk ditukar Posisinya
+                        </div>
+                    </div>
+                    `,
+
                     html
                 );
+
             }
             // function toggleImunChoice(name){
 
@@ -8627,7 +8859,7 @@
                     removeDating(eliminated);
                     let targetGangName =
                     gangs.find(g =>
-                        g.members.includes(target)
+                        g.members.includes(eliminated)
                     )?.name || null;
                     removePlayerFromGang(eliminated);
 
@@ -8683,11 +8915,13 @@
                             " menjadi Penghuni Terakhir!"
                         );
 
-                        updatePlayers();
+                        // updatePlayers();
 
                         saveGame();
 
                         isDayProcessing = false;
+
+                        updatePlayers();
 
                         setGameButtonsDisabled(true);
 
@@ -8778,8 +9012,32 @@
                         `;
                     });
 
+                    // openDecisionModal(
+                    //     "👑 Kamu adalah BOS, siapa yang akan kamu selamatkan?",
+                    //     html
+                    // );
                     openDecisionModal(
-                        "👑 Kamu adalah BOS, siapa yang akan kamu selamatkan?",
+
+                        `
+                        <div>
+                            <div style="
+                                font-size:28px;
+                                font-weight:bold;
+                                margin-bottom:6px;
+                            ">
+                                👑 Kamu adalah BOS
+                            </div>
+
+                            <div style="
+                                font-size:16px;
+                                opacity:0.85;
+                                font-weight:500;
+                            ">
+                                siapa yang akan kamu selamatkan?
+                            </div>
+                        </div>
+                        `,
+
                         html
                     );
 
@@ -8865,8 +9123,31 @@
                         `;
                     });
 
+                    // openDecisionModal(
+                    //     "🔑 Kamu adalah Pemegang Kunci, siapa yang akan kamu ekstradisi?",
+                    //     html
+                    // );
                     openDecisionModal(
-                        "🔑 Kamu adalah Pemegang Kunci, siapa yang akan kamu ekstradisi?",
+                        `
+                        <div>
+                            <div style="
+                                font-size:28px;
+                                font-weight:bold;
+                                margin-bottom:6px;
+                            ">
+                                🔑 Kamu adalah Pemegang Kunci
+                            </div>
+
+                            <div style="
+                                font-size:16px;
+                                opacity:0.85;
+                                font-weight:500;
+                            ">
+                                    siapa yang akan kamu ekstradisi?
+                            </div>
+                        </div>
+                        `,
+
                         html
                     );
 
@@ -8915,7 +9196,7 @@
                 removeDating(eliminated);
                 let targetGangName =
                 gangs.find(g =>
-                    g.members.includes(target)
+                    g.members.includes(eliminated)
                 )?.name || null;
                 removePlayerFromGang(eliminated);
 
@@ -9244,8 +9525,32 @@
                             `;
                         });
 
+                        // openDecisionModal(
+                        //     "👑 Kamu adalah BOS, siapa yang akan kamu selamatkan?",
+                        //     html
+                        // );
                         openDecisionModal(
-                            "👑 Kamu adalah BOS, siapa yang akan kamu selamatkan?",
+
+                            `
+                            <div>
+                                <div style="
+                                    font-size:28px;
+                                    font-weight:bold;
+                                    margin-bottom:6px;
+                                ">
+                                    👑 Kamu adalah BOS
+                                </div>
+
+                                <div style="
+                                    font-size:16px;
+                                    opacity:0.85;
+                                    font-weight:500;
+                                ">
+                                    siapa yang akan kamu selamatkan?
+                                </div>
+                            </div>
+                            `,
+
                             html
                         );
                     }
@@ -9276,8 +9581,32 @@
                             `;
                         });
 
+                        // openDecisionModal(
+                        //     "🔥 Voting Amnesti",
+                        //     html
+                        // );
                         openDecisionModal(
-                            "🔥 Voting Amnesti",
+
+                            `
+                            <div>
+                                <div style="
+                                    font-size:28px;
+                                    font-weight:bold;
+                                    margin-bottom:6px;
+                                ">
+                                    🔥 Voting Amnesti
+                                </div>
+
+                                <div style="
+                                    font-size:16px;
+                                    opacity:0.85;
+                                    font-weight:500;
+                                ">
+                                    Pilih penghuni yang kamu inginkan untuk kembali ke rumah karantina
+                                </div>
+                            </div>
+                            `,
+
                             html
                         );
                     }
