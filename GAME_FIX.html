@@ -1248,6 +1248,7 @@
                         <option value="Yogyakarta">Yogyakarta</option>
                         <option value="Semarang">Semarang</option>
                         <option value="Medan">Medan</option>
+                        <option value="Palembang">Palembang</option>
                         <option value="Makassar">Makassar</option>
                         <option value="Bali">Bali</option>
 
@@ -1433,6 +1434,7 @@
                 "Yogyakarta",
                 "Semarang",
                 "Medan",
+                "Palembang",
                 "Makassar",
                 "Bali"
             ];
@@ -2114,37 +2116,128 @@
                         ${p !== playerName
                         ? `❤️ Ke Kamu: ${rel}<br>`
                         : ""}
+                        ${
+                        (() => {
+
+                            let partner =
+                            status[p] !== "KELUAR"
+                            ? dating[p]
+                            : eliminatedMeta[p]?.dating;
+
+                            if(!partner) return "";
+
+                            let eliminatedPartner =
+                            status[partner] === "KELUAR";
+
+                            return `
+
+                            <div style="
+                                color:#ff7aa2;
+                                font-weight:bold;
+                                margin-top:6px;
+                            ">
+
+                            ${
+                            eliminatedPartner
+
+                            ? `💔 Pacar ${partner} terekstradisi`
+
+                            : `❤️ Pacar ${partner}`
+                            }
+
+                            </div>
+
+                            `;
+
+                        })()
+                        }
 
                         ${
-                        status[p] !== "KELUAR"
-                        ? (
-                            gangs.find(g=>g.members.includes(p))
-                            ? `<br>👥 ${
-                                gangs.find(g=>g.members.includes(p)).name
-                            }<br>`
-                            : ""
-                        )
-                        : (
-                            eliminatedMeta[p]?.gang
-                            ? `<br>👥 ${
-                                eliminatedMeta[p].gang
-                            } yang terekstradisi<br>`
-                            : ""
-                        )
+                        (() => {
+
+                            let activeGang =
+                            gangs.find(g=>g.members.includes(p));
+
+                            if(status[p] !== "KELUAR"){
+
+                                if(activeGang){
+
+                                    return `
+
+                                    <div style="
+                                        opacity:0.65;
+                                        font-size:13px;
+                                        margin-top:3px;
+                                    ">
+
+                                    👥 ${activeGang.name}
+
+                                    </div>
+
+                                    `;
+                                }
+
+                                return "";
+                            }
+
+                            if(eliminatedMeta[p]?.gang){
+
+                                return `
+
+                                <div style="
+                                    opacity:0.5;
+                                    font-size:12px;
+                                    margin-top:3px;
+                                ">
+
+                                👥 ${eliminatedMeta[p].gang} terekstradisi
+
+                                </div>
+
+                                `;
+                            }
+
+                            return "";
+
+                        })()
                         }
+
+                        
+
                         ${
-                        status[p] !== "KELUAR"
-                        ? (
-                            dating[p]
-                            ? `❤️ Pacar ${dating[p]}<br>`
-                            : ""
-                        )
-                        : (
-                            eliminatedMeta[p]?.dating
-                            ? `💔 Pacar ${eliminatedMeta[p].dating} yang terekstradisi<br>`
-                            : ""
-                        )
+                        gangs.find(g=>g.members.includes(p))
+
+                        ? `
+
+                        <div style="
+                            opacity:0.65;
+                            font-size:13px;
+                            margin-top:3px;
+                        ">
+
+                        ${
+                        gangs.find(g=>g.members.includes(p))
+                        ?.leader &&
+                        status[
+                            gangs.find(g=>g.members.includes(p))
+                            .leader
+                        ] === "KELUAR"
+
+                        ? `👥 ${
+                            gangs.find(g=>g.members.includes(p)).name
+                        } (terekstradisi)`
+
+                        : `👥 ${
+                            gangs.find(g=>g.members.includes(p)).name
+                        }`
                         }
+
+                        </div>
+
+                        `
+                        : ""
+                        }
+                        
                         ${p !== playerName
                         && specialRelations[p]
                         && specialRelations[p][playerName]
@@ -3048,9 +3141,17 @@
                             }
 
                             // 👑 Boss ditakuti → penghuni susah membenci
+                            // if(
+                            //     activeRoles.bos === role &&
+                            //     // bossStreak[role] >= 7
+                            //     stats[role].bos >= 4
+                            // ){
+                            //     debuff = Math.floor(debuff * 0.4);
+                            // }
                             if(
+                                role &&
+                                stats[role] &&
                                 activeRoles.bos === role &&
-                                // bossStreak[role] >= 7
                                 stats[role].bos >= 4
                             ){
                                 debuff = Math.floor(debuff * 0.4);
@@ -3076,7 +3177,7 @@
 
                             if(sameGang){
                                 log(
-                                    `👥😡 ${p} marah besar karena member gengnya (${target}) diekstradisi ${role}`
+                                    `👥😡 ${p} marah besar karena member gengnya (${target}) diekstradisi oleh ${role}`
                                 );
                             }else{
                                 log(
@@ -3662,10 +3763,10 @@
                 else if(roll < 0.66){
 
                     // log("🎉 Ada pesta di rumah karantina, bintang tamu juga hadir ke dalam rumah karantina!!!");
-                    log("🎉 Para penghuni mengadakan pesta besar di rumah karantina malam ini!");
+                    log("🎉 Game master mengadakan pesta besar di rumah karantina malam ini!");
                     await delay(1000);
 
-                    log("🌟 Seorang bintang tamu spesial datang dan langsung jadi pusat perhatian!");
+                    log("🌟 Ada bintang tamu spesial datang dan langsung berpesta bersama penghuni!");
                     await delay(700);
 
                     let totalBuff =
@@ -5042,7 +5143,7 @@
 
                         if(weekDay === 1){
 
-                            log("🌙 Hari bebas / istirahat semifinal");
+                            log("🌙 Hari bebas menuju semifinal");
 
                         }else if(weekDay === 2){
 
@@ -5061,7 +5162,7 @@
 
                         if(weekDay === 1){
 
-                            log("🌙 Hari bebas / istirahat final");
+                            log("🌙 Hari bebas menuju final");
 
                         }else if(weekDay === 2){
 
@@ -5080,13 +5181,13 @@
 
                         if(weekDay === 1){
 
-                            log("🌙 Hari bebas / refleksi grand final");
+                            log("🌙 Hari bebas menuju grand final");
 
                         }else if(aliveCount === 2){
 
                             if(weekDay === 1){
 
-                                log("🌙 Hari bebas / refleksi grand final");
+                                log("🌙 Hari bebas menuju grand final");
 
                             }else if(weekDay === 2){
 
@@ -8302,12 +8403,12 @@
                     g.members.includes(eliminated)
                 )?.name || null;
 
-                await applyRoleConsequences(
-                    roles.kunci,
-                    eliminated,
-                    "eliminate",
-                    targetGangName
-                );
+                // await applyRoleConsequences(
+                //     roles.kunci,
+                //     eliminated,
+                //     "eliminate",
+                //     targetGangName
+                // );
                 removePlayerFromGang(eliminated);
 
 
