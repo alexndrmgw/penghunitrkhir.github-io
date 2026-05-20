@@ -2116,6 +2116,8 @@
                         ${p !== playerName
                         ? `❤️ Ke Kamu: ${rel}<br>`
                         : ""}
+                        
+
                         ${
                         (() => {
 
@@ -3619,12 +3621,27 @@
 
             function rankCandidates(list, lowest=false){
 
+                // let arr = list.map(p => ({
+                //     name: p,
+                //     score: randomScore(p)
+                // }));
+
+                // arr.sort((a,b)=>
+                //     lowest
+                //     ? a.score - b.score
+                //     : b.score - a.score
+                // );
+
+                // return arr;
                 let arr = list.map(p => ({
+
                     name: p,
-                    score: randomScore(p)
+
+                    score: reputation[p] || 0
                 }));
 
                 arr.sort((a,b)=>
+
                     lowest
                     ? a.score - b.score
                     : b.score - a.score
@@ -7762,7 +7779,19 @@
                 }
                 await delay(650);
 
-                let shuffled = [...kandidat].sort(()=>0.5-Math.random());
+                // let shuffled = [...kandidat].sort(()=>0.5-Math.random());
+                let shuffled = [...kandidat]
+                .sort((a,b)=>
+
+                    (reputation[a] + Math.random()*4)
+
+                    -
+
+                    (reputation[b] + Math.random()*4)
+                );
+
+                // bottom6 =
+                // shuffled.slice(0,bottomCount);
 
                 //let bottom6 = shuffled.slice(0,6);
                 // ⬇️ taruh di sini
@@ -7812,10 +7841,15 @@
                 await delay(650);
 
                 // ambil bottom 3
+                // let scores =
+                // sourceBottom.map(p=>[
+                //     p,
+                //     randomScore(p)
+                // ]);
                 let scores =
                 sourceBottom.map(p=>[
                     p,
-                    randomScore(p)
+                    reputation[p] 
                 ]);
 
                 scores.sort((a,b)=>a[1]-b[1]);
