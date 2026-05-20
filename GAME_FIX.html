@@ -2690,9 +2690,9 @@
                         }
 
                         // jangan spam
-                        if(Math.random() > 0.45){
-                            return;
-                        }
+                        // if(Math.random() > 0.45){
+                        //     return;
+                        // }
 
                         let relAB =
                         relation[a][b] || 0;
@@ -2908,6 +2908,462 @@
                         }
                     });
                 });
+            }
+            async function processGossip(provoker, target){
+                isDayProcessing = true;
+                updatePlayers();
+
+                // validasi
+                if(
+                    !provoker ||
+                    !target ||
+                    provoker === target
+                ){
+                    return false;
+                }
+
+                // target keluar
+                if(
+                    status[provoker] === "KELUAR" ||
+                    status[target] === "KELUAR"
+                ){
+                    return false;
+                }
+
+                log(
+                `🐍 ${provoker} mulai membuat gossip tentang ${target}`
+                );
+                await delay(600)
+
+                // =====================
+                // BASE CHANCE
+                // =====================
+
+                let chance = 50;
+
+                // trait bonus
+                switch(traitsMap[provoker]){
+
+                    case "Licik":
+                        chance += 15;
+                        break;
+
+                    case "Strategis":
+                        chance += 8;
+                        break;
+
+                    case "Emosional":
+                        chance -= 5;
+                        break;
+                }
+
+                // reputasi pengaruh
+                chance += reputation[provoker] * 0.3;
+                chance -= reputation[target] * 0.2;
+
+                // limit
+                if(chance > 90){
+                    chance = 90;
+                }
+
+                if(chance < 10){
+                    chance = 10;
+                }
+
+                // roll
+                let success =
+                Math.random() * 100 < chance;
+
+                // =====================
+                // SUCCESS
+                // =====================
+
+                if(success){
+
+                    log(
+                    `🗣️ Gossip tentang ${target} mulai dipercaya penghuni rumah`
+                    );
+                    await delay(600)
+
+                    // addReputation(provoker, 4);
+
+                    // addReputation(target, -5);
+                    log(
+                    `📈 Reputasi ${provoker} meningkat karena dianggap membawa informasi`
+                    );
+
+                    log(
+                    `📉 Reputasi ${target} mulai menurun akibat gossip rumah`
+                    );
+
+                    addReputation(provoker, 3);
+
+                    addReputation(target, -4);
+
+                    // beberapa penghuni mulai curiga
+                    let alive =
+                    getAlive().filter(
+                        p =>
+                        p !== provoker &&
+                        p !== target
+                    );
+
+                    let affected =
+                    alive.sort(()=>Math.random()-0.5)
+                    .slice(0,3);
+
+                    affected.forEach(p=>{
+
+                        relation[p][target] -= 2;
+
+                        log(
+                        `😒 ${p} mulai curiga kepada ${target}`
+                        );
+                    });
+
+                    
+                    updateSpecialRelations();
+
+                    updateGangs();
+
+                    isDayProcessing = false;
+
+                    updatePlayers();
+
+                    // saveGame();
+
+                    return true;
+                }
+
+                // =====================
+                // FAIL
+                // =====================
+
+                else{
+
+                    log(
+                    `😐 Gossip tentang ${target} ternyata tidak terbukti`
+                    );
+                    await delay(600)
+
+                    // addReputation(provoker, -5);
+                    // log(
+                    // `😐 Gossip tentang ${target} ternyata tidak terbukti`
+                    // );
+
+                    log(
+                    `📉 Reputasi ${provoker} menurun karena dianggap menyebar fitnah`
+                    );
+
+                    addReputation(provoker, -5);
+
+                    let alive =
+                    getAlive().filter(
+                        p =>
+                        p !== provoker
+                    );
+
+                    let affected =
+                    alive.sort(()=>Math.random()-0.5)
+                    .slice(0,2);
+
+                    affected.forEach(p=>{
+
+                        relation[p][provoker] -= 1;
+                    });
+
+                    
+                    updateSpecialRelations();
+
+                    updateGangs();
+
+                    isDayProcessing = false;
+
+                    updatePlayers();
+
+                    // saveGame();
+                    return false;
+                }
+                // updateSpecialRelations();
+
+                // updateGangs();
+
+                // updatePlayers();
+
+                // saveGame();
+            }
+
+            async function processAduDomba(provoker,targetA,targetB){
+                isDayProcessing = true;
+                updatePlayers();
+
+                // validasi
+                if(
+                    !provoker ||
+                    !targetA ||
+                    !targetB
+                ){
+                    return false;
+                }
+
+                if(
+                    targetA === targetB ||
+                    provoker === targetA ||
+                    provoker === targetB
+                ){
+                    return false;
+                }
+
+                // cek status keluar
+                if(
+                    status[provoker] === "KELUAR" ||
+                    status[targetA] === "KELUAR" ||
+                    status[targetB] === "KELUAR"
+                ){
+                    return false;
+                }
+
+                log(
+                `💥 ${provoker} mulai mengadu domba ${targetA} dan ${targetB}`
+                );
+
+                await delay(700);
+
+                // =====================
+                // CHANCE SYSTEM
+                // =====================
+
+                let chance = 45;
+
+                // trait bonus
+                switch(traitsMap[provoker]){
+
+                    case "Licik":
+                        chance += 20;
+                        break;
+
+                    case "Strategis":
+                        chance += 10;
+                        break;
+
+                    case "Emosional":
+                        chance -= 5;
+                        break;
+                }
+
+                // reputasi pengaruh
+                chance += reputation[provoker] * 0.25;
+
+                // target dekat = lebih susah dipecah
+                let closeness =
+                (
+                    relation[targetA][targetB] || 0
+                ) +
+                (
+                    relation[targetB][targetA] || 0
+                );
+
+                chance -= closeness * 0.15;
+
+                // limit
+                if(chance > 90){
+                    chance = 90;
+                }
+
+                if(chance < 10){
+                    chance = 10;
+                }
+
+                let success =
+                Math.random() * 100 < chance;
+
+                // =====================
+                // SUCCESS
+                // =====================
+
+                if(success){
+
+                    log(
+                    `🔥 Adu domba berhasil memicu konflik antara ${targetA} dan ${targetB}`
+                    );
+
+                    await delay(700);
+
+                    let damage =
+                    Math.floor(Math.random()*5)+3;
+
+                    relation[targetA][targetB] -= damage;
+
+                    relation[targetB][targetA] -= damage;
+
+                    addReputation(targetA, -2);
+
+                    addReputation(targetB, -2);
+
+                    addReputation(provoker, 2);
+
+                    log(
+                    `💔 Hubungan ${targetA} dan ${targetB} memburuk (-${damage})`
+                    );
+
+                    log(
+                    `📉 Reputasi ${targetA} dan ${targetB} menurun`
+                    );
+
+                    log(
+                    `📈 Reputasi ${provoker} meningkat karena berhasil mempengaruhi rumah`
+                    );
+
+                    
+                    updateSpecialRelations();
+
+                    updateGangs();
+
+                    isDayProcessing = false;
+
+                    updatePlayers();
+
+                    // saveGame();
+                    return true;
+                }
+
+                // =====================
+                // FAIL
+                // =====================
+
+                else{
+
+                    log(
+                    `😐 Adu domba ${provoker} gagal`
+                    );
+
+                    await delay(700);
+
+                    addReputation(provoker, -4);
+
+                    addReputation(targetA, 1);
+
+                    addReputation(targetB, 1);
+
+                    relation[targetA][provoker] -= 2;
+
+                    relation[targetB][provoker] -= 2;
+
+                    log(
+                    `📉 Reputasi ${provoker} menurun karena aksinya mulai disadari`
+                    );
+
+                    log(
+                    `📈 Reputasi ${targetA} dan ${targetB} justru membaik karena simpati pemirsa kepada mereka`
+                    );
+
+                    
+                    updateSpecialRelations();
+
+                    updateGangs();
+
+                    isDayProcessing = false;
+
+                    updatePlayers();
+
+                    // saveGame();
+                    return false;
+                }
+                
+            }
+
+
+            async function processAutoGossip(){
+
+                let alive = getAlive();
+
+                // jangan terlalu sering
+                if(Math.random() > 0.45){
+                    return;
+                }
+
+                // pilih provoker
+                let provoker =
+                alive[
+                    Math.floor(Math.random() * alive.length)
+                ];
+
+                // trait santai jarang gossip
+                if(
+                    traitsMap[provoker] === "Santai" &&
+                    Math.random() < 0.6
+                ){
+                    return;
+                }
+
+                // cari target paling dibenci
+                let candidates =
+                alive.filter(p => p !== provoker);
+
+                if(candidates.length === 0){
+                    return;
+                }
+
+                // sort berdasarkan relation terburuk
+                candidates.sort((a,b)=>
+                    relation[provoker][a] -
+                    relation[provoker][b]
+                );
+
+                let target = candidates[0];
+
+                // kalau relation belum negatif
+                // jangan gossip
+                if(
+                    relation[provoker][target] > -5
+                ){
+                    return;
+                }
+
+                await processGossip(provoker, target);
+            }
+            async function processAutoAduDomba(){
+
+                let alive = getAlive();
+
+                // jangan terlalu sering
+                // if(Math.random() > 0.30){
+                //     return;
+                // }
+
+                // pilih provoker
+                let provoker =
+                alive[
+                    Math.floor(Math.random()*alive.length)
+                ];
+
+                // santai jarang adu domba
+                if(
+                    traitsMap[provoker] === "Santai" &&
+                    Math.random() < 0.7
+                ){
+                    return;
+                }
+
+                // cari 2 target
+                let targets =
+                alive.filter(p=>p!==provoker);
+
+                if(targets.length < 2){
+                    return;
+                }
+
+                targets =
+                shuffle(targets);
+
+                let targetA = targets[0];
+                let targetB = targets[1];
+
+                await processAduDomba(
+                    provoker,
+                    targetA,
+                    targetB
+                );
             }
 
             function recalculateReputation(){
@@ -3724,6 +4180,10 @@
 
             async function randomHouseEvent(){
 
+                // isDayProcessing = true;
+
+                // updatePlayers();
+
                 let alive = getAlive();
 
                 if(alive.length < 4) return;
@@ -3771,6 +4231,13 @@
                     log(
                         `💔 Hubungan mereka memburuk (-${damage})`
                     );
+                    updateSpecialRelations();
+
+                    updateGangs();
+
+                    updatePlayers();
+
+                    // saveGame();
                 }
 
                 // =========================
@@ -3780,7 +4247,7 @@
                 else if(roll < 0.66){
 
                     // log("🎉 Ada pesta di rumah karantina, bintang tamu juga hadir ke dalam rumah karantina!!!");
-                    log("🎉 Game master mengadakan pesta besar di rumah karantina malam ini!");
+                    log("🎉 Tim Petir mengadakan pesta besar di rumah karantina malam ini!");
                     await delay(1000);
 
                     log("🌟 Ada bintang tamu spesial datang dan langsung berpesta bersama penghuni!");
@@ -3817,158 +4284,159 @@
 
                         await delay(500);
                     }
+                    updateSpecialRelations();
+
+                    updateGangs();
+
+                    updatePlayers();
+
+                    // saveGame();
                 }
 
                 // =========================
                 // 🐍 ADU DOMBA
                 // =========================
 
-                else{
+                // else{
 
-                    let licikPlayers =
-                    alive.filter(
-                        p => traitsMap[p] === "Licik"
-                    );
+                //     let licikPlayers =
+                //     alive.filter(
+                //         p => traitsMap[p] === "Licik"
+                //     );
 
-                    if(licikPlayers.length <= 0) return;
+                //     if(licikPlayers.length <= 0) return;
 
-                    let provoker =
-                    licikPlayers[
-                        Math.floor(Math.random()*licikPlayers.length)
-                    ];
+                //     let provoker =
+                //     licikPlayers[
+                //         Math.floor(Math.random()*licikPlayers.length)
+                //     ];
 
-                    let target =
-                    alive[
-                        Math.floor(Math.random()*alive.length)
-                    ];
+                //     let target =
+                //     alive[
+                //         Math.floor(Math.random()*alive.length)
+                //     ];
 
-                    while(target === provoker){
+                //     while(target === provoker){
 
-                        target =
-                        alive[
-                            Math.floor(Math.random()*alive.length)
-                        ];
-                    }
+                //         target =
+                //         alive[
+                //             Math.floor(Math.random()*alive.length)
+                //         ];
+                //     }
 
-                    log(
-                        `🐍 ${provoker} mulai menghasut penghuni lain...`
-                    );
+                //     log(
+                //         `🐍 ${provoker} mulai menghasut penghuni lain...`
+                //     );
 
-                    await delay(700);
+                //     await delay(700);
 
-                    let affected =
-                    alive.filter(
-                        p => p !== target &&
-                        p !== provoker
-                    );
+                //     let affected =
+                //     alive.filter(
+                //         p => p !== target &&
+                //         p !== provoker
+                //     );
 
-                    affected.forEach(p=>{
+                //     affected.forEach(p=>{
 
-                        let hate =
-                        Math.floor(Math.random()*5)+2;
+                //         let hate =
+                //         Math.floor(Math.random()*5)+2;
 
-                        relation[p][target] -= hate;
-                    });
+                //         relation[p][target] -= hate;
+                //     });
 
-                    // addReputation(target,-3);
-                    addReputation(target,-15);
+                //     // addReputation(target,-3);
+                //     addReputation(target,-15);
 
-                    log(
-                        `🗣️ Nama ${target} mulai menjadi bahan gosip rumah`
-                    );
+                //     log(
+                //         `🗣️ Nama ${target} mulai menjadi bahan gosip rumah`
+                //     );
 
-                    await delay(700);
+                //     await delay(700);
 
-                    log(
-                        `📉 Reputasi ${target} menurun`
-                    );
-                }
-                updateSpecialRelations();
-
-                updateGangs();
-
-                updatePlayers();
-
-                saveGame();
+                //     log(
+                //         `📉 Reputasi ${target} menurun`
+                //     );
+                // }
+                
             }
 
-            async function autoConflictEvent(){
+            // async function autoConflictEvent(){
 
-                let alive = getAlive();
+            //     let alive = getAlive();
 
-                if(alive.length < 4) return;
+            //     if(alive.length < 4) return;
 
-                let pairs = [];
+            //     let pairs = [];
 
-                // cari pasangan relation buruk
-                alive.forEach(a=>{
+            //     // cari pasangan relation buruk
+            //     alive.forEach(a=>{
 
-                    alive.forEach(b=>{
+            //         alive.forEach(b=>{
 
-                        if(a === b) return;
+            //             if(a === b) return;
 
-                        let rel = relation[a][b];
+            //             let rel = relation[a][b];
 
-                        // relation sudah buruk
-                        if(rel <= -12){
+            //             // relation sudah buruk
+            //             if(rel <= -12){
 
-                            pairs.push([a,b,rel]);
-                        }
-                    });
-                });
+            //                 pairs.push([a,b,rel]);
+            //             }
+            //         });
+            //     });
 
-                if(pairs.length <= 0) return;
+            //     if(pairs.length <= 0) return;
 
-                // random konflik
-                let picked =
-                pairs[
-                    Math.floor(Math.random()*pairs.length)
-                ];
+            //     // random konflik
+            //     let picked =
+            //     pairs[
+            //         Math.floor(Math.random()*pairs.length)
+            //     ];
 
-                let a = picked[0];
-                let b = picked[1];
+            //     let a = picked[0];
+            //     let b = picked[1];
 
-                log(`⚡ ${a} mulai kesal dengan ${b}`);
-                await delay(700);
+            //     log(`⚡ ${a} mulai kesal dengan ${b}`);
+            //     await delay(700);
 
-                let damage =
-                Math.floor(Math.random()*6)+3;
+            //     let damage =
+            //     Math.floor(Math.random()*6)+3;
 
-                relation[a][b] -= damage;
-                relation[b][a] -= damage;
+            //     relation[a][b] -= damage;
+            //     relation[b][a] -= damage;
 
-                // emosional lebih brutal
-                if(
-                    traitsMap[a] === "Emosional" ||
-                    traitsMap[b] === "Emosional"
-                ){
+            //     // emosional lebih brutal
+            //     if(
+            //         traitsMap[a] === "Emosional" ||
+            //         traitsMap[b] === "Emosional"
+            //     ){
 
-                    relation[a][b] -= 3;
-                    relation[b][a] -= 3;
+            //         relation[a][b] -= 3;
+            //         relation[b][a] -= 3;
 
-                    damage += 3;
-                }
+            //         damage += 3;
+            //     }
 
-                log(
-                    `💥 ${a} dan ${b} terlibat adu mulut besar (-${damage})`
-                );
+            //     log(
+            //         `💥 ${a} dan ${b} terlibat adu mulut besar (-${damage})`
+            //     );
 
-                await delay(700);
+            //     await delay(700);
 
-                // addReputation(a,-2);
-                // addReputation(b,-2);
-                addReputation(a,-10);
-                addReputation(b,-10);
+            //     // addReputation(a,-2);
+            //     // addReputation(b,-2);
+            //     addReputation(a,-10);
+            //     addReputation(b,-10);
 
-                log(
-                    `📉 Reputasi ${a} dan ${b} menurun`
-                );
-                updateSpecialRelations();
+            //     log(
+            //         `📉 Reputasi ${a} dan ${b} menurun`
+            //     );
+            //     updateSpecialRelations();
 
-                updateGangs();
+            //     updateGangs();
 
-                updatePlayers();
-            }
+            //     updatePlayers();
+            // }
             async function npcRelationshipAI(){
 
                 let alive = getAlive();
@@ -4803,6 +5271,9 @@
 
             // DAY SYSTEM
             async function nextDay(){
+                // processGossip("Boy", "Richard");
+                // await processAutoGossip();
+                // await processAutoAduDomba();
 
 
                 dailySocialCount = 0;
@@ -5519,11 +5990,16 @@
                         let bosTop3 =
                         bosRank.slice(0,3).map(x=>({
                             name:x.name,
-                            score:reputation[x.name] || 0
+                            // score:reputation[x.name] || 0
+                            score:(Math.random() * 30)+(reputation[x.name] * 0.4)
                         }));
 
+                        // roles.bos =
+                        // pickWeighted(bosTop3);
                         roles.bos =
-                        pickWeighted(bosTop3);
+                        bosTop3[
+                            Math.floor(Math.random()*bosTop3.length)
+                        ].name;
 
                         stats[roles.bos].bos++;
                         // 👑 legacy reputation BOS
@@ -5690,11 +6166,16 @@
                         let artBottom3 =
                         artRank.slice(0,3).map(x=>({
                             name:x.name,
-                            score:100 - (reputation[x.name] || 0)
+                            // score:100 - (reputation[x.name] || 0)
+                            score:(Math.random() * 30)+((100 - reputation[x.name]) * 0.4)
                         }));
 
+                        // roles.art =
+                        // pickWeighted(artBottom3);
                         roles.art =
-                        pickWeighted(artBottom3);
+                        artBottom3[
+                            Math.floor(Math.random()*artBottom3.length)
+                        ].name;
                         stats[roles.art].art++;
 
                         activeRoles.art = roles.art;
@@ -6050,11 +6531,16 @@
                         let imunBottom3 =
                         imunRank.slice(0,3).map(x=>({
                             name:x.name,
-                            score:100 - (reputation[x.name] || 0)
+                            // score:100 - (reputation[x.name] || 0)
+                            score:(Math.random() * 30)+((100 - reputation[x.name]) * 0.4)
                         }));
 
+                        // roles.imun =
+                        // pickWeighted(imunBottom3);
                         roles.imun =
-                        pickWeighted(imunBottom3);
+                        imunBottom3[
+                            Math.floor(Math.random()*imunBottom3.length)
+                        ].name;
 
                         stats[roles.imun].imun++;
 
@@ -6309,21 +6795,49 @@
                 dayCount++;
 
                 let allowRandomEvent = !endgameMode && weekDay !== 6;
+                // if(allowRandomEvent){
+
+                //     let roll = Math.random();
+
+                //     // 🎉 EVENT BESAR
+                //     if(roll < 0.45){
+
+                //         await randomHouseEvent();
+                //     }
+
+                //     // ⚡ KONFLIK OTOMATIS
+                //     else if(roll < 0.70){
+
+                //         // await autoConflictEvent();
+                //     }
+                // }
                 if(allowRandomEvent){
 
                     let roll = Math.random();
 
                     // 🎉 EVENT BESAR
-                    if(roll < 0.45){
+                    if(roll < 0.40){
 
                         await randomHouseEvent();
                     }
 
-                    // ⚡ KONFLIK OTOMATIS
-                    else if(roll < 0.70){
+                    // 🐍 GOSSIP
+                    else if(roll < 0.65){
 
-                        await autoConflictEvent();
+                        await processAutoGossip();
                     }
+
+                    // 💥 ADU DOMBA
+                    else if(roll < 0.88){
+
+                        await processAutoAduDomba();
+                    }
+
+                    // // ⚡ DRAMA RUMAH
+                    // else{
+
+                    //     await randomDramaEvent();
+                    // }
                 }
 
                 weekDay++;
