@@ -1405,6 +1405,20 @@
                 <div id="playersMobile"></div>
 
             </div>
+            
+
+        </div>
+        <div id="miniGameModal" class="modal">
+
+            <div class="modal-content">
+
+                <h2 id="miniGameTitle">
+                    🎮 Mini Game
+                </h2>
+
+                <div id="miniGameContent"></div>
+
+            </div>
 
         </div>
 
@@ -1485,6 +1499,7 @@
             // let chaosEventToday = false;
             // khusus gossip/drama/adudomba
             let socialChaosToday = false;
+            let trust = {};
             let traitsMap = {};
             let cityMap = {};
             // let genderMap = {
@@ -1579,6 +1594,1987 @@
                 imun: null,
                 kunci: null
             };
+            let currentMiniGames = {
+
+                bos:null,
+                imun:null,
+                art:null,
+                pk:null,
+                kelompok:null,
+
+                semifinal:null,
+                final:null,
+                grandfinal:null
+            };
+            const miniGamePool = {
+
+                bos:[
+                    "timing",
+                    "memory",
+                    "reaction",
+                    "rolebox"
+                ],
+
+                imun:[
+                    "tap",
+                    "aim",
+                    "memory",
+                    "rolebox"
+                ],
+
+                art:[
+                    "slowtap",
+                    "mistake",
+                    "trash",
+                    "rolebox"
+                ],
+
+                pk:[
+                    "reaction",
+                    "memory",
+                    // "bluff",
+                    "rolebox"
+                ],
+
+                kelompok:[
+                    "target",
+                    "reaction",
+                    "memory",
+                    "pickbox"
+                ],
+
+                semifinal:[
+                    "reaction",
+                    "memory",
+                    "timing",
+                    "pickbox"
+                ],
+
+                final:[
+                    "reaction",
+                    "memory",
+                    "tap",
+                    "pickbox"
+                ],
+
+                grandfinal:[
+                    "reaction",
+                    "timing",
+                    "memory",
+                    "pickbox"
+                ]
+            };
+            const miniGameConfig = {
+
+                memory:{
+
+                    label:"🧠 Memory",
+                    playerBase:70,
+                    npcBase:55
+                },
+
+                reaction:{
+
+                    label:"⚡ Reaction",
+                    playerBase:65,
+                    npcBase:50
+                },
+
+                timing:{
+
+                    label:"🎯 Timing",
+                    playerBase:68,
+                    npcBase:52
+                },
+
+                tap:{
+
+                    label:"👆 Tap Speed",
+                    playerBase:75,
+                    npcBase:55
+                },
+
+                aim:{
+
+                    label:"🎯 Aim",
+                    playerBase:70,
+                    npcBase:55
+                },
+
+                // bluff:{
+
+                //     label:"🎭 Bluff",
+                //     playerBase:65,
+                //     npcBase:50
+                // },
+
+                mistake:{
+
+                    label:"💥 Avoid Mistake",
+                    playerBase:40,
+                    npcBase:45
+                },
+
+                slowtap:{
+
+                    label:"🐢 Slow Tap",
+                    playerBase:35,
+                    npcBase:40
+                },
+
+                target:{
+
+                    label:"🎯 Target",
+                    playerBase:70,
+                    npcBase:55
+                },
+
+                trash:{
+
+                    label:"🗑️ Trash Sort",
+                    playerBase:45,
+                    npcBase:50
+                },
+                pickbox:{
+
+                    label:"📦 Pick Box",
+                    playerBase:60,
+                    npcBase:55
+                },
+
+                rolebox:{
+
+                    label:"🎁 Role Box",
+                    playerBase:50,
+                    npcBase:50
+                }
+            };
+            // async function openMiniGame(type){
+
+            //     return new Promise(resolve=>{
+
+            //         let game = currentMiniGames[type];
+
+            //         let modal =
+            //         document.getElementById("miniGameModal");
+
+            //         let title =
+            //         document.getElementById("miniGameTitle");
+
+            //         let content =
+            //         document.getElementById("miniGameContent");
+
+            //         modal.classList.add("show");
+
+            //         title.innerHTML =
+            //         "🎮 GAME " + type.toUpperCase();
+
+            //         // sementara dummy
+            //         content.innerHTML = `
+
+            //         <p>
+            //             Mini game:
+            //             <b>${game}</b>
+            //         </p>
+
+            //         <button id="playMiniBtn">
+            //             MAIN
+            //         </button>
+
+            //         `;
+
+            //         document
+            //         .getElementById("playMiniBtn")
+            //         .onclick = ()=>{
+
+            //             let score =
+            //             Math.floor(Math.random()*101);
+
+            //             modal.classList.remove("show");
+
+            //             resolve(score);
+            //         };
+            //     });
+            // }
+            async function openMiniGame(type){
+
+                return new Promise(resolve=>{
+
+                    let game =
+                    currentMiniGames[type];
+
+                    // fallback endgame
+                    if(!game){
+
+                        game = "tap";
+                    }
+
+
+                    let config =
+                    miniGameConfig[game];
+
+                    let modal =
+                    document.getElementById("miniGameModal");
+
+                    let title =
+                    document.getElementById("miniGameTitle");
+
+                    let content =
+                    document.getElementById("miniGameContent");
+
+                    modal.classList.add("show");
+
+                    // title.innerHTML =
+                    // "🎮 GAME " + type.toUpperCase();
+                    let roleEmoji = "🎮";
+
+                    switch(type){
+
+                        case "bos":
+                            roleEmoji = "👑";
+                            break;
+
+                        case "art":
+                            roleEmoji = "🧹";
+                            break;
+
+                        case "imun":
+                            roleEmoji = "🛡️";
+                            break;
+
+                        case "pk":
+                            roleEmoji = "🔑";
+                            break;
+
+                        case "kelompok":
+                            roleEmoji = "👥";
+                            break;
+
+                        case "semifinal":
+                            roleEmoji = "🔥";
+                            break;
+
+                        case "final":
+                            roleEmoji = "🏆";
+                            break;
+
+                        case "grandfinal":
+                            roleEmoji = "🏆";
+                            break;
+                    }
+
+                    title.innerHTML =
+                    `🎮 ${roleEmoji} GAME ${type.toUpperCase()}`;
+
+                    if(game === "reaction"){
+
+                        let reacted = false;
+
+                        let startTime = 0;
+
+                        content.innerHTML = `
+
+                        <h3>${config.label}</h3>
+
+                        <p>
+                            Jangan klik saat merah.
+                            Klik secepat mungkin saat hijau!
+                        </p>
+
+                        <div
+                        id="reactionBox"
+                        style="
+                        background:#ef4444;
+                        height:120px;
+                        border-radius:16px;
+                        display:flex;
+                        align-items:center;
+                        justify-content:center;
+                        font-size:24px;
+                        font-weight:bold;
+                        margin-top:20px;
+                        ">
+                            SIAP...
+                        </div>
+                        `;
+
+                        let box =
+                        document.getElementById("reactionBox");
+
+                        let delayTime =
+                        Math.floor(Math.random()*3000)+1500;
+
+                        box.onclick = ()=>{
+
+                            // klik terlalu cepat
+                            if(startTime === 0){
+
+                                box.innerHTML = "❌ TERLALU CEPAT!";
+
+                                return;
+                            }
+
+                            if(!reacted){
+
+                                reacted = true;
+
+                                let reaction =
+                                Date.now() - startTime;
+
+                                let score =
+                                Math.max(
+                                    0,
+                                    100 - Math.floor(reaction/5)
+                                );
+
+                                box.innerHTML =
+                                `⚡ ${reaction} ms`;
+
+                                setTimeout(()=>{
+
+                                    modal.classList.remove("show");
+
+                                    resolve(score);
+
+                                },1000);
+                            }
+                        };
+
+                        setTimeout(()=>{
+
+                            box.style.background =
+                            "#22c55e";
+
+                            box.innerHTML =
+                            "KLIK SEKARANG!";
+
+                            startTime = Date.now();
+
+                        },delayTime);
+
+                        return;
+                    }
+                    if(game === "timing"){
+
+                        let pos = 0;
+
+                        let dir = 1;
+
+                        content.innerHTML = `
+
+                        <h3>${config.label}</h3>
+
+                        <p>
+                            Tekan STOP saat bar di area hijau!
+                        </p>
+
+                        <div style="
+                        width:100%;
+                        height:30px;
+                        background:#1e293b;
+                        border-radius:20px;
+                        position:relative;
+                        overflow:hidden;
+                        margin-top:20px;
+                        display:flex;
+                        ">
+
+                            <!-- merah kiri -->
+                            <div style="
+                            width:30%;
+                            background:#ef4444;
+                            ">
+                            </div>
+
+                            <!-- kuning kiri -->
+                            <div style="
+                            width:15%;
+                            background:#facc15;
+                            ">
+                            </div>
+
+                            <!-- hijau -->
+                            <div style="
+                            width:10%;
+                            background:#22c55e;
+                            ">
+                            </div>
+
+                            <!-- kuning kanan -->
+                            <div style="
+                            width:15%;
+                            background:#facc15;
+                            ">
+                            </div>
+
+                            <!-- merah kanan -->
+                            <div style="
+                            width:30%;
+                            background:#ef4444;
+                            ">
+                            </div>
+
+                            <div
+                            id="timingBar"
+                            style="
+                            position:absolute;
+                            left:0%;
+                            width:10%;
+                            height:100%;
+                            background:linear-gradient(
+                            to bottom,
+                            #ffffff,
+                            #dbeafe
+                            );
+
+                            border:2px solid #93c5fd;
+
+                            border-radius:12px;
+
+                            box-shadow:
+                            0 0 12px rgba(255,255,255,0.9);
+                            ">
+                            </div>
+
+                        </div>
+
+                        <button id="timingBtn">
+                            STOP
+                        </button>
+                        `;
+
+                        let bar =
+                        document.getElementById("timingBar");
+
+                        let interval =
+                        setInterval(()=>{
+
+                            // pos += dir * 2;
+                            let speed = 3;
+
+                            if(pos > 35 && pos < 65){
+
+                                speed = 6;
+                            }
+
+                            pos += dir * speed;
+
+                            if(pos >= 90 || pos <= 0){
+
+                                dir *= -1;
+                            }
+
+                            bar.style.left = pos + "%";
+
+                        },20);
+
+                        document
+                        .getElementById("timingBtn")
+                        .onclick = ()=>{
+
+                            clearInterval(interval);
+
+                            let center =
+                            pos + 5;
+
+                            // let distance =
+                            // Math.abs(center - 50);
+
+                            // let score =
+                            // Math.max(
+                            //     0,
+                            //     100 - distance * 4
+                            // );
+                            let distance =
+                            Math.abs(center - 50);
+
+                            let score = 0;
+
+                            let resultText = "";
+
+                            if(distance <= 5){
+
+                                score = 100;
+
+                                resultText = "🟢 PERFECT!";
+
+                            }
+                            else if(distance <= 15){
+
+                                score = 70;
+
+                                resultText = "🟡 GOOD";
+
+                            }
+                            else if(distance <= 25){
+
+                                score = 40;
+
+                                resultText = "🟠 OKAY";
+
+                            }
+                            else{
+
+                                score = 10;
+
+                                resultText = "🔴 MISS";
+                            }
+
+                            modal.classList.remove("show");
+                            content.innerHTML += `
+
+                            <h2 style="margin-top:20px;">
+                                ${resultText}
+                            </h2>
+
+                            <h1>
+                                ${score} poin
+                            </h1>
+                            `;
+
+                            resolve(
+                                Math.floor(score)
+                            );
+                        };
+
+                        return;
+                    }
+
+                    if(game === "aim"){
+
+                        let score = 0;
+
+                        let timer = 10;
+
+                        content.innerHTML = `
+
+                        <h3>${config.label}</h3>
+
+                        <p>
+                            Klik target yang bergerak!
+                        </p>
+
+                        <h2 id="aimTimer">${timer}</h2>
+
+                        <h1 id="aimScore">0</h1>
+
+                        <div
+                        id="aimArea"
+                        style="
+                        position:relative;
+                        width:100%;
+                        height:300px;
+                        background:#111827;
+                        border-radius:16px;
+                        overflow:hidden;
+                        ">
+                        
+                            <div
+                            id="aimTarget"
+                            style="
+                            position:absolute;
+                            width:60px;
+                            height:60px;
+                            background:#ef4444;
+                            border-radius:50%;
+                            left:40%;
+                            top:40%;
+                            cursor:pointer;
+                            ">
+                            </div>
+
+                        </div>
+                        `;
+
+                        let target =
+                        document.getElementById("aimTarget");
+
+                        function moveTarget(){
+
+                            let x =
+                            Math.random()*80;
+
+                            let y =
+                            Math.random()*80;
+
+                            target.style.left = x + "%";
+                            target.style.top = y + "%";
+                        }
+
+                        target.onclick = ()=>{
+
+                            score += 10;
+
+                            document.getElementById(
+                                "aimScore"
+                            ).innerText = score;
+
+                            moveTarget();
+                        };
+
+                        let interval =
+                        setInterval(()=>{
+
+                            timer--;
+
+                            document.getElementById(
+                                "aimTimer"
+                            ).innerText = timer;
+
+                            moveTarget();
+
+                            if(timer <= 0){
+
+                                clearInterval(interval);
+
+                                modal.classList.remove("show");
+
+                                resolve(score);
+                            }
+
+                        },1000);
+
+                        return;
+                    }
+
+                    if(game === "target"){
+
+                        let score = 0;
+
+                        let timer = 10;
+
+                        content.innerHTML = `
+
+                        <h3>${config.label}</h3>
+
+                        <p>
+                            Klik target HIJAU saja!
+                        </p>
+
+                        <h2 id="targetTimer">${timer}</h2>
+
+                        <h1 id="targetScore">0</h1>
+
+                        <div
+                        id="targetArea"
+                        style="
+                        display:flex;
+                        flex-wrap:wrap;
+                        gap:10px;
+                        margin-top:20px;
+                        ">
+                        </div>
+                        `;
+
+                        let area =
+                        document.getElementById("targetArea");
+
+                        function spawnTargets(){
+
+                            area.innerHTML = "";
+
+                            for(let i=0;i<6;i++){
+
+                                let good =
+                                Math.random() < 0.3;
+
+                                let btn =
+                                document.createElement("button");
+
+                                btn.innerText =
+                                good ? "🟢" : "🔴";
+
+                                btn.style.fontSize = "28px";
+
+                                btn.onclick = ()=>{
+
+                                    if(good){
+
+                                        score += 10;
+
+                                    }else{
+
+                                        score -= 5;
+                                    }
+
+                                    document.getElementById(
+                                        "targetScore"
+                                    ).innerText = score;
+
+                                    spawnTargets();
+                                };
+
+                                area.appendChild(btn);
+                            }
+                        }
+
+                        spawnTargets();
+
+                        let interval =
+                        setInterval(()=>{
+
+                            timer--;
+
+                            document.getElementById(
+                                "targetTimer"
+                            ).innerText = timer;
+
+                            spawnTargets();
+
+                            if(timer <= 0){
+
+                                clearInterval(interval);
+
+                                modal.classList.remove("show");
+
+                                resolve(Math.max(0,score));
+                            }
+
+                        },1200);
+
+                        return;
+                    }
+
+                    if(game === "mistake"){
+
+                        let score = 0;
+
+                        let timer = 10;
+
+                        content.innerHTML = `
+
+                        <h3>${config.label}</h3>
+
+                        <p>
+                            Hindari bom!
+                        </p>
+
+                        <h2 id="mistakeTimer">${timer}</h2>
+
+                        <h1 id="mistakeScore">${score}</h1>
+
+                        <div
+                        id="mistakeArea"
+                        style="
+                        display:grid;
+                        grid-template-columns:repeat(3,1fr);
+                        gap:10px;
+                        margin-top:20px;
+                        ">
+                        </div>
+                        `;
+
+                        let area =
+                        document.getElementById("mistakeArea");
+
+                        function renderBoxes(){
+
+                            area.innerHTML = "";
+
+                            for(let i=0;i<9;i++){
+
+                                let bad =
+                                Math.random() < 0.25;
+
+                                let box =
+                                document.createElement("button");
+
+                                // box.innerText =
+                                // bad ? "💣" : "⭐";
+
+                                // box.style.fontSize = "24px";
+                                box.innerHTML =
+                                bad
+                                ? "💣"
+                                : "⭐";
+
+                                box.style.fontSize = "32px";
+
+                                box.style.padding = "18px";
+
+                                box.style.borderRadius = "16px";
+
+                                box.style.border =
+                                "2px solid transparent";
+
+                                box.style.transition =
+                                "0.2s";
+
+                                if(bad){
+
+                                    box.style.background =
+                                    "#7f1d1d";
+
+                                    box.style.boxShadow =
+                                    "0 0 12px rgba(239,68,68,0.8)";
+
+                                }else{
+
+                                    box.style.background =
+                                    "#78350f";
+
+                                    box.style.boxShadow =
+                                    "0 0 10px rgba(250,204,21,0.6)";
+                                }
+
+                                box.onclick = ()=>{
+
+                                    if(bad){
+
+                                        score -= 15;
+
+                                    }else{
+
+                                        score += 8;
+                                    }
+
+                                    document.getElementById(
+                                        "mistakeScore"
+                                    ).innerText = score;
+
+                                    renderBoxes();
+                                };
+
+                                area.appendChild(box);
+                            }
+                        }
+
+                        renderBoxes();
+
+                        let interval =
+                        setInterval(()=>{
+
+                            timer--;
+
+                            document.getElementById(
+                                "mistakeTimer"
+                            ).innerText = timer;
+
+                            renderBoxes();
+
+                            if(timer <= 0){
+
+                                clearInterval(interval);
+
+                                modal.classList.remove("show");
+
+                                resolve(Math.max(0,score));
+                            }
+
+                        },1200);
+
+                        return;
+                    }
+                    if(game === "pickbox"){
+
+                        let picked = false;
+
+                        let rewards = [
+                            10,
+                            20,
+                            30,
+                            50,
+                            70,
+                            100,
+                            -20,
+                            -10,
+                            0
+                        ];
+
+                        rewards =
+                        rewards.sort(()=>Math.random()-0.5);
+
+                        content.innerHTML = `
+
+                        <h3>${config.label}</h3>
+
+                        <p>
+                            Pilih satu box keberuntungan!
+                        </p>
+
+                        <div
+                        id="pickBoxArea"
+                        style="
+                        display:grid;
+                        grid-template-columns:repeat(3,1fr);
+                        gap:12px;
+                        margin-top:20px;
+                        ">
+                        </div>
+
+                        <h1 id="pickResult"></h1>
+                        `;
+
+                        let area =
+                        document.getElementById("pickBoxArea");
+
+                        rewards.forEach((value,index)=>{
+
+                            let btn =
+                            document.createElement("button");
+
+                            // btn.innerHTML = "📦";
+                            btn.innerHTML = "❓";
+
+                            btn.style.fontSize = "32px";
+                            btn.style.padding = "20px";
+
+                            btn.onclick = ()=>{
+
+                                if(picked) return;
+
+                                picked = true;
+
+                                let score =
+                                Math.max(0,value);
+
+                                btn.innerHTML =
+                                value >= 50
+                                ? "💎"
+                                : value > 0
+                                ? "⭐"
+                                : value < 0
+                                ? "💣"
+                                : "🪨";
+
+                                document.getElementById(
+                                    "pickResult"
+                                ).innerHTML =
+
+                                value >= 50
+                                ? `🔥 JACKPOT +${value}`
+                                : value > 0
+                                ? `✨ +${value} poin`
+                                : value < 0
+                                ? `💥 ${value} poin`
+                                : `😐 Zonk`;
+
+                                setTimeout(()=>{
+
+                                    modal.classList.remove("show");
+
+                                    resolve(score);
+
+                                },1500);
+                            };
+
+                            area.appendChild(btn);
+                        });
+
+                        return;
+                    }
+                    
+                    if(game === "rolebox"){
+
+                        let roleSymbol = "👑";
+
+                        switch(type){
+
+                            case "bos":
+                                roleSymbol = "👑";
+                                break;
+
+                            case "imun":
+                                roleSymbol = "🛡️";
+                                break;
+
+                            case "art":
+                                roleSymbol = "🧹";
+                                break;
+
+                            case "pk":
+                                roleSymbol = "🔑";
+                                break;
+                        }
+
+                        let candidates =
+                        currentMiniGameCandidates || [];
+
+                        let selectedIndex = null;
+
+                        let npcChoices = {};
+
+                        let winnerIndex =
+                        Math.floor(
+                            Math.random()*candidates.length
+                        );
+
+                        content.innerHTML = `
+
+                        <h3>${config.label}</h3>
+
+                        <p>
+                            Pilih satu box!
+                        </p>
+
+                        <div
+                        id="roleBoxArea"
+                        style="
+                        display:flex;
+                        gap:16px;
+                        flex-wrap:wrap;
+                        margin-top:20px;
+                        justify-content:center;
+                        ">
+                        </div>
+
+                        <h2
+                        id="roleBoxResult"
+                        style="margin-top:20px;">
+                        </h2>
+                        `;
+
+                        let area =
+                        document.getElementById("roleBoxArea");
+
+                        for(let i=0;i<candidates.length;i++){
+
+                            let btn =
+                            document.createElement("button");
+
+                            // btn.innerHTML = "📦";
+                            btn.innerHTML = "❓";
+
+                            btn.style.fontSize = "42px";
+
+                            btn.style.padding = "20px";
+
+                            btn.style.borderRadius = "16px";
+
+                            btn.dataset.index = i;
+
+                            btn.onclick = ()=>{
+
+                                if(selectedIndex !== null){
+
+                                    return;
+                                }
+
+                                selectedIndex = i;
+
+                                btn.style.background =
+                                "#22c55e";
+                                btn.style.border =
+                                "3px solid #4ade80";
+
+                                btn.style.boxShadow =
+                                "0 0 18px rgba(34,197,94,0.8)";
+
+                                // npc pilih otomatis
+                                let available = [];
+
+                                for(
+                                    let j=0;
+                                    j<candidates.length;
+                                    j++
+                                ){
+
+                                    if(j !== selectedIndex){
+
+                                        available.push(j);
+                                    }
+                                }
+
+                                available =
+                                available.sort(
+                                    ()=>Math.random()-0.5
+                                );
+
+                                let npcList =
+                                candidates.filter(
+                                    p => p !== playerName
+                                );
+
+                                npcList.forEach((npc,idx)=>{
+
+                                    npcChoices[npc] =
+                                    available[idx];
+                                });
+
+                                // reveal semua
+                                setTimeout(()=>{
+
+                                    [...area.children]
+                                    .forEach((box,k)=>{
+
+                                        let isPlayerChoice =
+                                        k === selectedIndex;
+
+                                        let isWinningBox =
+                                        k === winnerIndex;
+
+                                        // reset style dulu
+                                        box.style.background = "#1e293b";
+
+                                        if(isWinningBox){
+
+                                            box.innerHTML =
+                                            roleSymbol;
+
+                                            box.style.background =
+                                            "#facc15";
+
+                                            box.style.color =
+                                            "#111";
+
+                                        }else{
+
+                                            box.innerHTML = "❌";
+
+                                            box.style.background =
+                                            "#7f1d1d";
+                                        }
+
+                                        // kalau pilihan player
+                                        // kasih highlight hijau
+                                        if(isPlayerChoice){
+
+                                            box.style.border =
+                                            "4px solid #22c55e";
+
+                                            box.style.boxShadow =
+                                            "0 0 20px rgba(34,197,94,0.9)";
+                                        }
+                                    });
+
+                                    let winner =
+                                    null;
+
+                                    if(selectedIndex === winnerIndex){
+
+                                        winner = playerName;
+
+                                    }else{
+
+                                        winner =
+                                        Object.keys(npcChoices)
+                                        .find(
+
+                                            npc =>
+
+                                            npcChoices[npc] ===
+                                            winnerIndex
+                                        );
+                                    }
+
+                                    document.getElementById(
+                                        "roleBoxResult"
+                                    ).innerHTML =
+
+                                    `${roleSymbol} ${winner} mendapatkan role!`;
+
+                                    setTimeout(()=>{
+
+                                        modal.classList.remove("show");
+
+                                        resolve(winner);
+
+                                    },2000);
+
+                                },1200);
+                            };
+
+                            area.appendChild(btn);
+                        }
+
+                        return;
+                    }
+
+                    if(game === "memory"){
+
+                        let emojis = [
+                            "🍎",
+                            "🎲",
+                            "🚀",
+                            "🐱",
+                            "⚡"
+                        ];
+
+                        let sequence = [];
+
+                        for(let i=0;i<4;i++){
+
+                            sequence.push(
+                                emojis[
+                                    Math.floor(
+                                        Math.random()*emojis.length
+                                    )
+                                ]
+                            );
+                        }
+
+                        content.innerHTML = `
+
+                        <h3>${config.label}</h3>
+
+                        <p>
+                            Hafalkan urutan emoji!
+                        </p>
+
+                        <h1 id="memorySequence">
+                            ${sequence.join(" ")}
+                        </h1>
+
+                        <div
+                        id="memoryChoices"
+                        style="
+                        display:none;
+                        margin-top:20px;
+                        ">
+                        </div>
+
+                        <h2 id="memoryResult"></h2>
+                        `;
+
+                        setTimeout(()=>{
+
+                            // document.getElementById(
+                            //     "memorySequence"
+                            // ).innerHTML = "❓ ❓ ❓ ❓";
+                            let hiddenDisplay =
+                            Array(sequence.length)
+                            .fill("❓");
+
+                            document.getElementById(
+                                "memorySequence"
+                            ).innerHTML =
+                            hiddenDisplay.join(" ");
+
+                            let choices =
+                            document.getElementById(
+                                "memoryChoices"
+                            );
+
+                            choices.style.display = "block";
+
+                            emojis.forEach(e=>{
+
+                                let btn =
+                                document.createElement("button");
+
+                                btn.innerHTML = e;
+
+                                btn.style.fontSize = "28px";
+
+                                btn.onclick = ()=>{
+
+                                    playerInput.push(e);
+                                    hiddenDisplay[
+                                        playerInput.length - 1
+                                    ] = e;
+
+                                    document.getElementById(
+                                        "memorySequence"
+                                    ).innerHTML =
+                                    hiddenDisplay.join(" ");
+
+                                    if(
+                                        playerInput.length ===
+                                        sequence.length
+                                    ){
+
+                                        // let correct = 0;
+
+                                        // for(
+                                        //     let i=0;
+                                        //     i<sequence.length;
+                                        //     i++
+                                        // ){
+
+                                        //     if(
+                                        //         playerInput[i] ===
+                                        //         sequence[i]
+                                        //     ){
+                                        //         correct++;
+                                        //     }
+                                        // }
+
+                                        // let score =
+                                        // correct * 25;
+                                        choices
+                                        .querySelectorAll("button")
+                                        .forEach(b=>{
+
+                                            b.disabled = true;
+
+                                            b.style.opacity = 0.5;
+                                        });
+                                        let correct = 0;
+
+                                        let resultHTML = "";
+
+                                        for(
+                                            let i=0;
+                                            i<sequence.length;
+                                            i++
+                                        ){
+
+                                            let isCorrect =
+                                            playerInput[i] ===
+                                            sequence[i];
+
+                                            if(isCorrect){
+
+                                                correct++;
+                                            }
+
+                                            resultHTML += `
+
+                                            <span style="
+                                            display:inline-block;
+                                            padding:10px;
+                                            margin:4px;
+                                            border-radius:12px;
+                                            background:
+                                            ${isCorrect ? "#22c55e" : "#ef4444"};
+                                            color:white;
+                                            font-size:28px;
+                                            ">
+                                                ${playerInput[i]}
+                                            </span>
+
+                                            `;
+                                        }
+
+                                        let score =
+                                        correct * 25;
+
+                                        document.getElementById(
+                                            "memorySequence"
+                                        ).innerHTML =
+                                        resultHTML;
+
+                                        document.getElementById(
+                                            "memoryResult"
+                                        ).innerHTML =
+
+                                        `🧠 Benar ${correct}/4`;
+
+                                        setTimeout(()=>{
+
+                                            modal.classList.remove("show");
+
+                                            resolve(score);
+
+                                        },1500);
+                                    }
+                                };
+
+                                choices.appendChild(btn);
+                            });
+
+                        },2500);
+
+                        let playerInput = [];
+
+                        return;
+                    }
+                    // if(game === "bluff"){
+
+                    //     content.innerHTML = `
+
+                    //     <h3>${config.label}</h3>
+
+                    //     <p>
+                    //         Pilih strategi kamu!
+                    //     </p>
+
+                    //     <div
+                    //     style="
+                    //     display:flex;
+                    //     gap:15px;
+                    //     margin-top:20px;
+                    //     ">
+
+                    //         <button id="safeBtn">
+                    //             🛡️ SAFE
+                    //         </button>
+
+                    //         <button id="riskBtn">
+                    //             🎭 RISK
+                    //         </button>
+
+                    //     </div>
+
+                    //     <h2 id="bluffResult"></h2>
+                    //     `;
+
+                    //     document
+                    //     .getElementById("safeBtn")
+                    //     .onclick = ()=>{
+
+                    //         let score =
+                    //         Math.floor(Math.random()*25)+40;
+
+                    //         document.getElementById(
+                    //             "bluffResult"
+                    //         ).innerHTML =
+
+                    //         `🛡️ Aman! +${score}`;
+
+                    //         setTimeout(()=>{
+
+                    //             modal.classList.remove("show");
+
+                    //             resolve(score);
+
+                    //         },1200);
+                    //     };
+
+                    //     document
+                    //     .getElementById("riskBtn")
+                    //     .onclick = ()=>{
+
+                    //         let jackpot =
+                    //         Math.random() < 0.45;
+
+                    //         let score =
+                    //         jackpot
+                    //         ? Math.floor(Math.random()*40)+70
+                    //         : Math.floor(Math.random()*25);
+
+                    //         document.getElementById(
+                    //             "bluffResult"
+                    //         ).innerHTML =
+
+                    //         jackpot
+                    //         ? `🔥 BLUFF BERHASIL! +${score}`
+                    //         : `💀 Bluff gagal... ${score}`;
+
+                    //         setTimeout(()=>{
+
+                    //             modal.classList.remove("show");
+
+                    //             resolve(score);
+
+                    //         },1500);
+                    //     };
+
+                    //     return;
+                    // }
+                    if(game === "trash"){
+
+                        let score = 0;
+
+                        let timer = 10;
+
+                        let items = [
+                            "🍌",
+                            "🧴",
+                            "📄",
+                            "🥤",
+                            "🍎"
+                        ];
+
+                        content.innerHTML = `
+
+                        <h3>${config.label}</h3>
+
+                        <p>
+                            Klik sampah yang bisa didaur ulang!
+                        </p>
+
+                        <h2 id="trashTimer">${timer}</h2>
+
+                        <h1 id="trashScore">${score}</h1>
+
+                        <div
+                        id="trashArea"
+                        style="
+                        display:flex;
+                        flex-wrap:wrap;
+                        gap:10px;
+                        margin-top:20px;
+                        ">
+                        </div>
+                        `;
+
+                        let area =
+                        document.getElementById("trashArea");
+
+                        function renderTrash(){
+
+                            area.innerHTML = "";
+
+                            for(let i=0;i<6;i++){
+
+                                let item =
+                                items[
+                                    Math.floor(Math.random()*items.length)
+                                ];
+
+                                let recyclable =
+                                ["🧴","📄","🥤"]
+                                .includes(item);
+
+                                let btn =
+                                document.createElement("button");
+
+                                btn.innerHTML = item;
+
+                                btn.style.fontSize = "28px";
+
+                                btn.onclick = ()=>{
+
+                                    if(recyclable){
+
+                                        score += 10;
+
+                                    }else{
+
+                                        score -= 5;
+                                    }
+
+                                    document.getElementById(
+                                        "trashScore"
+                                    ).innerText = score;
+
+                                    renderTrash();
+                                };
+
+                                area.appendChild(btn);
+                            }
+                        }
+
+                        renderTrash();
+
+                        let interval =
+                        setInterval(()=>{
+
+                            timer--;
+
+                            document.getElementById(
+                                "trashTimer"
+                            ).innerText = timer;
+
+                            renderTrash();
+
+                            if(timer <= 0){
+
+                                clearInterval(interval);
+
+                                modal.classList.remove("show");
+
+                                resolve(Math.max(0,score));
+                            }
+
+                        },1200);
+
+                        return;
+                    }
+
+                    let timer = 5;
+
+                    let playerScore = 0;
+
+                    content.innerHTML = `
+
+                    <h3>${config.label}</h3>
+
+                    <p>
+                        Tekan tombol secepat mungkin!
+                    </p>
+
+                    <h2 id="miniTimer">
+                        ${timer}
+                    </h2>
+
+                    <h1 id="miniScore">
+                        0
+                    </h1>
+
+                    <button id="spamBtn">
+                        TAP!
+                    </button>
+                    `;
+
+                    let btn =
+                    document.getElementById("spamBtn");
+
+                    btn.onclick = ()=>{
+
+                        // playerScore +=
+                        // Math.floor(Math.random()*8)+3;
+
+                        playerScore += 1;
+
+                        document.getElementById(
+                            "miniScore"
+                        ).innerText =
+                        playerScore;
+                    };
+
+                    let interval =
+                    setInterval(()=>{
+
+                        timer--;
+
+                        let timerEl =
+                        document.getElementById(
+                            "miniTimer"
+                        );
+
+                        if(timerEl){
+
+                            timerEl.innerText = timer;
+                        }
+
+                        // if(timer <= 0){
+
+                        //     clearInterval(interval);
+
+                        //     modal.classList.remove("show");
+
+                        //     resolve(playerScore);
+                        // }
+                        if(timer <= 0){
+
+                            clearInterval(interval);
+
+                            btn.disabled = true;
+
+                            let finalScore = Number(playerScore) || 0;
+
+                            setTimeout(()=>{
+
+                                modal.classList.remove("show");
+
+                                resolve(finalScore);
+
+                            },200);
+
+                            return;
+                        }
+
+                    },1000);
+                });
+            }
+            function simulateNpcMiniGame(player, type){
+
+                // let score =
+                // Math.floor(Math.random()*60);
+                let game =
+                currentMiniGames[type];
+
+                let config =
+                miniGameConfig[game];
+
+                let score =
+                Math.floor(
+                    Math.random() * config.npcBase
+                );
+
+                switch(traitsMap[player]){
+
+                    case "Strategis":
+
+                        if(
+                            currentMiniGames[type] === "memory"
+                        ){
+                            score += 25;
+                        }
+
+                        break;
+
+                    case "Licik":
+
+                        if(
+                            currentMiniGames[type] === "rolebox"
+                        ){
+                            score += 25;
+                        }
+
+                        break;
+
+                    case "Santai":
+
+                        score += 5;
+                        break;
+
+                    case "Emosional":
+
+                        score +=
+                        Math.floor(Math.random()*30)-10;
+                        break;
+                }
+                // GAME BONUS
+
+                if(game === "memory"){
+
+                    if(traitsMap[player] === "Strategis"){
+                        score += 20;
+                    }
+                }
+
+                if(game === "reaction"){
+
+                    if(traitsMap[player] === "Emosional"){
+                        score += 15;
+                    }
+                }
+
+                if(game === "rolebox"){
+
+                    if(traitsMap[player] === "Licik"){
+                        score += 20;
+                    }
+                }
+
+                if(game === "slowtap"){
+
+                    if(traitsMap[player] === "Santai"){
+                        score += 20;
+                    }
+                }
+
+                score += reputation[player] * 0.3;
+
+                return Math.max(
+                    0,
+                    Math.floor(score)
+                );
+            }
+            async function runRoleMiniGame(
+                roleType,
+                candidates,
+                lowestWin = false
+            ){
+
+                console.log(
+                    `[${roleType.toUpperCase()} MINIGAME START]`
+                );
+                let game =
+                currentMiniGames[roleType];
+
+                currentMiniGameCandidates =
+                candidates;
+
+                let scoreMap = {};
+
+                // PLAYER
+                if(candidates.includes(playerName)){
+
+                    // scoreMap[playerName] =
+                    // await openMiniGame(roleType);
+                    let result =
+                    await openMiniGame(roleType);
+
+                    if(game === "rolebox"){
+
+                        return result;
+                    }
+
+                    scoreMap[playerName] = result;
+                }
+
+                // NPC
+                candidates.forEach(p=>{
+
+                    if(p === playerName) return;
+
+                    scoreMap[p] =
+                    simulateNpcMiniGame(
+                        p,
+                        roleType
+                    );
+                });
+
+                console.log(
+                    `[${roleType.toUpperCase()} SCORE MAP]`,
+                    scoreMap
+                );
+
+                console.log("SCOREMAP RAW",scoreMap);
+
+                if(!scoreMap || Object.keys(scoreMap).length === 0){
+
+                    console.log("EMPTY SCOREMAP");
+
+                    return candidates[
+                        Math.floor(Math.random()*candidates.length)
+                    ];
+                }
+
+                log(
+                    `🎮 HASIL GAME ${roleType.toUpperCase()}:`
+                );
+
+                Object.entries(scoreMap)
+                .forEach(([p,score])=>{
+
+                    log(`${p} : ${score} poin`);
+                });
+                console.log("FINAL SCORE MAP", scoreMap);
+                console.log("KEYS", Object.keys(scoreMap));
+
+                // ART = LOWEST SCORE WIN
+                if(lowestWin){
+
+                    return Object.keys(scoreMap)
+                    .reduce((a,b)=>
+
+                        scoreMap[a] < scoreMap[b]
+                        ? a
+                        : b
+                    );
+                }
+
+                // NORMAL = HIGHEST SCORE
+                // return Object.keys(scoreMap)
+                // .reduce((a,b)=>
+
+                //     scoreMap[a] > scoreMap[b]
+                //     ? a
+                //     : b
+                // );
+                let keys = Object.keys(scoreMap);
+
+                if(keys.length === 1){
+
+                    return keys[0];
+                }
+
+                return keys.reduce((a,b)=>
+
+                    scoreMap[a] > scoreMap[b]
+                    ? a
+                    : b
+                );
+            }
+            async function runTeamMiniGame(teamA, teamB){
+
+                log("👥 GAME KELOMPOK DIMULAI!");
+
+                let scoreBlueTeam = 0;
+                let scoreRedTeam = 0;
+
+                let blueTeamDetail = [];
+                let redTeamDetail = [];
+
+                // ===== TEAM A =====
+                for(let p of teamA){
+
+                    let score = 0;
+
+                    if(p === playerName){
+
+                        score =
+                        await openMiniGame("kelompok");
+
+                    }else{
+
+                        score =
+                        simulateNpcMiniGame(
+                            p,
+                            "kelompok"
+                        );
+                    }
+
+                    scoreBlueTeam += score;
+
+                    blueTeamDetail.push(`${p}: ${score}`);
+                }
+
+                // ===== TEAM B =====
+                // for(let p of teamB){
+
+                //     let score =
+                //     simulateNpcMiniGame(
+                //         p,
+                //         "kelompok"
+                //     );
+
+                //     scoreTeamB += score;
+
+                //     detailB.push(`${p}: ${score}`);
+                // }
+                // ===== TEAM MERAH =====
+                for(let p of teamB){
+
+                    let score = 0;
+
+                    if(p === playerName){
+
+                        score =
+                        await openMiniGame(
+                            "kelompok"
+                        );
+
+                    }else{
+
+                        score =
+                        simulateNpcMiniGame(
+                            p,
+                            "kelompok"
+                        );
+                    }
+
+                    scoreRedTeam += score;
+
+                    redTeamDetail.push(`${p}: ${score}`);
+                }
+
+                log(`
+                🔵 Tim Biru Total:
+                ${scoreBlueTeam}
+                `);
+
+                blueTeamDetail.forEach(x=>log("• "+x));
+
+                log(`
+                🔴 Tim Merah Total:
+                ${scoreRedTeam}
+                `);
+
+                redTeamDetail.forEach(x=>log("• "+x));
+
+                let winner =
+                scoreBlueTeam > scoreRedTeam
+                ? "🔵 Tim Biru"
+                : "🔴 Tim Merah";
+
+                log(`
+                🏆 ${winner} memenangkan game kelompok!
+                `);
+
+                return {
+
+                    winner,
+                    scoreBlueTeam,
+                    scoreRedTeam
+                };
+            }
+            function rollWeeklyMiniGames(){
+
+                currentMiniGames.bos =
+                shuffle(miniGamePool.bos)[0];
+
+                currentMiniGames.imun =
+                shuffle(miniGamePool.imun)[0];
+
+                currentMiniGames.art =
+                shuffle(miniGamePool.art)[0];
+
+                currentMiniGames.pk =
+                shuffle(miniGamePool.pk)[0];
+
+                currentMiniGames.kelompok =
+                shuffle(miniGamePool.kelompok)[0];
+
+                currentMiniGames.semifinal =
+                shuffle(miniGamePool.semifinal)[0];
+
+                currentMiniGames.final =
+                shuffle(miniGamePool.final)[0];
+
+                currentMiniGames.grandfinal =
+                shuffle(miniGamePool.grandfinal)[0];
+
+                console.log(
+                    "[MINIGAME WEEK]",
+                    currentMiniGames
+                );
+            }
 
             // INIT PLAYER
             // let names = ["KAMU","Andi","Budi","Citra","Dewi","Eka","Fajar","Gina","Hadi","Indah",
@@ -2034,6 +4030,60 @@
                             specialRelations[n][m] = null;
                         }
                     });
+                    
+                    if(!trust[n]){
+                        trust[n] = {};
+                    }
+
+                    names.forEach(m=>{
+
+                        if(n !== m && trust[n][m] == null){
+
+                            // trust[n][m] = 100;
+                            let baseTrust = 65;
+
+                            switch(traitsMap[m]){
+
+                                case "Strategis":
+
+                                    baseTrust =
+                                    Math.floor(Math.random()*16) + 75;
+                                    break;
+
+                                case "Santai":
+
+                                    baseTrust =
+                                    Math.floor(Math.random()*16) + 70;
+                                    break;
+
+                                case "Licik":
+
+                                    baseTrust =
+                                    Math.floor(Math.random()*21) + 55;
+                                    break;
+
+                                case "Emosional":
+
+                                    baseTrust =
+                                    Math.floor(Math.random()*26) + 45;
+                                    break;
+                            }
+                            // PLAYER BONUS
+                            if(m === playerName){
+
+                                baseTrust += 5;
+                            }
+
+                            // LIMITER
+                            if(baseTrust > 100){
+
+                                baseTrust = 100;
+                            }
+
+                            trust[n][m] = baseTrust;
+                           
+                        }
+                    });
                 });
 
                 // document.getElementById("log").innerHTML =
@@ -2205,8 +4255,24 @@
                     // if(roles.kunci === p){
                     //     role += "🔑 Kunci ";
                     // }
+                    // if(activeRoles.bos === p){
+                    //     role += "👑 Bos ";
+                    // }
                     if(activeRoles.bos === p){
+
                         role += "👑 Bos ";
+
+                        let bosCount =
+                        stats[p]?.bos || 0;
+
+                        if(bosCount >= 4){
+
+                            // role += "🔥 Sangat Ditakuti ";
+
+                        }else{
+
+                            // role += "😨 Ditakuti ";
+                        }
                     }
 
                     if(activeRoles.art === p){
@@ -3103,6 +5169,7 @@
                 // =====================
 
                 let chance = 50;
+                
 
                 // trait bonus
                 switch(traitsMap[provoker]){
@@ -3122,7 +5189,56 @@
 
                 // reputasi pengaruh
                 chance += reputation[provoker] * 0.3;
+                let alive = getAlive().filter(
+                    p => p !== provoker && p !== target
+                );
+                if(activeRoles.bos === target){
+
+                    chance -= 10;
+
+                    if((stats[target]?.bos || 0) >= 4){
+
+                        chance -= 10;
+                    }
+                }
+
+                let avgTrust = 0;
+
+                alive.forEach(p=>{
+
+                    avgTrust += trust[p][provoker] || 0;
+                });
+
+                // avgTrust /= alive.length;
+                if(alive.length > 0){
+
+                    avgTrust /= alive.length;
+
+                }else{
+
+                    avgTrust = 50;
+                }
+                chance += (avgTrust - 50) * 0.18;
+                // target yang percaya provoker
+                // lebih gampang termakan gossip
+                chance +=
+                (trust[target][provoker] - 50) * 0.08;
+
                 chance -= reputation[target] * 0.2;
+
+                // rumah yang dekat dengan target
+                // lebih susah percaya gossip
+                let closeness = 0;
+
+                alive.forEach(p=>{
+
+                    closeness += relation[p][target] || 0;
+                });
+
+                closeness /= alive.length;
+
+                chance -= closeness * 0.08;
+                
 
                 // limit
                 if(chance > 90){
@@ -3160,6 +5276,7 @@
                     );
 
                     addReputation(provoker, 3);
+                    
 
                     addReputation(target, -4);
 
@@ -3174,6 +5291,17 @@
                     let affected =
                     alive.sort(()=>Math.random()-0.5)
                     .slice(0,3);
+
+                    alive.forEach(p=>{
+
+                        if(p === provoker || p === target) return;
+
+                        trust[p][provoker] += 5;
+
+                        if(trust[p][provoker] > 100){
+                            trust[p][provoker] = 100;
+                        }
+                    });
 
                     affected.forEach(p=>{
 
@@ -3219,6 +5347,7 @@
                     );
 
                     addReputation(provoker, -5);
+                    
 
                     let alive =
                     getAlive().filter(
@@ -3233,6 +5362,17 @@
                     affected.forEach(p=>{
 
                         relation[p][provoker] -= 1;
+                    });
+
+                    alive.forEach(p=>{
+
+                        if(p === provoker) return;
+
+                        trust[p][provoker] -= 12;
+
+                        if(trust[p][provoker] < 0){
+                            trust[p][provoker] = 0;
+                        }
                     });
 
                     
@@ -3465,6 +5605,33 @@
                 // =====================
 
                 let chance = 45;
+                let alive =
+                getAlive().filter(
+                    p =>
+                    p !== provoker &&
+                    p !== targetA &&
+                    p !== targetB
+                );
+
+                let avgTrust = 0;
+
+                alive.forEach(p=>{
+
+                    avgTrust += trust[p][provoker] || 0;
+                });
+
+                if(alive.length > 0){
+
+                    avgTrust /= alive.length;
+
+                }else{
+
+                    avgTrust = 50;
+                }
+
+                // trust mempengaruhi keberhasilan adu domba
+                // chance  += (avgTrust - 50) * 0.5;
+                
 
                 // trait bonus
                 switch(traitsMap[provoker]){
@@ -3484,6 +5651,44 @@
 
                 // reputasi pengaruh
                 chance += reputation[provoker] * 0.25;
+                // =========================
+                // TRUST EFFECT
+                // =========================
+                if(activeRoles.bos === targetA){
+
+                    chance -= 10;
+
+                    if((stats[targetA]?.bos || 0) >= 4){
+
+                        chance -= 10;
+                    }
+                }
+
+                if(activeRoles.bos === targetB){
+
+                    chance -= 10;
+
+                    if((stats[targetB]?.bos || 0) >= 4){
+
+                        chance -= 10;
+                    }
+                }
+
+                // trust rumah ke provoker
+                chance += (avgTrust - 50) * 0.25;
+
+                // target lebih gampang percaya
+                chance +=
+                (trust[targetA][provoker] - 50) * 0.12;
+
+                chance +=
+                (trust[targetB][provoker] - 50) * 0.12;
+
+                // rumah mulai kebal omongan dia
+                if(avgTrust < 25){
+
+                    chance -= 25;
+                }
 
                 // target dekat = lebih susah dipecah
                 let closeness =
@@ -3532,6 +5737,21 @@
                     addReputation(targetB, -2);
 
                     addReputation(provoker, 2);
+                    alive.forEach(p=>{
+
+                        if(
+                            p === provoker ||
+                            p === targetA ||
+                            p === targetB
+                        ) return;
+
+                        trust[p][provoker] += 6;
+
+                        if(trust[p][provoker] > 100){
+
+                            trust[p][provoker] = 100;
+                        }
+                    });
 
                     log(
                     `💔 Hubungan ${targetA} dan ${targetB} memburuk (-${damage})`
@@ -3571,6 +5791,17 @@
                     await delay(700);
 
                     addReputation(provoker, -4);
+                    alive.forEach(p=>{
+
+                        if(p === provoker) return;
+
+                        trust[p][provoker] -= 15;
+
+                        if(trust[p][provoker] < 0){
+
+                            trust[p][provoker] = 0;
+                        }
+                    });
 
                     addReputation(targetA, 1);
 
@@ -3898,6 +6129,9 @@
 
                 recalculateReputation();
             }
+            
+            
+            
             function resetWeeklyReputation(){
 
                 let alive = getAlive();
@@ -4643,6 +6877,17 @@
 
                         p2 =
                         alive[Math.floor(Math.random()*alive.length)];
+                    }
+                    if(activeRoles.bos === p2){
+
+                        if((stats[p2]?.bos || 0) >= 4){
+
+                            return false;
+
+                        }else if(Math.random() < 0.5){
+
+                            return false;
+                        }
                     }
 
                     let damage =
@@ -5838,6 +8083,7 @@
 
                     if(weekDay > 7){
                         weekDay = 1;
+                        rollWeeklyMiniGames();
                     }
                 }
                 
@@ -6192,6 +8438,16 @@
                 if(endgameMode){
 
                     let aliveCount = getAlive().length;
+                    // hapus semua role aktif
+                    activeRoles.bos = null;
+                    activeRoles.art = null;
+                    activeRoles.imun = null;
+                    activeRoles.kunci = null;
+
+                    roles.bos = null;
+                    roles.art = null;
+                    roles.imun = null;
+                    roles.kunci = null;
 
                     // ======================
                     // 4 BESAR = SEMIFINAL
@@ -6251,14 +8507,85 @@
 
                                 let finalists = getAlive();
 
-                                log("👑 GRAND FINAL DIMULAI!");
-                                await delay(DEBUG_DELAY);
+                                // log("👑 GRAND FINAL DIMULAI!");
+                                // await delay(DEBUG_DELAY);
 
-                                // =================
-                                // ROUND 1
-                                // =================
+                                // // =================
+                                // // ROUND 1
+                                // // =================
 
-                                log("🔥 Babak 1 dimulai...");
+                                // log("🔥 Babak 1 dimulai...");
+                                // await delay(DEBUG_DELAY);
+
+                                // let score = {};
+
+                                // score[finalists[0]] = 0;
+                                // score[finalists[1]] = 0;
+
+                                // let round1Winner =
+                                // finalists[Math.floor(Math.random()*2)];
+
+                                // score[round1Winner]++;
+
+                                // log(
+                                //     "🏆 Pemenang babak 1 = " +
+                                //     round1Winner
+                                // );
+
+                                // await delay(DEBUG_DELAY);
+
+                                // // =================
+                                // // ROUND 2
+                                // // =================
+
+                                // log("🔥 Babak 2 dimulai...");
+                                // await delay(DEBUG_DELAY);
+
+                                // let round2Winner =
+                                // finalists[Math.floor(Math.random()*2)];
+
+                                // score[round2Winner]++;
+
+                                // log(
+                                //     "🏆 Pemenang babak 2 = " +
+                                //     round2Winner
+                                // );
+
+                                // await delay(DEBUG_DELAY);
+
+                                // let finalWinner;
+
+                                // // =================
+                                // // CEK SERI
+                                // // =================
+
+                                // if(
+                                //     score[finalists[0]] ===
+                                //     score[finalists[1]]
+                                // ){
+
+                                //     log("⚔️ Penentuan babak 3...");
+                                //     await delay(DEBUG_DELAY);
+
+                                //     let round3Winner =
+                                //     finalists[Math.floor(Math.random()*2)];
+
+                                //     log(
+                                //         "👑 Pemenang babak 3 = " +
+                                //         round3Winner
+                                //     );
+
+                                //     finalWinner = round3Winner;
+
+                                // }else{
+
+                                //     finalWinner =
+                                //     score[finalists[0]] >
+                                //     score[finalists[1]]
+                                //     ? finalists[0]
+                                //     : finalists[1];
+                                // }
+                                log("🏆 GRAND FINAL DIMULAI!");
                                 await delay(DEBUG_DELAY);
 
                                 let score = {};
@@ -6266,8 +8593,44 @@
                                 score[finalists[0]] = 0;
                                 score[finalists[1]] = 0;
 
+                                // =====================================
+                                // ROUND 1
+                                // =====================================
+
+                                log("🎮 Babak 1 dimulai...");
+                                await delay(DEBUG_DELAY);
+
+                                let round1Score = {};
+
+                                for(let p of finalists){
+
+                                    // PLAYER MAIN GAME
+                                    if(p === playerName && status[playerName] !== "KELUAR"){
+
+                                        round1Score[p] =
+                                        await openMiniGame(
+                                            "grandfinal"
+                                        );
+
+                                    }else{
+
+                                        round1Score[p] =
+                                        simulateNpcMiniGame(
+                                            p,
+                                            "grandfinal"
+                                        );
+                                    }
+
+                                    log(
+                                        `🎯 ${p}: ${round1Score[p]} poin`
+                                    );
+                                }
+
                                 let round1Winner =
-                                finalists[Math.floor(Math.random()*2)];
+                                round1Score[finalists[0]] >
+                                round1Score[finalists[1]]
+                                ? finalists[0]
+                                : finalists[1];
 
                                 score[round1Winner]++;
 
@@ -6277,16 +8640,54 @@
                                 );
 
                                 await delay(DEBUG_DELAY);
-
-                                // =================
-                                // ROUND 2
-                                // =================
-
-                                log("🔥 Babak 2 dimulai...");
+                                log(
+                                    `📊 SCORE SEMENTARA:
+                                ${finalists[0]} ${score[finalists[0]]}
+                                -
+                                ${score[finalists[1]]} ${finalists[1]}`
+                                );
                                 await delay(DEBUG_DELAY);
 
+                                // =====================================
+                                // ROUND 2
+                                // =====================================
+
+                                log("🎮 Babak 2 dimulai...");
+                                await delay(DEBUG_DELAY);
+
+                                let round2Score = {};
+
+                                for(let p of finalists){
+
+                                    if(p === playerName && status[playerName] !== "KELUAR"){
+
+                                        round2Score[p] =
+                                        await openMiniGame(
+                                            "grandfinal"
+                                        );
+
+                                    }else{
+
+                                        round2Score[p] =
+                                        simulateNpcMiniGame(
+                                            p,
+                                            "grandfinal"
+                                        );
+                                    }
+
+                                    // log(
+                                    //     `🎯 ${p}: ${round2Score[p]} poin`
+                                    // );
+                                    log(
+                                        `🎯 ${p} memperoleh ${round2Score[p]} poin`
+                                    );
+                                }
+
                                 let round2Winner =
-                                finalists[Math.floor(Math.random()*2)];
+                                round2Score[finalists[0]] >
+                                round2Score[finalists[1]]
+                                ? finalists[0]
+                                : finalists[1];
 
                                 score[round2Winner]++;
 
@@ -6294,14 +8695,22 @@
                                     "🏆 Pemenang babak 2 = " +
                                     round2Winner
                                 );
+                                
 
+                                await delay(DEBUG_DELAY);
+                                log(
+                                    `📊 SCORE SEMENTARA:
+                                ${finalists[0]} ${score[finalists[0]]}
+                                -
+                                ${score[finalists[1]]} ${finalists[1]}`
+                                );
                                 await delay(DEBUG_DELAY);
 
                                 let finalWinner;
 
-                                // =================
-                                // CEK SERI
-                                // =================
+                                // =====================================
+                                // ROUND 3 (JIKA SERI)
+                                // =====================================
 
                                 if(
                                     score[finalists[0]] ===
@@ -6311,8 +8720,36 @@
                                     log("⚔️ Penentuan babak 3...");
                                     await delay(DEBUG_DELAY);
 
+                                    let round3Score = {};
+
+                                    for(let p of finalists){
+
+                                        if(p === playerName && status[playerName] !== "KELUAR"){
+
+                                            round3Score[p] =
+                                            await openMiniGame(
+                                                "grandfinal"
+                                            );
+
+                                        }else{
+
+                                            round3Score[p] =
+                                            simulateNpcMiniGame(
+                                                p,
+                                                "grandfinal"
+                                            );
+                                        }
+
+                                        log(
+                                            `🎯 ${p}: ${round3Score[p]} poin`
+                                        );
+                                    }
+
                                     let round3Winner =
-                                    finalists[Math.floor(Math.random()*2)];
+                                    round3Score[finalists[0]] >
+                                    round3Score[finalists[1]]
+                                    ? finalists[0]
+                                    : finalists[1];
 
                                     log(
                                         "👑 Pemenang babak 3 = " +
@@ -6479,6 +8916,11 @@
                         log("👑 Tidak ada BOS lagi di tahap ini.");
 
                     }else{
+                        rollWeeklyMiniGames();
+                        // console.log(
+                        //     "[WEEKLY GAMES ROLLED]",
+                        //     currentMiniGames
+                        // );
 
                         let kandidat = alive.filter(p =>
 
@@ -6532,6 +8974,12 @@
 
                         let topBosCandidates =
                         bosRank.slice(0,3).map(x=>x.name);
+                        //ALEX DEBUG KANDIDAT bos BWT MINIGAME BOS
+                        // let topBosCandidates = [
+                        //     playerName,
+                        //     bosRank[0].name,
+                        //     bosRank[1].name
+                        // ];
 
                         // log(
                         //     "🎮 Kandidat game BOS: " +
@@ -6598,7 +9046,76 @@
                         // bosTop3[
                         //     Math.floor(Math.random()*bosTop3.length)
                         // ].name;
-                        roles.bos = pickRealityWinner(bosTop3);
+                        // roles.bos = pickRealityWinner(bosTop3);
+                        // if(topBosCandidates.includes(playerName)){
+
+                        //     console.log(
+                        //         "[BOS MINIGAME START]"
+                        //     );
+
+                        //     let scoreMap = {};
+
+                        //     // PLAYER MAIN GAME
+                        //     scoreMap[playerName] =
+                        //     await openMiniGame("bos");
+
+                        //     // NPC SIMULATION
+                        //     bosTop3.forEach(x=>{
+
+                        //         let p = x.name;
+
+                        //         if(p === playerName) return;
+
+                        //         scoreMap[p] =
+                        //         simulateNpcMiniGame(
+                        //             p,
+                        //             "bos"
+                        //         );
+                        //     });
+
+                        //     console.log(
+                        //         "[BOS SCORE MAP]",
+                        //         scoreMap
+                        //     );
+
+                        //     // cari skor tertinggi
+                        //     roles.bos =
+                        //     Object.keys(scoreMap).reduce((a,b)=>
+
+                        //         scoreMap[a] > scoreMap[b]
+                        //         ? a
+                        //         : b
+                        //     );
+                        //     log("🎮 HASIL GAME BOS:");
+
+                        //     Object.entries(scoreMap)
+                        //     .forEach(([p,score])=>{
+
+                        //         log(
+                        //             `${p} : ${score} poin`
+                        //         );
+                        //     });
+
+                        // }else{
+
+                        //     // AUTO SYSTEM LAMA
+                        //     roles.bos =
+                        //     pickRealityWinner(bosTop3);
+                        // }
+                        if(topBosCandidates.includes(playerName)){
+
+                            roles.bos =
+                            await runRoleMiniGame(
+                                "bos",
+                                topBosCandidates
+                            );
+
+                        }else{
+
+                            roles.bos =
+                            pickRealityWinner(bosTop3);
+                        }
+                        
 
                         stats[roles.bos].bos++;
                         // 👑 legacy reputation BOS
@@ -6608,6 +9125,11 @@
                         // 👑 bonus publik langsung
                         addReputation(roles.bos, 8);
 
+                        
+
+                        activeRoles.bos = roles.bos;
+
+                        log("👑 Bos: "+roles.bos);
                         // 👑 bos veteran makin dikenal
                         if(stats[roles.bos].bos >= 2){
 
@@ -6620,10 +9142,6 @@
                             `👑 ${roles.bos} makin dikenal publik sebagai BOS ${stats[roles.bos].bos} kali`
                             );
                         }
-
-                        activeRoles.bos = roles.bos;
-
-                        log("👑 Bos: "+roles.bos);
                         // 👑 Boss streak tracker
                         players.forEach(p=>{
 
@@ -6715,6 +9233,12 @@
 
                         let bottomArtCandidates =
                         artRank.slice(0,3).map(x=>x.name);
+                        //ALEX DEBUG KANDIDAT ART BWT MINIGAME ART
+                        // let bottomArtCandidates = [
+                        //     playerName,
+                        //     artRank[0].name,
+                        //     artRank[1].name
+                        // ];
 
                         // log(
                         //     "⚠️ Kandidat game ART: " +
@@ -6777,7 +9301,21 @@
                         // artBottom3[
                         //     Math.floor(Math.random()*artBottom3.length)
                         // ].name;
-                        roles.art =pickRealityWinner(artBottom3);
+                        // roles.art =pickRealityWinner(artBottom3);
+                        if(bottomArtCandidates.includes(playerName)){
+
+                            roles.art =
+                            await runRoleMiniGame(
+                                "art",
+                                bottomArtCandidates,
+                                true
+                            );
+
+                        }else{
+
+                            roles.art =pickRealityWinner(artBottom3);
+                        }
+
                         stats[roles.art].art++;
 
                         activeRoles.art = roles.art;
@@ -6912,8 +9450,26 @@
 
                         
 
-                        roles.kunci =
-                        kandidat[Math.floor(Math.random()*kandidat.length)];
+                        // roles.kunci =
+                        // kandidat[Math.floor(Math.random()*kandidat.length)];
+                        console.log("PK CANDIDATES", kandidat);
+                        console.log("PLAYER", playerName);
+                        if(kandidat.includes(playerName)){
+
+                            roles.kunci =
+                            await runRoleMiniGame(
+                                "pk",
+                                kandidat
+                            );
+
+                        }else{
+
+                            // roles.bos =
+                            // pickRealityWinner(bosTop3);
+                            roles.kunci =
+                            kandidat[Math.floor(Math.random()*kandidat.length)];
+                        }
+                        
 
                         stats[roles.kunci].pk++;
                         // 🔑 legacy reputation PK
@@ -6922,6 +9478,11 @@
 
                         // 🔑 boost publik mingguan
                         addReputation(roles.kunci, 4);
+                        
+
+                        activeRoles.kunci = roles.kunci;
+
+                        log("🔑 Pemegang Kunci: "+roles.kunci);
                         // 🔑 PK veteran mulai dikenal publik
                         if(stats[roles.kunci].pk >= 2){
 
@@ -6934,10 +9495,6 @@
                             `🔑 ${roles.kunci} mulai dikenal publik sebagai Pemegang Kunci sebanyak ${stats[roles.kunci].pk} kali`
                             );
                         }
-
-                        activeRoles.kunci = roles.kunci;
-
-                        log("🔑 Pemegang Kunci: "+roles.kunci);
                     }
                 }
 
@@ -7086,6 +9643,14 @@
 
                         let bottomImunCandidates =
                         imunRank.slice(0,3).map(x=>x.name);
+                        
+                        //ALEX DEBUG KANDIDAT IMUN
+                        // let bottomImunCandidates = [
+
+                        //     playerName,
+                        //     imunRank[0].name,
+                        //     imunRank[1].name
+                        // ];
 
                         // log(
                         //     "🛡️ Kandidat game IMUN: " +
@@ -7147,7 +9712,18 @@
                         // imunBottom3[
                         //     Math.floor(Math.random()*imunBottom3.length)
                         // ].name;
-                        roles.imun =pickRealityWinner(imunBottom3);
+                        // roles.imun =pickRealityWinner(imunBottom3);
+                        if(bottomImunCandidates.includes(playerName)){
+
+                            roles.imun =
+                            await runRoleMiniGame(
+                                "imun",
+                                bottomImunCandidates
+                            );
+
+                        }else{
+                            roles.imun =pickRealityWinner(imunBottom3);
+                        }
 
                         stats[roles.imun].imun++;
 
@@ -7205,22 +9781,32 @@
                         await delay(1500);
 
                         // random winner
-                        let winner =
-                        Math.random() < 0.5
-                        ? "biru"
-                        : "merah";
+                        // let winner =
+                        // Math.random() < 0.5
+                        // ? "biru"
+                        // : "merah";
+
+                        // let winningTeam =
+                        // winner === "biru"
+                        // ? timBiru
+                        // : timMerah;
+                        let result =
+                        await runTeamMiniGame(
+                            timBiru,
+                            timMerah
+                        );
 
                         let winningTeam =
-                        winner === "biru"
+                        result.winner.includes("Biru")
                         ? timBiru
                         : timMerah;
 
-                        log(
-                            "🏆 Pemenangnya adalah Tim " +
-                            (winner === "biru"
-                            ? "Biru 🔵"
-                            : "Merah 🔴")
-                        );
+                        // log(
+                        //     "🏆 Pemenangnya adalah Tim " +
+                        //     (winningTeam === "biru"
+                        //     ? "Biru 🔵"
+                        //     : "Merah 🔴")
+                        // );
 
                         await delay(DEBUG_DELAY);
 
@@ -7522,6 +10108,7 @@
 
                     if(weekDay > 7){
                         weekDay = 1;
+                        rollWeeklyMiniGames();
                     }
                 }
                 
@@ -9530,96 +12117,344 @@
 
             //     saveGame();
             // }
+            // async function playEndgameStage(stageName){
+
+            //     let alive = getAlive();
+
+            //     log("🎮 " + alive.length + " besar bermain di " + stageName + "...");
+            //     await delay(DEBUG_DELAY);
+
+            //     // =========================
+            //     // BABAK 1
+            //     // =========================
+
+            //     log("🔥 Babak 1 dimulai...");
+            //     await delay(700);
+
+            //     let shuffled =
+            //     [...alive].sort(()=>0.5-Math.random());
+
+            //     let winner1 = shuffled[0];
+
+            //     log(
+            //         "🏆 Pemenang babak 1 " +
+            //         stageName +
+            //         " = " +
+            //         winner1
+            //     );
+
+            //     await delay(700);
+
+            //     // =========================
+            //     // BABAK TERAKHIR
+            //     // =========================
+
+            //     log("⚔️ Babak terakhir dimulai...");
+            //     await delay(700);
+
+            //     let remaining =
+            //     alive.filter(p=>p!==winner1);
+
+            //     remaining =
+            //     remaining.sort(()=>0.5-Math.random());
+
+            //     let finalistsNeeded =
+            //     alive.length === 4 ? 2 : 1;
+
+            //     let winnersFinal =
+            //     remaining.slice(0, finalistsNeeded);
+
+            //     log(
+            //         "🎯 Babak ini dimenangkan oleh: " +
+            //         winnersFinal.join(", ")
+            //     );
+
+            //     await delay(700);
+
+            //     let safePlayers =
+            //     [winner1, ...winnersFinal];
+
+            //     let eliminated =
+            //     alive.filter(p=>!safePlayers.includes(p))[0];
+            //     eliminatedMeta[eliminated] = {
+
+            //         dating: dating[eliminated] || null,
+
+            //         gang:
+            //         gangs.find(g=>g.members.includes(eliminated))
+            //         ?.name || null
+            //     };
+            //     removeDating(eliminated);
+            //     let targetGangName =
+            //     gangs.find(g =>
+            //         g.members.includes(eliminated)
+            //     )?.name || null;
+
+            //     // await applyRoleConsequences(
+            //     //     roles.kunci,
+            //     //     eliminated,
+            //     //     "eliminate",
+            //     //     targetGangName
+            //     // );
+            //     removePlayerFromGang(eliminated);
+
+
+            //     status[eliminated] = "KELUAR";
+            //     npcDailyBonding();
+                
+            //     eliminatedOrder.unshift(eliminated);
+
+            //     log("❌ Yang tereliminasi = " + eliminated);
+
+            //     updatePlayers();
+            // }
             async function playEndgameStage(stageName){
 
                 let alive = getAlive();
 
-                log("🎮 " + alive.length + " besar bermain di " + stageName + "...");
-                await delay(DEBUG_DELAY);
+                // =====================================
+                // SEMIFINAL (4 BESAR)
+                // =====================================
+                if(stageName === "SEMIFINAL"){
 
-                // =========================
-                // BABAK 1
-                // =========================
+                    log("🔥 SEMIFINAL DIMULAI!");
+                    await delay(DEBUG_DELAY);
 
-                log("🔥 Babak 1 dimulai...");
-                await delay(700);
+                    let semifinalists = [...alive];
 
-                let shuffled =
-                [...alive].sort(()=>0.5-Math.random());
+                    // =========================
+                    // BABAK 1
+                    // =========================
 
-                let winner1 = shuffled[0];
+                    log("🎮 Babak 1 Semifinal!");
+                    await delay(DEBUG_DELAY);
 
-                log(
-                    "🏆 Pemenang babak 1 " +
-                    stageName +
-                    " = " +
-                    winner1
-                );
+                    let score1 = {};
 
-                await delay(700);
+                    for(let p of semifinalists){
 
-                // =========================
-                // BABAK TERAKHIR
-                // =========================
+                        // PLAYER MAIN GAME
+                        if(p === playerName  && status[playerName] !== "KELUAR"){
 
-                log("⚔️ Babak terakhir dimulai...");
-                await delay(700);
+                            score1[p] =
+                            await openMiniGame("semifinal");
 
-                let remaining =
-                alive.filter(p=>p!==winner1);
+                        }else{
 
-                remaining =
-                remaining.sort(()=>0.5-Math.random());
+                            score1[p] =
+                            simulateNpcMiniGame(
+                                p,
+                                "semifinal"
+                            );
+                        }
 
-                let finalistsNeeded =
-                alive.length === 4 ? 2 : 1;
+                        log(`🎯 ${p}: ${score1[p]} poin`);
+                    }
 
-                let winnersFinal =
-                remaining.slice(0, finalistsNeeded);
+                    // ranking
+                    let ranking1 =
+                    [...semifinalists]
+                    .sort((a,b)=>score1[b]-score1[a]);
 
-                log(
-                    "🎯 Babak ini dimenangkan oleh: " +
-                    winnersFinal.join(", ")
-                );
+                    let autoFinalist = ranking1[0];
 
-                await delay(700);
+                    log(
+                        `🏆 ${autoFinalist} otomatis lolos ke babak FINAL!`
+                    );
 
-                let safePlayers =
-                [winner1, ...winnersFinal];
+                    await delay(DEBUG_DELAY);
 
-                let eliminated =
-                alive.filter(p=>!safePlayers.includes(p))[0];
-                eliminatedMeta[eliminated] = {
+                    // sisa 3 orang
+                    let round2Players =
+                    semifinalists.filter(
+                        p => p !== autoFinalist
+                    );
 
-                    dating: dating[eliminated] || null,
+                    // kalau player menang babak 1
+                    // dan babak 2 NPC semua
+                    let playerWonRound1 =
+                    autoFinalist === playerName;
 
-                    gang:
-                    gangs.find(g=>g.members.includes(eliminated))
-                    ?.name || null
-                };
-                removeDating(eliminated);
-                let targetGangName =
-                gangs.find(g =>
-                    g.members.includes(eliminated)
-                )?.name || null;
+                    // =========================
+                    // BABAK 2
+                    // =========================
 
-                // await applyRoleConsequences(
-                //     roles.kunci,
-                //     eliminated,
-                //     "eliminate",
-                //     targetGangName
-                // );
-                removePlayerFromGang(eliminated);
+                    log("🎮 Babak 2 Semifinal!");
+                    await delay(DEBUG_DELAY);
 
+                    let score2 = {};
 
-                status[eliminated] = "KELUAR";
-                npcDailyBonding();
-                
-                eliminatedOrder.unshift(eliminated);
+                    for(let p of round2Players){
 
-                log("❌ Yang tereliminasi = " + eliminated);
+                        if(
+                            p === playerName
+                            && !playerWonRound1
+                            && status[playerName] !== "KELUAR"
+                        ){
 
-                updatePlayers();
+                            score2[p] =
+                            await openMiniGame("semifinal");
+
+                        }else{
+
+                            score2[p] =
+                            simulateNpcMiniGame(
+                                p,
+                                "semifinal"
+                            );
+                        }
+
+                        log(`🎯 ${p}: ${score2[p]} poin`);
+                    }
+
+                    let ranking2 =
+                    [...round2Players]
+                    .sort((a,b)=>score2[b]-score2[a]);
+
+                    let secondFinalist = ranking2[0];
+                    let eliminated = ranking2[2];
+
+                    log(
+                        `🏆 ${secondFinalist} lolos ke babak FINAL!`
+                    );
+
+                    await delay(DEBUG_DELAY);
+
+                    log(
+                        `❌ ${eliminated} tereliminasi di semifinal!`
+                    );
+
+                    status[eliminated] = "KELUAR";
+
+                    eliminatedOrder.push(eliminated);
+
+                    updatePlayers();
+
+                    saveGame();
+
+                    return;
+                }
+
+                // =====================================
+                // FINAL (3 BESAR)
+                // =====================================
+                if(stageName === "FINAL"){
+
+                    log("🏆 FINAL DIMULAI!");
+                    await delay(DEBUG_DELAY);
+
+                    let finalists = [...alive];
+
+                    // =========================
+                    // BABAK 1
+                    // =========================
+
+                    log("🎮 Babak 1 Final!");
+                    await delay(DEBUG_DELAY);
+
+                    let score1 = {};
+
+                    for(let p of finalists){
+
+                        if(p === playerName && status[playerName] !== "KELUAR"){
+
+                            score1[p] =
+                            await openMiniGame("final");
+
+                        }else{
+
+                            score1[p] =
+                            simulateNpcMiniGame(
+                                p,
+                                "final"
+                            );
+                        }
+
+                        log(`🎯 ${p}: ${score1[p]} poin`);
+                    }
+
+                    let ranking1 =
+                    [...finalists]
+                    .sort((a,b)=>score1[b]-score1[a]);
+
+                    let grandFinalist = ranking1[0];
+
+                    log(
+                        `👑 ${grandFinalist} otomatis lolos GRAND FINAL!`
+                    );
+
+                    await delay(DEBUG_DELAY);
+
+                    let round2Players =
+                    finalists.filter(
+                        p => p !== grandFinalist
+                    );
+
+                    let playerWonRound1 =
+                    grandFinalist === playerName;
+
+                    // =========================
+                    // BABAK 2
+                    // =========================
+
+                    log("🎮 Babak 2 Final!");
+                    await delay(DEBUG_DELAY);
+
+                    let score2 = {};
+
+                    for(let p of round2Players){
+
+                        if(
+                            p === playerName
+                            && !playerWonRound1
+                            && status[playerName] !== "KELUAR"
+                        ){
+
+                            score2[p] =
+                            await openMiniGame("final");
+
+                        }else{
+
+                            score2[p] =
+                            simulateNpcMiniGame(
+                                p,
+                                "final"
+                            );
+                        }
+
+                        log(`🎯 ${p}: ${score2[p]} poin`);
+                    }
+
+                    let ranking2 =
+                    [...round2Players]
+                    .sort((a,b)=>score2[b]-score2[a]);
+
+                    let secondGrandFinalist =
+                    ranking2[0];
+
+                    let eliminated =
+                    ranking2[1];
+
+                    log(
+                        `👑 ${secondGrandFinalist} masuk babak GRAND FINAL!`
+                    );
+
+                    await delay(DEBUG_DELAY);
+
+                    log(
+                        `❌ ${eliminated} tereliminasi di FINAL!`
+                    );
+
+                    status[eliminated] = "KELUAR";
+
+                    eliminatedOrder.push(eliminated);
+
+                    updatePlayers();
+
+                    saveGame();
+
+                    return;
+                }
             }
 
             async function playerSaveByBoss(name){
@@ -9862,14 +12697,14 @@
                     g.members.includes(name)
                 )?.name || null;
 
-                await applyRoleConsequences(
-                    roles.kunci,
-                    name,
-                    "eliminate",
-                    targetGangName
-                );
+                // await applyRoleConsequences(
+                //     roles.kunci,
+                //     name,
+                //     "eliminate",
+                //     targetGangName
+                // );
 
-                removePlayerFromGang(name);
+                // removePlayerFromGang(name);
 
                 status[name] = "KELUAR";
                 npcDailyBonding();
@@ -9905,8 +12740,17 @@
                 await applyRoleConsequences(
                     playerName,
                     name,
-                    "eliminate"
+                    "eliminate",
+                    targetGangName
                 );
+                removePlayerFromGang(name);
+                if(getAlive().length <= 4){
+
+                    endgameMode = true;
+
+                }
+                
+
 
                 //updatePlayers();
 
@@ -10635,6 +13479,7 @@
                     playerEverEliminated = parsed.playerEverEliminated || false;
                     eliminatedOrder = parsed.eliminatedOrder || [];
                     amnesters = parsed.amnesters || [];
+                    selectedAmnesters = parsed.selectedAmnesters || [];
                     amnestyMode =
                     parsed.amnestyMode || false;
 
@@ -10840,6 +13685,7 @@
                     reputation,
                     legacyReputation,
                     playerSpecialActionUsed,
+                    
                     // chaosEventToday,
                     socialChaosToday,
                     traitsMap,
@@ -10857,6 +13703,7 @@
                     lastWeekRoles,
                     eliminatedOrder,
                     amnesters,
+                    selectedAmnesters,
                     amnestyMode,
                     amnestyStarted,
                     amnestyPopularity,
