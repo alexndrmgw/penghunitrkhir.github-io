@@ -1109,6 +1109,43 @@
                 opacity:0;
             }
         }
+        @keyframes popCorrect{
+
+            0%{
+            transform:scale(0.7);
+            }
+
+            70%{
+            transform:scale(1.15);
+            }
+
+            100%{
+            transform:scale(1);
+            }
+        }
+
+        @keyframes shakeWrong{
+
+            0%{
+            transform:translateX(0);
+            }
+
+            25%{
+            transform:translateX(-6px);
+            }
+
+            50%{
+            transform:translateX(6px);
+            }
+
+            75%{
+            transform:translateX(-4px);
+            }
+
+            100%{
+            transform:translateX(0);
+            }
+        }
 
         </style>
     </head>
@@ -1606,6 +1643,7 @@
                 final:null,
                 grandfinal:null
             };
+            let currentMiniGameCandidates = [];
             const miniGamePool = {
 
                 bos:[
@@ -1633,6 +1671,7 @@
                     "reaction",
                     "memory",
                     // "bluff",
+                    "tap",
                     "rolebox"
                 ],
 
@@ -1812,6 +1851,19 @@
 
                     let config =
                     miniGameConfig[game];
+                    if(!config){
+
+                        console.log(
+                            "INVALID MINIGAME:",
+                            type,
+                            game
+                        );
+
+                        game = "tap";
+
+                        config =
+                        miniGameConfig[game];
+                    }
 
                     let modal =
                     document.getElementById("miniGameModal");
@@ -2611,7 +2663,7 @@
                         id="roleBoxArea"
                         style="
                         display:flex;
-                        gap:16px;
+                        gap:14px;
                         flex-wrap:wrap;
                         margin-top:20px;
                         justify-content:center;
@@ -2622,10 +2674,309 @@
                         id="roleBoxResult"
                         style="margin-top:20px;">
                         </h2>
+
+                        <h1
+                        id="roleBoxTimer"
+                        style="
+                        margin-top:10px;
+                        color:#facc15;
+                        font-size:42px;
+                        ">
+                        </h1>
                         `;
 
                         let area =
                         document.getElementById("roleBoxArea");
+
+                        let available = [];
+
+                        let npcList =
+                        candidates.filter(
+                            p => p !== playerName
+                        );
+                        let playerCountdown = null;
+
+                        let resultText =
+                        document.getElementById(
+                            "roleBoxResult"
+                        );
+
+                        async function startPlayerTurn(){
+                            // let playerCountdown = null;
+
+                            let resultText =
+                            document.getElementById(
+                                "roleBoxResult"
+                            );
+
+                            let timerEl =
+                            document.getElementById(
+                                "roleBoxTimer"
+                            );
+
+                            resultText.innerHTML =
+                            `🤔 ${playerName} sedang memilih box...`;
+
+                            let countdownValue = 5;
+
+                            timerEl.innerHTML =
+                            `⏳ ${countdownValue}`;
+
+                            playerCountdown =
+                            setInterval(()=>{
+
+                                countdownValue--;
+
+                                if(countdownValue <= 0){
+
+                                    // clearInterval(countdown);
+                                    clearInterval(playerCountdown);
+
+                                    
+
+                                    timerEl.innerHTML = "";
+
+                                    return;
+                                }
+
+                                timerEl.innerHTML =
+                                `⏳ ${countdownValue}`;
+
+                            },1000);
+
+                            // enable semua tombol
+                            [...area.children]
+                            .forEach(box=>{
+
+                                box.disabled = false;
+
+                                box.style.opacity = 1;
+                            });
+
+                            // auto random jika player tidak pilih
+                            setTimeout(()=>{
+
+                                if(selectedIndex !== null){
+
+                                    return;
+                                }
+
+                                // clearInterval(countdown);
+                                clearInterval(playerCountdown);
+
+                                timerEl.innerHTML = "";
+
+                                let randomIndex =
+                                Math.floor(
+                                    Math.random()*candidates.length
+                                );
+
+                                area.children[randomIndex].click();
+
+                            },5000);
+                        }
+
+                        async function npcPickSequence(){
+
+                            for(let idx=0; idx<npcList.length; idx++){
+
+                                let npc = npcList[idx];
+
+                                resultText.innerHTML =
+                                `🤔 ${npc} sedang memilih box...`;
+
+                                // delay random 0.8 - 5 detik
+                                let thinkingTime =
+                                Math.floor(
+                                    Math.random()*4200
+                                ) + 800;
+
+                                let timerEl =
+                                document.getElementById(
+                                    "roleBoxTimer"
+                                );
+
+                                // SELALU mulai dari 5
+                                let countdownValue = 5;
+
+                                timerEl.innerHTML =
+                                `⏳ ${countdownValue}`;
+
+                                let countdown =
+                                setInterval(()=>{
+
+                                    countdownValue--;
+
+                                    if(countdownValue <= 0){
+
+                                        clearInterval(countdown);
+
+
+                                        return;
+                                    }
+
+                                    timerEl.innerHTML =
+                                    `⏳ ${countdownValue}`;
+
+                                },1000);
+
+                                await delay(thinkingTime);
+
+                                clearInterval(countdown);
+                                timerEl.innerHTML = "";
+
+                                let chosenBox =
+                                available[idx];
+
+                                npcChoices[npc] =
+                                chosenBox;
+
+                                let npcBox =
+                                area.children[chosenBox];
+
+                                npcBox.style.background =
+                                "#22c55e";
+
+                                npcBox.style.border =
+                                "3px solid #4ade80";
+
+                                npcBox.style.boxShadow =
+                                "0 0 18px rgba(34,197,94,0.8)";
+
+                                npcBox.innerHTML =
+                                npc;
+
+                                npcBox.style.fontSize =
+                                "16px";
+                                // npcBox.style.fontSize =
+                                // "14px";
+
+                                npcBox.style.fontWeight =
+                                "bold";
+                                npcBox.style.textShadow ="0 0 8px rgba(255,255,255,0.35)";
+                                
+
+                                resultText.innerHTML =
+                                `✅ ${npc} memilih box`;
+                            }
+                            resultText.innerHTML = `
+                            🎁 Semua penghuni sudah memilih kotak...
+                            <br><br>
+                            ✨ Waktunya kotak dibuka!
+                            `;
+
+                            await delay(1800);
+
+                            revealRoleBoxes();
+                        }
+                        function revealRoleBoxes(){
+
+                            [...area.children]
+                            .forEach((box,k)=>{
+
+                                let isPlayerChoice =
+                                k === selectedIndex;
+
+                                let isWinningBox =
+                                k === winnerIndex;
+
+                                // reset style
+                                box.style.transition = "all 0.3s ease";
+                                box.style.background = "#1e293b";
+
+                                if(isWinningBox){
+
+                                    // box.innerHTML =
+                                    // roleSymbol;
+                                    box.innerHTML = `
+
+                                    <div style="
+                                    display:flex;
+                                    align-items:center;
+                                    justify-content:center;
+                                    width:100%;
+                                    height:100%;
+                                    font-size:52px;
+                                    line-height:1;
+                                    ">
+                                        ${roleSymbol}
+                                    </div>
+
+                                    `;
+
+                                    box.style.background =
+                                    "#facc15";
+
+                                    box.style.color =
+                                    "#111";
+
+                                }else{
+
+                                    // box.innerHTML = "❌";
+                                    box.innerHTML = `
+                                    <div style="
+                                    display:flex;
+                                    align-items:center;
+                                    justify-content:center;
+                                    width:100%;
+                                    height:100%;
+                                    font-size:52px;
+                                    line-height:1;
+                                    color:white;
+                                    ">
+                                        ❌
+                                    </div>
+
+                                    `;
+
+                                    box.style.background =
+                                    "#7f1d1d";
+                                }
+
+                                // highlight pilihan player
+                                if(isPlayerChoice){
+
+                                    box.style.border =
+                                    "4px solid #22c55e";
+
+                                    box.style.boxShadow =
+                                    "0 0 20px rgba(34,197,94,0.9)";
+                                }
+                            });
+
+                            let winner = null;
+
+                            if(selectedIndex === winnerIndex){
+
+                                winner = playerName;
+
+                            }else{
+
+                                winner =
+                                Object.keys(npcChoices)
+                                .find(
+
+                                    npc =>
+
+                                    npcChoices[npc] ===
+                                    winnerIndex
+                                );
+                            }
+
+                            document.getElementById(
+                                "roleBoxResult"
+                            ).innerHTML =
+
+                            `${roleSymbol} ${winner} mendapatkan role!`;
+
+                            setTimeout(()=>{
+
+                                modal.classList.remove("show");
+
+                                resolve(winner);
+
+                            },2200);
+                        }
 
                         for(let i=0;i<candidates.length;i++){
 
@@ -2635,15 +2986,53 @@
                             // btn.innerHTML = "📦";
                             btn.innerHTML = "❓";
 
-                            btn.style.fontSize = "42px";
+                            // btn.style.fontSize = "42px";
 
-                            btn.style.padding = "20px";
+                            // btn.style.padding = "20px";
 
-                            btn.style.borderRadius = "16px";
+                            // btn.style.borderRadius = "16px";
+                            btn.style.width = "100px";
+
+                            btn.style.height = "100px";
+
+                            btn.style.fontSize = "58px";
+                            btn.style.lineHeight = "1";
+
+                            btn.style.borderRadius = "18px";
+
+                            btn.style.padding = "6px";
+
+                            btn.style.boxSizing =
+                            "border-box";
+
+                            btn.style.display =
+                            "flex";
+
+                            btn.style.alignItems =
+                            "center";
+
+                            btn.style.justifyContent =
+                            "center";
+
+                            btn.style.textAlign =
+                            "center";
+
+                            btn.style.wordBreak =
+                            "break-word";
+
+                            btn.style.overflow =
+                            "hidden";
+
+                            btn.style.transition =
+                            "all 0.25s ease";
+
+                            btn.style.flexShrink = "0";
 
                             btn.dataset.index = i;
+                            btn.disabled = true;
+                            btn.style.opacity = 0.7;
 
-                            btn.onclick = ()=>{
+                            btn.onclick = async ()=>{
 
                                 if(selectedIndex !== null){
 
@@ -2651,6 +3040,11 @@
                                 }
 
                                 selectedIndex = i;
+                                clearInterval(playerCountdown);
+
+                                document.getElementById(
+                                    "roleBoxTimer"
+                                ).innerHTML = "";
 
                                 btn.style.background =
                                 "#22c55e";
@@ -2660,8 +3054,72 @@
                                 btn.style.boxShadow =
                                 "0 0 18px rgba(34,197,94,0.8)";
 
+                                btn.innerHTML =
+                                playerName;
+
+                                btn.style.fontSize =
+                                "16px";
+                                // btn.style.fontSize =
+                                // "14px";
+                                btn.style.textShadow ="0 0 8px rgba(255,255,255,0.35)";
+
+                                btn.style.fontWeight =
+                                "bold";
+                                
+
                                 // npc pilih otomatis
-                                let available = [];
+                                // let available = [];
+
+                                // for(
+                                //     let j=0;
+                                //     j<candidates.length;
+                                //     j++
+                                // ){
+
+                                //     if(j !== selectedIndex){
+
+                                //         available.push(j);
+                                //     }
+                                // }
+
+                                // available =
+                                // available.sort(
+                                //     ()=>Math.random()-0.5
+                                // );
+
+                                // let npcList =
+                                // candidates.filter(
+                                //     p => p !== playerName
+                                // );
+
+                                // npcList.forEach((npc,idx)=>{
+
+                                //     npcChoices[npc] =
+                                //     available[idx];
+                                // });
+                                // NPC pilih satu-satu realtime
+                                // let available = [];
+
+                                // for(
+                                //     let j=0;
+                                //     j<candidates.length;
+                                //     j++
+                                // ){
+
+                                //     if(j !== selectedIndex){
+
+                                //         available.push(j);
+                                //     }
+                                // }
+
+                                // available =
+                                // available.sort(()=>Math.random()-0.5);
+
+                                // let npcList =
+                                // candidates.filter(
+                                //     p => p !== playerName
+                                // );
+                                available = [];
 
                                 for(
                                     let j=0;
@@ -2676,110 +3134,297 @@
                                 }
 
                                 available =
-                                available.sort(
-                                    ()=>Math.random()-0.5
-                                );
+                                available.sort(()=>Math.random()-0.5);
 
-                                let npcList =
-                                candidates.filter(
-                                    p => p !== playerName
-                                );
+                                // let resultText =
+                                // document.getElementById(
+                                //     "roleBoxResult"
+                                // );
 
-                                npcList.forEach((npc,idx)=>{
+                                
+                                await npcPickSequence();
 
-                                    npcChoices[npc] =
-                                    available[idx];
-                                });
 
                                 // reveal semua
-                                setTimeout(()=>{
+                                // setTimeout(()=>{
 
-                                    [...area.children]
-                                    .forEach((box,k)=>{
+                                //     [...area.children]
+                                //     .forEach((box,k)=>{
 
-                                        let isPlayerChoice =
-                                        k === selectedIndex;
+                                //         let isPlayerChoice =
+                                //         k === selectedIndex;
 
-                                        let isWinningBox =
-                                        k === winnerIndex;
+                                //         let isWinningBox =
+                                //         k === winnerIndex;
 
-                                        // reset style dulu
-                                        box.style.background = "#1e293b";
+                                //         // reset style dulu
+                                //         box.style.background = "#1e293b";
 
-                                        if(isWinningBox){
+                                //         if(isWinningBox){
 
-                                            box.innerHTML =
-                                            roleSymbol;
+                                //             box.innerHTML =
+                                //             roleSymbol;
 
-                                            box.style.background =
-                                            "#facc15";
+                                //             box.style.background =
+                                //             "#facc15";
 
-                                            box.style.color =
-                                            "#111";
+                                //             box.style.color =
+                                //             "#111";
 
-                                        }else{
+                                //         }else{
 
-                                            box.innerHTML = "❌";
+                                //             box.innerHTML = "❌";
 
-                                            box.style.background =
-                                            "#7f1d1d";
-                                        }
+                                //             box.style.background =
+                                //             "#7f1d1d";
+                                //         }
 
-                                        // kalau pilihan player
-                                        // kasih highlight hijau
-                                        if(isPlayerChoice){
+                                //         // kalau pilihan player
+                                //         // kasih highlight hijau
+                                //         if(isPlayerChoice){
 
-                                            box.style.border =
-                                            "4px solid #22c55e";
+                                //             box.style.border =
+                                //             "4px solid #22c55e";
 
-                                            box.style.boxShadow =
-                                            "0 0 20px rgba(34,197,94,0.9)";
-                                        }
-                                    });
+                                //             box.style.boxShadow =
+                                //             "0 0 20px rgba(34,197,94,0.9)";
+                                //         }
+                                //     });
 
-                                    let winner =
-                                    null;
+                                //     let winner =
+                                //     null;
 
-                                    if(selectedIndex === winnerIndex){
+                                //     if(selectedIndex === winnerIndex){
 
-                                        winner = playerName;
+                                //         winner = playerName;
 
-                                    }else{
+                                //     }else{
 
-                                        winner =
-                                        Object.keys(npcChoices)
-                                        .find(
+                                //         winner =
+                                //         Object.keys(npcChoices)
+                                //         .find(
 
-                                            npc =>
+                                //             npc =>
 
-                                            npcChoices[npc] ===
-                                            winnerIndex
-                                        );
-                                    }
+                                //             npcChoices[npc] ===
+                                //             winnerIndex
+                                //         );
+                                //     }
 
-                                    document.getElementById(
-                                        "roleBoxResult"
-                                    ).innerHTML =
+                                //     document.getElementById(
+                                //         "roleBoxResult"
+                                //     ).innerHTML =
 
-                                    `${roleSymbol} ${winner} mendapatkan role!`;
+                                //     `${roleSymbol} ${winner} mendapatkan role!`;
 
-                                    setTimeout(()=>{
+                                //     setTimeout(()=>{
 
-                                        modal.classList.remove("show");
+                                //         modal.classList.remove("show");
 
-                                        resolve(winner);
+                                //         resolve(winner);
 
-                                    },2000);
+                                //     },2000);
 
-                                },1200);
+                                // },1200);
                             };
 
                             area.appendChild(btn);
                         }
+                        startPlayerTurn();
 
                         return;
+                        
                     }
 
+                    // if(game === "memory"){
+
+                    //     let emojis = [
+                    //         "🍎",
+                    //         "🎲",
+                    //         "🚀",
+                    //         "🐱",
+                    //         "⚡"
+                    //     ];
+
+                    //     let sequence = [];
+
+                    //     for(let i=0;i<4;i++){
+
+                    //         sequence.push(
+                    //             emojis[
+                    //                 Math.floor(
+                    //                     Math.random()*emojis.length
+                    //                 )
+                    //             ]
+                    //         );
+                    //     }
+
+                    //     content.innerHTML = `
+
+                    //     <h3>${config.label}</h3>
+
+                    //     <p>
+                    //         Hafalkan urutan emoji!
+                    //     </p>
+
+                    //     <h1 id="memorySequence">
+                    //         ${sequence.join(" ")}
+                    //     </h1>
+
+                    //     <div
+                    //     id="memoryChoices"
+                    //     style="
+                    //     display:none;
+                    //     margin-top:20px;
+                    //     ">
+                    //     </div>
+
+                    //     <h2 id="memoryResult"></h2>
+                    //     `;
+
+                    //     setTimeout(()=>{
+
+                    //         // document.getElementById(
+                    //         //     "memorySequence"
+                    //         // ).innerHTML = "❓ ❓ ❓ ❓";
+                    //         let hiddenDisplay =
+                    //         Array(sequence.length)
+                    //         .fill("❓");
+
+                    //         document.getElementById(
+                    //             "memorySequence"
+                    //         ).innerHTML =
+                    //         hiddenDisplay.join(" ");
+
+                    //         let choices =
+                    //         document.getElementById(
+                    //             "memoryChoices"
+                    //         );
+
+                    //         choices.style.display = "block";
+
+                    //         emojis.forEach(e=>{
+
+                    //             let btn =
+                    //             document.createElement("button");
+
+                    //             btn.innerHTML = e;
+
+                    //             btn.style.fontSize = "28px";
+
+                    //             btn.onclick = ()=>{
+
+                    //                 playerInput.push(e);
+                    //                 hiddenDisplay[
+                    //                     playerInput.length - 1
+                    //                 ] = e;
+
+                    //                 document.getElementById(
+                    //                     "memorySequence"
+                    //                 ).innerHTML =
+                    //                 hiddenDisplay.join(" ");
+
+                    //                 if(
+                    //                     playerInput.length ===
+                    //                     sequence.length
+                    //                 ){
+
+                    //                     // let correct = 0;
+
+                    //                     // for(
+                    //                     //     let i=0;
+                    //                     //     i<sequence.length;
+                    //                     //     i++
+                    //                     // ){
+
+                    //                     //     if(
+                    //                     //         playerInput[i] ===
+                    //                     //         sequence[i]
+                    //                     //     ){
+                    //                     //         correct++;
+                    //                     //     }
+                    //                     // }
+
+                    //                     // let score =
+                    //                     // correct * 25;
+                    //                     choices
+                    //                     .querySelectorAll("button")
+                    //                     .forEach(b=>{
+
+                    //                         b.disabled = true;
+
+                    //                         b.style.opacity = 0.5;
+                    //                     });
+                    //                     let correct = 0;
+
+                    //                     let resultHTML = "";
+
+                    //                     for(
+                    //                         let i=0;
+                    //                         i<sequence.length;
+                    //                         i++
+                    //                     ){
+
+                    //                         let isCorrect =
+                    //                         playerInput[i] ===
+                    //                         sequence[i];
+
+                    //                         if(isCorrect){
+
+                    //                             correct++;
+                    //                         }
+
+                    //                         resultHTML += `
+
+                    //                         <span style="
+                    //                         display:inline-block;
+                    //                         padding:10px;
+                    //                         margin:4px;
+                    //                         border-radius:12px;
+                    //                         background:
+                    //                         ${isCorrect ? "#22c55e" : "#ef4444"};
+                    //                         color:white;
+                    //                         font-size:28px;
+                    //                         ">
+                    //                             ${playerInput[i]}
+                    //                         </span>
+
+                    //                         `;
+                    //                     }
+
+                    //                     let score =
+                    //                     correct * 25;
+
+                    //                     document.getElementById(
+                    //                         "memorySequence"
+                    //                     ).innerHTML =
+                    //                     resultHTML;
+
+                    //                     document.getElementById(
+                    //                         "memoryResult"
+                    //                     ).innerHTML =
+
+                    //                     `🧠 Benar ${correct}/4`;
+
+                    //                     setTimeout(()=>{
+
+                    //                         modal.classList.remove("show");
+
+                    //                         resolve(score);
+
+                    //                     },1500);
+                    //                 }
+                    //             };
+
+                    //             choices.appendChild(btn);
+                    //         });
+
+                    //     },2500);
+
+                    //     let playerInput = [];
+
+                    //     return;
+                    // }
                     if(game === "memory"){
 
                         let emojis = [
@@ -2791,6 +3436,7 @@
                         ];
 
                         let sequence = [];
+                        
 
                         for(let i=0;i<4;i++){
 
@@ -2802,18 +3448,45 @@
                                 ]
                             );
                         }
+                        let hidden = ["❓","❓","❓","❓"];
+
+                        let participants =
+                        currentMiniGameCandidates?.length
+                        ? [...currentMiniGameCandidates]
+                        : [playerName];
+
+                        let scoreMap = {};
 
                         content.innerHTML = `
 
                         <h3>${config.label}</h3>
 
-                        <p>
-                            Hafalkan urutan emoji!
-                        </p>
+                        <p>Hafalkan urutan emoji!</p>
 
                         <h1 id="memorySequence">
-                            ${sequence.join(" ")}
+                            ${sequence.map(e=>`
+                            <span style="
+                            display:inline-flex;
+                            align-items:center;
+                            justify-content:center;
+                            width:60px;
+                            height:60px;
+                            margin:4px;
+                            border-radius:14px;
+                            background:#1e293b;
+                            font-size:30px;
+                            border:2px solid #475569;
+                            box-shadow:0 0 10px rgba(255,255,255,0.08);
+                            ">
+                                ${e}
+                            </span>
+
+                            `).join("")}
                         </h1>
+
+                        <h2 id="memoryTurn"></h2>
+
+                        <h1 id="memoryTimer"></h1>
 
                         <div
                         id="memoryChoices"
@@ -2823,82 +3496,154 @@
                         ">
                         </div>
 
-                        <h2 id="memoryResult"></h2>
+                        
+
                         `;
+                        let choices =
+                        document.getElementById(
+                            "memoryChoices"
+                        );
 
-                        setTimeout(()=>{
+                        setTimeout(async ()=>{
 
-                            // document.getElementById(
-                            //     "memorySequence"
-                            // ).innerHTML = "❓ ❓ ❓ ❓";
-                            let hiddenDisplay =
-                            Array(sequence.length)
-                            .fill("❓");
+                            for(let p of participants){
 
-                            document.getElementById(
-                                "memorySequence"
-                            ).innerHTML =
-                            hiddenDisplay.join(" ");
+                                let hidden =
+                                ["❓","❓","❓","❓"];
 
-                            let choices =
-                            document.getElementById(
-                                "memoryChoices"
-                            );
+                                document.getElementById(
+                                    "memorySequence"
+                                ).innerHTML =
+                                // hidden.join(" ");
+                                // hidden.map(e=>`
+                                // <span style="
+                                // display:inline-flex;
+                                // align-items:center;
+                                // justify-content:center;
+                                // width:60px;
+                                // height:60px;
+                                // margin:4px;
+                                // border-radius:14px;
+                                // background:#334155;
+                                // font-size:30px;
+                                // border:2px solid #475569;
+                                // ">
+                                //     ${e}
+                                // </span>
 
-                            choices.style.display = "block";
+                                // `).join("");
+                                hidden.map((emoji,index)=>{
 
-                            emojis.forEach(e=>{
+                                    let filled =
+                                    emoji !== "❓";
 
-                                let btn =
-                                document.createElement("button");
+                                    return `
 
-                                btn.innerHTML = e;
+                                    <span style="
+                                    display:inline-flex;
+                                    align-items:center;
+                                    justify-content:center;
+                                    width:60px;
+                                    height:60px;
+                                    margin:4px;
+                                    border-radius:14px;
 
-                                btn.style.fontSize = "28px";
+                                    background:
+                                    ${filled ? "#2563eb" : "#334155"};
 
-                                btn.onclick = ()=>{
+                                    font-size:30px;
 
-                                    playerInput.push(e);
-                                    hiddenDisplay[
-                                        playerInput.length - 1
-                                    ] = e;
+                                    border:2px solid
+                                    ${filled ? "#60a5fa" : "#475569"};
 
+                                    box-shadow:
+                                    ${filled
+                                    ? "0 0 14px rgba(96,165,250,0.45)"
+                                    : "0 0 8px rgba(255,255,255,0.05)"};
+                                    transition:all 0.18s ease;
+
+                                    transform:
+                                    ${filled ? "scale(1.08)" : "scale(1)"};
+                                    ">
+                                        ${emoji}
+                                    </span>
+
+                                    `;
+                                }).join("");
+
+                                let turnText =
+                                document.getElementById(
+                                    "memoryTurn"
+                                );
+
+                                let timerEl =
+                                document.getElementById(
+                                    "memoryTimer"
+                                );
+
+                                
+
+                                turnText.innerHTML =
+                                `🤔 ${p} sedang mengurutkan kartu...`;
+
+                                let timer = 5;
+
+                                timerEl.style.display = "block";
+
+                                timerEl.innerHTML =
+                                `⏳ ${timer}`;
+
+                                let countdown =
+                                setInterval(()=>{
+
+                                    timer--;
+
+                                    if(timer <= 0){
+                                        choices.style.display = "none";
+
+                                        clearInterval(countdown);
+
+                                        timerEl.innerHTML = "";
+                                        timerEl.style.display = "none";
+                                        
+
+                                        return;
+                                    }
+                                    timerEl.style.display = "block";
+
+                                    timerEl.innerHTML =
+                                    `⏳ ${timer}`;
+
+                                },1000);
+
+                                let playerInput = [];
+
+                                if(p === playerName){
+
+                                    let choices =
                                     document.getElementById(
-                                        "memorySequence"
-                                    ).innerHTML =
-                                    hiddenDisplay.join(" ");
+                                        "memoryChoices"
+                                    );
 
-                                    if(
-                                        playerInput.length ===
-                                        sequence.length
-                                    ){
+                                    choices.innerHTML = "";
 
-                                        // let correct = 0;
+                                    choices.style.display =
+                                    "block";
 
-                                        // for(
-                                        //     let i=0;
-                                        //     i<sequence.length;
-                                        //     i++
-                                        // ){
+                                    let finished = false;
 
-                                        //     if(
-                                        //         playerInput[i] ===
-                                        //         sequence[i]
-                                        //     ){
-                                        //         correct++;
-                                        //     }
-                                        // }
+                                    async function finishTurn(){
 
-                                        // let score =
-                                        // correct * 25;
-                                        choices
-                                        .querySelectorAll("button")
-                                        .forEach(b=>{
+                                        if(finished) return;
 
-                                            b.disabled = true;
+                                        finished = true;
 
-                                            b.style.opacity = 0.5;
-                                        });
+                                        clearInterval(countdown);
+
+                                        timerEl.innerHTML = "";
+
+                                        timerEl.style.display = "none";
+
                                         let correct = 0;
 
                                         let resultHTML = "";
@@ -2927,45 +3672,408 @@
                                             border-radius:12px;
                                             background:
                                             ${isCorrect ? "#22c55e" : "#ef4444"};
+                                            animation:
+                                            ${isCorrect
+                                            ? "popCorrect 0.35s ease"
+                                            : "shakeWrong 0.35s ease"};
                                             color:white;
                                             font-size:28px;
                                             ">
-                                                ${playerInput[i]}
+                                                ${playerInput[i] || "❌"}
                                             </span>
 
                                             `;
                                         }
+                                        
 
-                                        let score =
-                                        correct * 25;
-
+                                        // document.getElementById(
+                                        //     "memoryAnswer"
+                                        // ).innerHTML =
+                                        // resultHTML;
+                                        await delay(1200);
                                         document.getElementById(
                                             "memorySequence"
                                         ).innerHTML =
                                         resultHTML;
 
-                                        document.getElementById(
-                                            "memoryResult"
-                                        ).innerHTML =
+                                        scoreMap[p] =
+                                        correct * 25;
+                                    }
 
-                                        `🧠 Benar ${correct}/4`;
+                                    emojis.forEach(e=>{
+
+                                        let btn =
+                                        document.createElement("button");
+
+                                        btn.innerHTML = e;
+
+                                        btn.style.fontSize = "28px";
+
+                                        btn.onclick = ()=>{
+
+                                            if(
+                                                playerInput.length >=
+                                                sequence.length
+                                            ){
+                                                return;
+                                            }
+
+                                            playerInput.push(e);
+
+                                            hidden[
+                                                playerInput.length - 1
+                                            ] = e;
+
+                                            document.getElementById(
+                                                "memorySequence"
+                                            ).innerHTML =
+                                            // hidden.join(" ");
+                                            hidden.map((emoji,index)=>{
+
+                                                let filled =
+                                                emoji !== "❓";
+
+                                                return `
+
+                                                <span style="
+                                                display:inline-flex;
+                                                align-items:center;
+                                                justify-content:center;
+                                                width:60px;
+                                                height:60px;
+                                                margin:4px;
+                                                border-radius:14px;
+
+                                                background:
+                                                ${filled ? "#2563eb" : "#334155"};
+
+                                                font-size:30px;
+
+                                                border:2px solid
+                                                ${filled ? "#60a5fa" : "#475569"};
+
+                                                box-shadow:
+                                                ${filled
+                                                ? "0 0 14px rgba(96,165,250,0.45)"
+                                                : "0 0 8px rgba(255,255,255,0.05)"};
+                                                transition:all 0.18s ease;
+
+                                                transform:
+                                                ${filled ? "scale(1.08)" : "scale(1)"};
+                                                ">
+                                                    ${emoji}
+                                                </span>
+
+                                                `;
+                                            }).join("");
+
+                                            if(
+                                                playerInput.length ===
+                                                sequence.length
+                                            ){
+                                                choices.style.display = "none";
+
+                                                finishTurn();
+                                            }
+                                        };
+
+                                        choices.appendChild(btn);
+                                    });
+
+                                    await new Promise(done=>{
 
                                         setTimeout(()=>{
 
-                                            modal.classList.remove("show");
+                                            finishTurn();
 
-                                            resolve(score);
+                                            done();
 
-                                        },1500);
+                                        },5000);
+                                    });
+
+                                }else{
+
+                                    let npcAccuracy =
+                                    simulateNpcMiniGame(
+                                        p,
+                                        type
+                                    ) / 100;
+
+                                    for(
+                                        let i=0;
+                                        i<sequence.length;
+                                        i++
+                                    ){
+
+                                        await delay(600);
+
+                                        let chooseCorrect =
+                                        Math.random() < npcAccuracy;
+
+                                        let picked =
+                                        chooseCorrect
+                                        ? sequence[i]
+                                        : emojis[
+                                            Math.floor(
+                                                Math.random()*emojis.length
+                                            )
+                                        ];
+
+                                        playerInput.push(picked);
+
+                                        hidden[i] = picked;
+
+                                        document.getElementById(
+                                            "memorySequence"
+                                        ).innerHTML =
+                                        // hidden.join(" ");
+                                        hidden.map((emoji,index)=>{
+
+                                                let filled =
+                                                emoji !== "❓";
+
+                                                return `
+
+                                                <span style="
+                                                display:inline-flex;
+                                                align-items:center;
+                                                justify-content:center;
+                                                width:60px;
+                                                height:60px;
+                                                margin:4px;
+                                                border-radius:14px;
+
+                                                background:
+                                                ${filled ? "#2563eb" : "#334155"};
+
+                                                font-size:30px;
+
+                                                border:2px solid
+                                                ${filled ? "#60a5fa" : "#475569"};
+
+                                                box-shadow:
+                                                ${filled
+                                                ? "0 0 14px rgba(96,165,250,0.45)"
+                                                : "0 0 8px rgba(255,255,255,0.05)"};
+                                                transition:all 0.18s ease;
+
+                                                transform:
+                                                ${filled ? "scale(1.08)" : "scale(1)"};
+                                                ">
+                                                    ${emoji}
+                                                </span>
+
+                                                `;
+                                            }).join("");
                                     }
-                                };
 
-                                choices.appendChild(btn);
+                                    // clearInterval(countdown);
+
+                                    // let correct = 0;
+
+                                    // for(
+                                    //     let i=0;
+                                    //     i<sequence.length;
+                                    //     i++
+                                    // ){
+
+                                    //     if(
+                                    //         playerInput[i] ===
+                                    //         sequence[i]
+                                    //     ){
+
+                                    //         correct++;
+                                    //     }
+                                    // }
+
+                                    // scoreMap[p] =
+                                    // correct * 25;
+                                    clearInterval(countdown);
+
+                                    timerEl.innerHTML = "";
+
+                                    timerEl.style.display = "none";
+
+                                    let correct = 0;
+
+                                    let resultHTML = "";
+
+                                    for(
+                                        let i=0;
+                                        i<sequence.length;
+                                        i++
+                                    ){
+
+                                        let isCorrect =
+                                        playerInput[i] ===
+                                        sequence[i];
+
+                                        if(isCorrect){
+
+                                            correct++;
+                                        }
+
+                                        resultHTML += `
+
+                                        <span style="
+                                        display:inline-flex;
+                                        align-items:center;
+                                        justify-content:center;
+                                        width:60px;
+                                        height:60px;
+                                        margin:4px;
+                                        border-radius:14px;
+                                        background:
+                                        ${isCorrect ? "#22c55e" : "#ef4444"};
+                                        animation:
+                                        ${isCorrect
+                                        ? "popCorrect 0.35s ease"
+                                        : "shakeWrong 0.35s ease"};
+                                        color:white;
+                                        font-size:28px;
+                                        ">
+                                            ${playerInput[i] || "❌"}
+                                        </span>
+
+                                        `;
+                                    }
+                                    await delay(1200);
+
+                                    document.getElementById(
+                                        "memorySequence"
+                                    ).innerHTML =
+                                    resultHTML;
+
+                                    scoreMap[p] =
+                                    correct * 25;
+                                }
+
+                                await delay(1200);
+                            }
+
+                            // let resultHTML =
+                            // `<h2>🧠 HASIL MEMORY</h2>`;
+
+                            // Object.entries(scoreMap)
+                            // .forEach(([p,s])=>{
+
+                            //     resultHTML +=
+                            //     `<p>${p}: ${s} poin</p>`;
+                            // });
+
+                            // document.getElementById(
+                            //     "memoryAnswer"
+                            // ).innerHTML =
+                            // resultHTML;
+                            let resultHTML = "";
+                            document.getElementById(
+                                "memorySequence"
+                            ).innerHTML =
+                            resultHTML;
+
+                            // let sorted =
+                            // Object.entries(scoreMap)
+                            // .sort((a,b)=>b[1]-a[1]);
+
+                            // if(
+                            //     sorted.length >= 2 &&
+                            //     sorted[0][1] === sorted[1][1]
+                            // ){
+
+                            //     log(
+                            //         `⚔️ ${sorted[0][0]} dan ${sorted[1][0]} seri! Memory ulang!`
+                            //     );
+
+                            //     await delay(2000);
+
+                            //     modal.classList.remove("show");
+
+                            //     return resolve(
+                            //         await openMiniGame(type)
+                            //     );
+                            // }
+                            let sorted =
+                            Object.entries(scoreMap)
+                            .sort((a,b)=>b[1]-a[1]);
+
+                            modal.classList.remove("show");
+
+                            // tampilkan hasil memory dulu
+                            log("🧠 HASIL MEMORY");
+
+                            sorted.forEach(([p,s])=>{
+
+                                log(`${p}: ${s} poin`);
                             });
 
-                        },2500);
+                            // KHUSUS NON KELOMPOK
+                            if(type !== "kelompok"){
 
-                        let playerInput = [];
+                                let highestScore = sorted[0][1];
+
+                                let tiedPlayers =
+                                sorted
+                                .filter(([p,s])=>s === highestScore)
+                                .map(([p])=>p);
+
+                                // jika skor tertinggi seri
+                                if(tiedPlayers.length > 1){
+
+                                    log(
+                                        `⚔️ Skor tertinggi dan seri: ${tiedPlayers.join(", ")}`
+                                    );
+
+                                    log(
+                                        `🔁 Permainan memory diulang untuk ${tiedPlayers.length} peserta`
+                                    );
+
+                                    await delay(2500);
+
+                                    modal.classList.remove("show");
+
+                                    // hanya peserta seri yg replay
+                                    currentMiniGameCandidates =
+                                    tiedPlayers;
+
+                                    return resolve(
+                                        await openMiniGame(type)
+                                    );
+                                }
+
+                                // jika sudah ada pemenang tunggal
+                                log(
+                                    `🏆 Skor tertinggi jatuh kepada ${sorted[0][0]}`
+                                );
+                                if(type !== "kelompok"){
+
+                                    return resolve(sorted[0][0]);
+                                }
+                            }
+
+                            setTimeout(()=>{
+
+                                modal.classList.remove("show");
+
+                                resolve(scoreMap);
+
+                            },2500);
+
+                            // setTimeout(()=>{
+                            //     log("🧠 HASIL MEMORY");
+
+                            //     for(let [p,s] of Object.entries(scoreMap)){
+
+                            //         log(`${p}: ${s} poin`);
+                            //     }
+
+
+                            //     modal.classList.remove("show");
+
+                            //     resolve(scoreMap);
+
+                            // },2500);
+
+                        },2500);
 
                         return;
                     }
@@ -3258,6 +4366,16 @@
 
                 let config =
                 miniGameConfig[game];
+                if(!config){
+
+                    console.log(
+                        "MINIGAME CONFIG NOT FOUND:",
+                        type,
+                        game
+                    );
+
+                    return Math.floor(Math.random()*50)+20;
+                }
 
                 let score =
                 Math.floor(
@@ -3343,6 +4461,7 @@
                 console.log(
                     `[${roleType.toUpperCase()} MINIGAME START]`
                 );
+                // currentMiniGameCandidates = candidates;
                 let game =
                 currentMiniGames[roleType];
 
@@ -3356,15 +4475,51 @@
 
                     // scoreMap[playerName] =
                     // await openMiniGame(roleType);
+                    // let result =
+                    // await openMiniGame(roleType);
+
+                    // if(game === "rolebox"){
+
+                    //     return result;
+                    // }
+
+                    // if(game === "memory"){
+
+                    //     scoreMap = result;
+
+                    // }else{
+
+
+                    //     scoreMap[playerName] = result;
+                    // }
                     let result =
                     await openMiniGame(roleType);
 
+                    // ROLEBOX langsung return winner
                     if(game === "rolebox"){
 
                         return result;
                     }
 
-                    scoreMap[playerName] = result;
+                    // MEMORY NON KELOMPOK
+                    // winner sudah ditentukan di openMiniGame
+                    if(
+                        game === "memory" &&
+                        roleType !== "kelompok"
+                    ){
+
+                        return result;
+                    }
+
+                    // memory kelompok tetap pakai scoremap
+                    if(game === "memory"){
+
+                        scoreMap = result;
+
+                    }else{
+
+                        scoreMap[playerName] = result;
+                    }
                 }
 
                 // NPC
@@ -3399,11 +4554,45 @@
                     `🎮 HASIL GAME ${roleType.toUpperCase()}:`
                 );
 
-                Object.entries(scoreMap)
-                .forEach(([p,score])=>{
+                // Object.entries(scoreMap)
+                // .forEach(([p,score])=>{
+
+                //     log(`${p} : ${score} poin`);
+                // });
+                for(let [p,score] of Object.entries(scoreMap)){
 
                     log(`${p} : ${score} poin`);
-                });
+                }
+                if(
+                    roleType !== "kelompok" &&
+                    game === "memory"
+                ){
+
+                    let maxScore =
+                    Math.max(
+                        ...Object.values(scoreMap)
+                    );
+
+                    let tied =
+                    Object.keys(scoreMap)
+                    .filter(
+
+                        p => scoreMap[p] === maxScore
+                    );
+
+                    if(tied.length > 1){
+
+                        log(
+                        `⚔️ ${tied.join(" & ")} harus tanding ulang MEMORY!`
+                        );
+
+                        return await runRoleMiniGame(
+                            roleType,
+                            tied,
+                            lowestWin
+                        );
+                    }
+                }
                 console.log("FINAL SCORE MAP", scoreMap);
                 console.log("KEYS", Object.keys(scoreMap));
 
@@ -3451,28 +4640,75 @@
                 let blueTeamDetail = [];
                 let redTeamDetail = [];
 
+                let game = currentMiniGames.kelompok;
+
                 // ===== TEAM A =====
-                for(let p of teamA){
+                // for(let p of teamA){
 
-                    let score = 0;
+                //     let score = 0;
 
-                    if(p === playerName){
+                //     if(p === playerName){
 
-                        score =
-                        await openMiniGame("kelompok");
+                //         score =
+                //         await openMiniGame("kelompok");
 
-                    }else{
+                //     }else{
 
-                        score =
-                        simulateNpcMiniGame(
-                            p,
-                            "kelompok"
-                        );
+                //         score =
+                //         simulateNpcMiniGame(
+                //             p,
+                //             "kelompok"
+                //         );
+                //     }
+
+                //     scoreBlueTeam += score;
+
+                //     blueTeamDetail.push(`${p}: ${score}`);
+                // }
+                // ===== TEAM BIRU =====
+                if(game === "memory"){
+
+                    currentMiniGameCandidates =
+                    [...teamA];
+
+                    let result =
+                    await openMiniGame("kelompok");
+
+                    for(let [p,s] of Object.entries(result)){
+
+                        scoreBlueTeam += s;
+
+                        blueTeamDetail.push(`${p}: ${s}`);
                     }
 
-                    scoreBlueTeam += score;
+                    log(`🔵 Tim Biru Total: ${scoreBlueTeam}`);
 
-                    blueTeamDetail.push(`${p}: ${score}`);
+                }else{
+
+                    for(let p of teamA){
+
+                        let score = 0;
+
+                        if(p === playerName){
+
+                            score =
+                            await openMiniGame(
+                                "kelompok"
+                            );
+
+                        }else{
+
+                            score =
+                            simulateNpcMiniGame(
+                                p,
+                                "kelompok"
+                            );
+                        }
+
+                        scoreBlueTeam += score;
+
+                        blueTeamDetail.push(`${p}: ${score}`);
+                    }
                 }
 
                 // ===== TEAM B =====
@@ -3489,44 +4725,109 @@
                 //     detailB.push(`${p}: ${score}`);
                 // }
                 // ===== TEAM MERAH =====
-                for(let p of teamB){
+                // for(let p of teamB){
 
-                    let score = 0;
+                //     let score = 0;
 
-                    if(p === playerName){
+                //     if(p === playerName){
 
-                        score =
-                        await openMiniGame(
-                            "kelompok"
-                        );
+                //         score =
+                //         await openMiniGame(
+                //             "kelompok"
+                //         );
 
-                    }else{
+                //     }else{
 
-                        score =
-                        simulateNpcMiniGame(
-                            p,
-                            "kelompok"
-                        );
+                //         score =
+                //         simulateNpcMiniGame(
+                //             p,
+                //             "kelompok"
+                //         );
+                //     }
+
+                //     scoreRedTeam += score;
+
+                //     redTeamDetail.push(`${p}: ${score}`);
+                // }
+                // ===== TEAM MERAH =====
+                if(game === "memory"){
+
+                    currentMiniGameCandidates =
+                    [...teamB];
+
+                    let result =
+                    await openMiniGame("kelompok");
+
+                    for(let [p,s] of Object.entries(result)){
+
+                        scoreRedTeam += s;
+
+                        redTeamDetail.push(`${p}: ${s}`);
                     }
 
-                    scoreRedTeam += score;
+                    log(`🔴 Tim Merah Total: ${scoreRedTeam}`);
 
-                    redTeamDetail.push(`${p}: ${score}`);
+                }else{
+
+                    for(let p of teamB){
+
+                        let score = 0;
+
+                        if(p === playerName){
+
+                            score =
+                            await openMiniGame(
+                                "kelompok"
+                            );
+
+                        }else{
+
+                            score =
+                            simulateNpcMiniGame(
+                                p,
+                                "kelompok"
+                            );
+                        }
+
+                        scoreRedTeam += score;
+
+                        redTeamDetail.push(`${p}: ${score}`);
+                    }
                 }
 
-                log(`
-                🔵 Tim Biru Total:
-                ${scoreBlueTeam}
-                `);
+                // log(`
+                // 🔵 Tim Biru Total:
+                // ${scoreBlueTeam}
+                // `);
 
-                blueTeamDetail.forEach(x=>log("• "+x));
+                // blueTeamDetail.forEach(x=>log("• "+x));
 
-                log(`
-                🔴 Tim Merah Total:
-                ${scoreRedTeam}
-                `);
+                // log(`
+                // 🔴 Tim Merah Total:
+                // ${scoreRedTeam}
+                // `);
 
-                redTeamDetail.forEach(x=>log("• "+x));
+                // redTeamDetail.forEach(x=>log("• "+x));
+                if(game !== "memory"){
+
+                    log(`
+                    🔵 Tim Biru Total:
+                    ${scoreBlueTeam}
+                    `);
+
+                    blueTeamDetail.forEach(
+                        x=>log("• "+x)
+                    );
+
+                    log(`
+                    🔴 Tim Merah Total:
+                    ${scoreRedTeam}
+                    `);
+
+                    redTeamDetail.forEach(
+                        x=>log("• "+x)
+                    );
+                }
 
                 let winner =
                 scoreBlueTeam > scoreRedTeam
