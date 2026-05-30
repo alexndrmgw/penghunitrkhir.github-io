@@ -4008,6 +4008,7 @@
 
                             // KHUSUS NON KELOMPOK
                             if(type !== "kelompok"){
+                                let winner = sorted[0][0];
 
                                 let highestScore = sorted[0][1];
 
@@ -4041,13 +4042,24 @@
                                 }
 
                                 // jika sudah ada pemenang tunggal
-                                log(
-                                    `🏆 Skor tertinggi jatuh kepada ${sorted[0][0]}`
-                                );
-                                if(type !== "kelompok"){
+                                // log(
+                                //     `🏆 Skor tertinggi jatuh kepada ${sorted[0][0]}`
+                                // );
+                                // // if(type !== "kelompok"){
 
-                                    return resolve(sorted[0][0]);
+                                // //     return resolve(sorted[0][0]);
+                                // // }
+                                // return resolve(highestScore);
+                                if(
+                                    type === "pk" ||
+                                    type === "bos" ||
+                                    type === "imun" ||
+                                    type === "art"
+                                ){
+                                    return resolve(winner);
                                 }
+
+                                return resolve(highestScore);
                             }
 
                             setTimeout(()=>{
@@ -9384,7 +9396,7 @@
 
                     if(weekDay > 7){
                         weekDay = 1;
-                        rollWeeklyMiniGames();
+                        // rollWeeklyMiniGames();
                     }
                 }
                 
@@ -10754,7 +10766,7 @@
                         // roles.kunci =
                         // kandidat[Math.floor(Math.random()*kandidat.length)];
                         console.log("PK CANDIDATES", kandidat);
-                        console.log("PLAYER", playerName);
+                        // console.log("PLAYER", playerName);
                         if(kandidat.includes(playerName)){
 
                             roles.kunci =
@@ -10770,6 +10782,8 @@
                             roles.kunci =
                             kandidat[Math.floor(Math.random()*kandidat.length)];
                         }
+                        console.log("PK RESULT =", roles.kunci);
+                        console.log("TYPE =", typeof roles.kunci);
                         
 
                         stats[roles.kunci].pk++;
@@ -11091,23 +11105,57 @@
                         // winner === "biru"
                         // ? timBiru
                         // : timMerah;
-                        let result =
-                        await runTeamMiniGame(
-                            timBiru,
-                            timMerah
-                        );
-
-                        let winningTeam =
-                        result.winner.includes("Biru")
-                        ? timBiru
-                        : timMerah;
-
-                        // log(
-                        //     "🏆 Pemenangnya adalah Tim " +
-                        //     (winningTeam === "biru"
-                        //     ? "Biru 🔵"
-                        //     : "Merah 🔴")
+                        // let result =
+                        // await runTeamMiniGame(
+                        //     timBiru,
+                        //     timMerah
                         // );
+
+                        let winningTeam;
+                        let result;
+
+                        if(peserta.includes(playerName)){
+                            
+                            result =
+                            await runTeamMiniGame(
+                                timBiru,
+                                timMerah
+                            );
+
+                            winningTeam =
+                            result.winner.includes("Biru")
+                            ? timBiru
+                            : timMerah;
+
+                            
+                        }else{
+                            let winner =
+                            Math.random() < 0.5
+                            ? "Biru"
+                            : "Merah";
+
+                            winningTeam =
+                            winner === "Biru"
+                            ? timBiru
+                            : timMerah;
+
+                            log(
+                                "🏆 " + 
+                                (winningTeam === "biru"
+                                ? "🔵 "
+                                : "🔴 ") + 
+                                "Tim " + 
+                                (winningTeam === "biru"
+                                ? "Biru"
+                                : "Merah") + " memenangkan game kelompok!"
+
+                            );
+
+                        }
+
+                        
+
+                        
 
                         await delay(DEBUG_DELAY);
 
@@ -13627,7 +13675,8 @@
 
                     status[eliminated] = "KELUAR";
 
-                    eliminatedOrder.push(eliminated);
+                    // eliminatedOrder.push(eliminated);
+                    eliminatedOrder.unshift(eliminated);
 
                     updatePlayers();
 
@@ -13748,7 +13797,8 @@
 
                     status[eliminated] = "KELUAR";
 
-                    eliminatedOrder.push(eliminated);
+                    // eliminatedOrder.push(eliminated);
+                    eliminatedOrder.unshift(eliminated);
 
                     updatePlayers();
 
@@ -14825,6 +14875,21 @@
                     extraditionState = parsed.extraditionState || extraditionState;
                     amnestyState =parsed.amnestyState || amnestyState;
                     stats = parsed.stats || stats;
+                    endgameMode = parsed.endgameMode || false;
+                    currentMiniGames =
+                    parsed.currentMiniGames || {
+                        bos:null,
+                        imun:null,
+                        art:null,
+                        pk:null,
+                        kelompok:null,
+
+                        semifinal:null,
+                        final:null,
+                        grandfinal:null
+                    };
+                    currentMiniGameCandidates =
+                    parsed.currentMiniGameCandidates || [];
                     //document.getElementById("log").innerHTML = parsed.logHTML || "";
                     document.getElementById("log").innerHTML =
                     (parsed.logHTML || "")
@@ -15015,6 +15080,9 @@
                     extraditionState,
                     amnestyState,
                     stats,
+                    endgameMode,
+                    currentMiniGames,
+                    currentMiniGameCandidates,
 
                                         
                     logHTML: document.getElementById("log").innerHTML
