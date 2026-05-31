@@ -604,6 +604,25 @@
                 box-shadow:
                 0 4px 14px rgba(0,0,0,.4);
             }
+            #freezeStats{
+
+                gap:8px;
+            }
+
+            #freezeStats > div{
+
+                padding:10px;
+            }
+
+            .freezeIcon{
+
+                font-size:22px;
+            }
+
+            .freezeValue{
+
+                font-size:36px;
+            }
         }
         /* MODAL MOBILE PESERTA */
         .modal-overlay{
@@ -1146,6 +1165,76 @@
             transform:translateX(0);
             }
         }
+        @keyframes freezeBlink{
+
+            0%{
+                opacity:1;
+            }
+
+            50%{
+                opacity:.45;
+            }
+
+            100%{
+                opacity:1;
+            }
+        }
+        #freezeStats{
+
+            display:grid;
+
+            grid-template-columns:repeat(3,1fr);
+
+            gap:10px;
+
+            margin:20px 0;
+        }
+
+        .freezeStat{
+
+            background:#1e293b;
+
+            padding:14px;
+
+            border-radius:14px;
+
+            text-align:center;
+
+            font-size:24px;
+
+            font-weight:700;
+        }
+
+        .freezeStat span{
+
+            display:block;
+
+            font-size:34px;
+
+            margin-top:4px;
+        }
+        .freezeIcon{
+
+            font-size:20px;
+
+            margin-bottom:4px;
+        }
+
+        .freezeValue{
+
+            font-size:34px;
+
+            font-weight:800;
+
+            line-height:1;
+
+            color:white;
+
+            text-shadow:
+            0 0 10px rgba(255,255,255,.25);
+
+        }
+       
 
         </style>
     </head>
@@ -1661,11 +1750,17 @@
                 ],
 
                 art:[
-                    "slowtap",
+                    // "slowtap",
+                    "freeze",
                     "mistake",
                     "trash",
                     "rolebox"
                 ],
+                //ALEX DEBUG
+                // art:[
+                //     // "slowtap",
+                //     "freeze"
+                // ],
 
                 pk:[
                     "reaction",
@@ -1754,11 +1849,16 @@
                     npcBase:45
                 },
 
-                slowtap:{
+                // slowtap:{
 
-                    label:"🐢 Slow Tap",
-                    playerBase:35,
-                    npcBase:40
+                //     label:"🐢 Slow Tap",
+                //     playerBase:35,
+                //     npcBase:40
+                // },
+                freeze:{
+                    label:"🧊 Freeze",
+                    playerBase:75,
+                    npcBase:55
                 },
 
                 target:{
@@ -3236,195 +3336,7 @@
                         
                     }
 
-                    // if(game === "memory"){
-
-                    //     let emojis = [
-                    //         "🍎",
-                    //         "🎲",
-                    //         "🚀",
-                    //         "🐱",
-                    //         "⚡"
-                    //     ];
-
-                    //     let sequence = [];
-
-                    //     for(let i=0;i<4;i++){
-
-                    //         sequence.push(
-                    //             emojis[
-                    //                 Math.floor(
-                    //                     Math.random()*emojis.length
-                    //                 )
-                    //             ]
-                    //         );
-                    //     }
-
-                    //     content.innerHTML = `
-
-                    //     <h3>${config.label}</h3>
-
-                    //     <p>
-                    //         Hafalkan urutan emoji!
-                    //     </p>
-
-                    //     <h1 id="memorySequence">
-                    //         ${sequence.join(" ")}
-                    //     </h1>
-
-                    //     <div
-                    //     id="memoryChoices"
-                    //     style="
-                    //     display:none;
-                    //     margin-top:20px;
-                    //     ">
-                    //     </div>
-
-                    //     <h2 id="memoryResult"></h2>
-                    //     `;
-
-                    //     setTimeout(()=>{
-
-                    //         // document.getElementById(
-                    //         //     "memorySequence"
-                    //         // ).innerHTML = "❓ ❓ ❓ ❓";
-                    //         let hiddenDisplay =
-                    //         Array(sequence.length)
-                    //         .fill("❓");
-
-                    //         document.getElementById(
-                    //             "memorySequence"
-                    //         ).innerHTML =
-                    //         hiddenDisplay.join(" ");
-
-                    //         let choices =
-                    //         document.getElementById(
-                    //             "memoryChoices"
-                    //         );
-
-                    //         choices.style.display = "block";
-
-                    //         emojis.forEach(e=>{
-
-                    //             let btn =
-                    //             document.createElement("button");
-
-                    //             btn.innerHTML = e;
-
-                    //             btn.style.fontSize = "28px";
-
-                    //             btn.onclick = ()=>{
-
-                    //                 playerInput.push(e);
-                    //                 hiddenDisplay[
-                    //                     playerInput.length - 1
-                    //                 ] = e;
-
-                    //                 document.getElementById(
-                    //                     "memorySequence"
-                    //                 ).innerHTML =
-                    //                 hiddenDisplay.join(" ");
-
-                    //                 if(
-                    //                     playerInput.length ===
-                    //                     sequence.length
-                    //                 ){
-
-                    //                     // let correct = 0;
-
-                    //                     // for(
-                    //                     //     let i=0;
-                    //                     //     i<sequence.length;
-                    //                     //     i++
-                    //                     // ){
-
-                    //                     //     if(
-                    //                     //         playerInput[i] ===
-                    //                     //         sequence[i]
-                    //                     //     ){
-                    //                     //         correct++;
-                    //                     //     }
-                    //                     // }
-
-                    //                     // let score =
-                    //                     // correct * 25;
-                    //                     choices
-                    //                     .querySelectorAll("button")
-                    //                     .forEach(b=>{
-
-                    //                         b.disabled = true;
-
-                    //                         b.style.opacity = 0.5;
-                    //                     });
-                    //                     let correct = 0;
-
-                    //                     let resultHTML = "";
-
-                    //                     for(
-                    //                         let i=0;
-                    //                         i<sequence.length;
-                    //                         i++
-                    //                     ){
-
-                    //                         let isCorrect =
-                    //                         playerInput[i] ===
-                    //                         sequence[i];
-
-                    //                         if(isCorrect){
-
-                    //                             correct++;
-                    //                         }
-
-                    //                         resultHTML += `
-
-                    //                         <span style="
-                    //                         display:inline-block;
-                    //                         padding:10px;
-                    //                         margin:4px;
-                    //                         border-radius:12px;
-                    //                         background:
-                    //                         ${isCorrect ? "#22c55e" : "#ef4444"};
-                    //                         color:white;
-                    //                         font-size:28px;
-                    //                         ">
-                    //                             ${playerInput[i]}
-                    //                         </span>
-
-                    //                         `;
-                    //                     }
-
-                    //                     let score =
-                    //                     correct * 25;
-
-                    //                     document.getElementById(
-                    //                         "memorySequence"
-                    //                     ).innerHTML =
-                    //                     resultHTML;
-
-                    //                     document.getElementById(
-                    //                         "memoryResult"
-                    //                     ).innerHTML =
-
-                    //                     `🧠 Benar ${correct}/4`;
-
-                    //                     setTimeout(()=>{
-
-                    //                         modal.classList.remove("show");
-
-                    //                         resolve(score);
-
-                    //                     },1500);
-                    //                 }
-                    //             };
-
-                    //             choices.appendChild(btn);
-                    //         });
-
-                    //     },2500);
-
-                    //     let playerInput = [];
-
-                    //     return;
-                    // }
+                    
                     if(game === "memory"){
 
                         let emojis = [
@@ -4283,6 +4195,292 @@
                         return;
                     }
 
+                    if(game === "freeze"){
+
+                        let score = 0;
+                        let combo = 0;
+                        let timer = 10;
+
+                        let frozen = false;
+
+                        content.innerHTML = `
+
+                        <h3>🧊 Freeze</h3>
+
+                        <p>
+                            Spam TAP!
+                            Tapi jangan klik saat FREEZE!
+                        </p>
+
+                        <div id="freezeStats">
+
+                            <div class="freezeStat">
+                                ⏳ <span id="freezeTimer">${timer}</span>
+                            </div>
+
+                            <div class="freezeStat">
+                                🏆 <span id="freezeScore">${score}</span>
+                            </div>
+
+                            <div class="freezeStat">
+                                🔥 <span id="freezeCombo">x${combo}</span>
+                            </div>
+
+                        </div>
+
+                        <button
+                            id="freezeBtn"
+                            style="
+                            width:100%;
+                            height:150px;
+                            border-radius:24px;
+                            font-size:52px;
+                            font-weight:bold;
+
+                            box-shadow:
+                            0 0 25px rgba(34,197,94,0.5);
+
+                            transition:all .15s ease;
+                            background:#22c55e;
+                            color:white;
+                            ">
+                            👆 TAP!
+                        </button>
+
+                        `;
+
+                        let btn =
+                        document.getElementById("freezeBtn");
+
+                        function updateUI(){
+
+                            document.getElementById(
+                                "freezeScore"
+                            ).innerText =
+                            score;
+
+                            document.getElementById(
+                                "freezeCombo"
+                            ).innerText =
+                            "x" + combo;
+                        }
+
+                        btn.onclick = ()=>{
+                            btn.style.transform =
+                            "scale(0.95)";
+
+                            setTimeout(()=>{
+
+                                btn.style.transform =
+                                "scale(1)";
+
+                            },80);
+
+                            if(frozen){
+
+                                combo = 0;
+
+                                score -= 15;
+                                btn.innerHTML =
+                                "💥 -15";
+
+                                btn.style.background =
+                                "#ef4444";
+                                btn.style.animation ="freezeBlink .3s infinite";
+
+                                btn.innerHTML = `
+                                <div style="
+                                font-size:${window.innerWidth < 768 ? "30px" : "54px"};
+                                font-weight:900;
+                                ">
+                                🧊 FREEZE!
+                                </div>
+
+                                <div style="
+                                font-size:${window.innerWidth < 768 ? "26px" : "24px"};
+                                font-weight:800;
+                                margin-top:8px;
+                                ">
+                                ⛔ JANGAN TAP ⛔
+                                </div>
+                                `;
+
+
+
+                                btn.style.boxShadow =
+                                "0 0 25px rgba(34,197,94,0.5);"
+
+                                
+
+                                updateUI();
+
+                                return;
+                            }
+
+                            combo++;
+
+                            score += 1;
+
+                            if(combo >= 5)
+                                score += 1;
+
+                            if(combo >= 10)
+                                score += 2;
+
+                            updateUI();
+                        };
+
+                        // function startFreeze(){
+
+                        //     frozen = true;
+
+                        //     btn.innerHTML =
+                        //     "🧊 FREEZE!";
+
+                        //     btn.style.background =
+                        //     "#3b82f6";
+
+                        //     setTimeout(()=>{
+
+                        //         frozen = false;
+
+                        //         btn.innerHTML =
+                        //         "👆 TAP!";
+
+                        //         btn.style.background =
+                        //         "#22c55e";
+
+                        //     },1000);
+                        // }
+                        function startFreeze(){
+
+                            frozen = true;
+
+                            // background seluruh game
+                            content.style.transition =
+                            "all 0.2s ease";
+
+                            // content.style.background =
+                            // "#1e3a8a";
+
+                            // content.style.borderRadius =
+                            // "18px";
+
+                            btn.innerHTML = `
+                            <div style="
+                            font-size:${window.innerWidth < 768 ? "30px" : "54px"};
+                            font-weight:900;
+                            ">
+                            🧊 FREEZE!
+                            </div>
+
+                            <div style="
+                            font-size:${window.innerWidth < 768 ? "26px" : "24px"};
+                            font-weight:800;
+                            margin-top:8px;
+                            ">
+                            ⛔ JANGAN TAP ⛔
+                            </div>
+                            `;
+
+                            btn.style.background =
+                            "#3b82f6";
+
+                            btn.style.boxShadow =
+                            "0 0 25px rgba(34,197,94,0.5);"
+
+                            btn.style.transform =
+                            "scale(1.04)";
+
+                            setTimeout(()=>{
+
+                                frozen = false;
+
+                                content.style.background =
+                                "transparent";
+
+                                btn.innerHTML =
+                                "👆 TAP!";
+
+                                btn.style.background =
+                                "#22c55e";
+
+                                btn.style.animation ="none";
+                                btn.style.transform ="scale(1)";
+
+                            },1000);
+                        }
+
+                        let freezeLoop =
+                        setInterval(()=>{
+
+                            if(Math.random() < 0.60){
+
+                                startFreeze();
+                            }
+
+                        },1000);
+
+                        let gameTimer =
+                        setInterval(()=>{
+
+                            timer--;
+
+                            document.getElementById(
+                                "freezeTimer"
+                            ).innerText =
+                            timer;
+
+                            // if(timer <= 0){
+
+                            //     clearInterval(gameTimer);
+
+                            //     clearInterval(freezeLoop);
+
+                            //     modal.classList.remove("show");
+
+                            //     resolve(
+                            //         Math.max(0,score)
+                            //     );
+                            // }
+                            if(timer <= 0){
+
+                                clearInterval(gameTimer);
+
+                                clearInterval(freezeLoop);
+
+                                let finalScore = score;
+
+                                let trait =
+                                traitsMap[playerName];
+
+                                if(trait === "Strategis"){
+
+                                    finalScore += 10;
+                                }
+
+                                if(trait === "Santai"){
+
+                                    finalScore += 5;
+                                }
+
+                                if(trait === "Emosional"){
+
+                                    finalScore -= 10;
+                                }
+
+                                modal.classList.remove("show");
+
+                                resolve(
+                                    Math.max(0,finalScore)
+                                );
+                            }
+
+                        },1000);
+
+                        return;
+                    }
+
                     let timer = 5;
 
                     let playerScore = 0;
@@ -4450,11 +4648,34 @@
                     }
                 }
 
-                if(game === "slowtap"){
+                // if(game === "slowtap"){
 
-                    if(traitsMap[player] === "Santai"){
-                        score += 20;
-                    }
+                //     if(traitsMap[player] === "Santai"){
+                //         score += 20;
+                //     }
+                // }
+                if(game === "freeze"){
+
+                    // let taps =
+                    // 50 + Math.random()*40;
+
+                    // let mistakes =
+                    // Math.random()*4;
+
+                    // return Math.max(
+                    //     0,
+                    //     taps - mistakes*15
+                    // );
+                    let taps =
+                    40 + Math.floor(Math.random()*40);
+
+                    let mistakes =
+                    Math.floor(Math.random()*4);
+
+                    let score =
+                    taps - (mistakes*15);
+
+                    return Math.max(0,score);
                 }
 
                 score += reputation[player] * 0.3;
@@ -5636,39 +5857,49 @@
                         : ""}
 
                         ${
-                        (() => {
+                            (() => {
 
-                            let partner =
-                            status[p] !== "KELUAR"
-                            ? dating[p]
-                            : eliminatedMeta[p]?.dating;
+                                let partner =
+                                status[p] !== "KELUAR"
+                                ? dating[p]
+                                : eliminatedMeta[p]?.dating;
 
-                            if(!partner) return "";
+                                if(!partner) return "";
 
-                            let eliminatedPartner =
-                            status[partner] === "KELUAR";
+                                // ==========================
+                                // PESERTA MASIH HIDUP
+                                // ==========================
+                                if(status[p] !== "KELUAR"){
 
-                            return `
+                                    return `
+                                    <div style="
+                                        color:#ff7aa2;
+                                        font-weight:bold;
+                                        margin-top:6px;
+                                    ">
+                                        ❤️ Pacar ${partner}
+                                    </div>
+                                    `;
+                                }
 
-                            <div style="
-                                color:#ff7aa2;
-                                font-weight:bold;
-                                margin-top:6px;
-                            ">
+                                // ==========================
+                                // PESERTA SUDAH KELUAR
+                                // ==========================
+                                return `
+                                <div style="
+                                    color:#ff7aa2;
+                                    font-weight:bold;
+                                    margin-top:6px;
+                                ">
+                                    ${
+                                        status[partner] === "KELUAR"
+                                        ? `💔 Pacar ${partner} terekstradisi`
+                                        : `💔 Mantan ${partner}`
+                                    }
+                                </div>
+                                `;
 
-                            ${
-                            eliminatedPartner
-
-                            ? `💔 Pacar ${partner} terekstradisi`
-
-                            : `❤️ Pacar ${partner}`
-                            }
-
-                            </div>
-
-                            `;
-
-                        })()
+                            })()
                         }
 
                         ${
@@ -5733,8 +5964,11 @@
                         ⭐ ${
                             specialRelations[p][playerName] === "bestie"
                             ? "🧑‍🤝‍🧑 Bestie"
+                            : specialRelations[p][playerName] === "enemy"
+                            ? "💢 Enemy"
                             : specialRelations[p][playerName] === "rival"
-                            ? "💢 Rival"
+                            ? "⚔️  Rival"
+                            
                             : "🤝 Dekat"
                         }
                         <br>`
@@ -6158,17 +6392,17 @@
 
                         let rel = relation[a][b];
 
+                        // console.log(
+                        //     "UPDATE",
+                        //     a,
+                        //     b,
+                        //     rel
+                        // );
+
                         // 🤝 BESTIE
                         if(rel >= 50){
 
                             specialRelations[a][b] = "bestie";
-                        }
-
-                        
-                        // 🫶 close
-                        else if(rel >= 18){
-
-                            specialRelations[a][b] = "close";
                         }
 
                         // 🫶 DEKAT
@@ -6177,11 +6411,35 @@
                             specialRelations[a][b] = "friend";
                         }
 
+
+                        
+                        // 🫶 close
+                        else if(rel >= 18){
+
+                            specialRelations[a][b] = "close";
+                        }
+
                         // 💢 RIVAL
                         else if(rel <= -30){
 
                             specialRelations[a][b] = "rival";
+                            // console.log(
+                            //     "SET RIVAL",
+                            //     a,
+                            //     b,
+                            //     rel
+                            // );
                         }
+                        
+
+                        // 💢 enemy
+                        else if(rel <= -15){
+
+                            specialRelations[a][b] = "enemy";
+                        }
+
+                        
+                        
 
 
                         // reset
@@ -6189,6 +6447,13 @@
 
                             specialRelations[a][b] = null;
                         }
+                        // console.log(
+                        //     specialRelations["Rio"]["Kanya"]
+                        // );
+
+                        // console.log(
+                        //     specialRelations["Rio"]["Martin"]
+                        // );
                     });
                 });
             }
@@ -8470,7 +8735,7 @@
 
                         // jangan ganggu player
                         if(a === playerName) continue;
-                        // if(b === playerName) continue;
+                        if(b === playerName) continue;
 
                         // beda gender
                         if(genderMap[a] === genderMap[b]){
@@ -8518,18 +8783,28 @@
                                 `👥 ${a} ingin mengajakmu masuk ${gangA.name}`
                                 );
 
-                                setTimeout(()=>{
+                                // setTimeout(()=>{
 
-                                    openNpcRequest({
+                                //     openNpcRequest({
 
-                                        type:"gang",
+                                //         type:"gang",
 
-                                        from:a,
+                                //         from:a,
 
-                                        gang:gangA.name
-                                    });
+                                //         gang:gangA.name
+                                //     });
 
-                                },1200);
+                                // },1200);
+                                await delay(1200);
+
+                                await openNpcRequest({
+
+                                    type:"gang",
+
+                                    from:a,
+
+                                    gang:gangA.name
+                                });
 
                                 return;
                             }
@@ -8564,16 +8839,24 @@
                             `💘 ${a} terlihat ingin menyatakan sesuatu padamu`
                             );
 
-                            setTimeout(()=>{
+                            // setTimeout(()=>{
 
-                                openNpcRequest({
+                            //     openNpcRequest({
 
-                                    type:"dating",
+                            //         type:"dating",
 
-                                    from:a
-                                });
+                            //         from:a
+                            //     });
 
-                            },1200);
+                            // },1200);
+                            await delay(1200);
+
+                            await openNpcRequest({
+
+                                type:"dating",
+
+                                from:a
+                            });
 
                             return;
                         }
@@ -9076,67 +9359,69 @@
                 },10);
             }
             function openNpcRequest(data){
-                // ⚠️ jangan buka popup baru kalau masih ada request
-                if(npcRequest) return;
+                return new Promise(resolve=>{
+                    // ⚠️ jangan buka popup baru kalau masih ada request
+                    if(npcRequest) return;
 
-                npcRequest = data;
+                    npcRequest = data;
 
-                let modal =
-                document.getElementById("npcRequestModal");
+                    let modal =
+                    document.getElementById("npcRequestModal");
 
-                let content =
-                document.getElementById("npcRequestContent");
+                    let content =
+                    document.getElementById("npcRequestContent");
 
-                // =====================
-                // GENG INVITE
-                // =====================
+                    // =====================
+                    // GENG INVITE
+                    // =====================
 
-                if(data.type === "gang"){
+                    if(data.type === "gang"){
 
-                    content.innerHTML = `
-                    <p>
-                    👥 <b>${data.from}</b>
-                    ingin mengajakmu masuk
-                    <b>${data.gang}</b>
-                    </p>
+                        content.innerHTML = `
+                        <p>
+                        👥 <b>${data.from}</b>
+                        ingin mengajakmu masuk
+                        <b>${data.gang}</b>
+                        </p>
 
-                    <button onclick="acceptNpcRequest()">
-                        ✅ Terima
-                    </button>
+                        <button onclick="acceptNpcRequest()">
+                            ✅ Terima
+                        </button>
 
-                    <button onclick="rejectNpcRequest()">
-                        ❌ Tolak
-                    </button>
-                    `;
-                }
+                        <button onclick="rejectNpcRequest()">
+                            ❌ Tolak
+                        </button>
+                        `;
+                    }
 
-                // =====================
-                // PACARAN
-                // =====================
+                    // =====================
+                    // PACARAN
+                    // =====================
 
-                else if(data.type === "dating"){
+                    else if(data.type === "dating"){
 
-                    content.innerHTML = `
-                    <p>
-                    💘 <b>${data.from}</b>
-                    menyatakan perasaannya padamu
-                    </p>
+                        content.innerHTML = `
+                        <p>
+                        💘 <b>${data.from}</b>
+                        menyatakan perasaannya padamu
+                        </p>
 
-                    <button onclick="acceptNpcRequest()">
-                        ❤️ Terima
-                    </button>
+                        <button onclick="acceptNpcRequest()">
+                            ❤️ Terima
+                        </button>
 
-                    <button onclick="rejectNpcRequest()">
-                        💔 Tolak
-                    </button>
-                    `;
-                }
+                        <button onclick="rejectNpcRequest()">
+                            💔 Tolak
+                        </button>
+                        `;
+                    }
 
-                modal.style.display = "flex";
+                    modal.style.display = "flex";
 
-                setTimeout(()=>{
-                    modal.classList.add("show");
-                },10);
+                    setTimeout(()=>{
+                        modal.classList.add("show");
+                    },10);
+                });
             }
 
             function acceptNpcRequest(){
@@ -9162,6 +9447,11 @@
                         log(
                         `👥 Kamu resmi bergabung dengan ${gang.name}`
                         );
+
+                        if(npcRequest.resolve){
+                            npcRequest.resolve(true);
+                        }
+
                     }
                 }
 
@@ -9183,6 +9473,10 @@
                     log(
                     `❤️ Kamu resmi pacaran dengan ${npcRequest.from}`
                     );
+
+                    if(npcRequest.resolve){
+                        npcRequest.resolve(true);
+                    }
                 }
 
                 closeNpcRequest();
@@ -9201,6 +9495,9 @@
                 log(
                 `💔 Kamu menolak permintaan ${npcRequest.from}`
                 );
+                if(npcRequest.resolve){
+                    npcRequest.resolve(false);
+                }
 
                 closeNpcRequest();
 
@@ -12008,12 +12305,22 @@
 
                                 cls = "rel-enemy";
                             }
+                            // console.log(
+                            //     p1,
+                            //     p2,
+                            //     relation[p1][p2],
+                            //     specialRelations[p1][p2]
+                            // );
+                            
+
+                            
+
                             
                             let specialText = "";
 
                             let special = specialRelations[p1][p2];
 
-                            if(special === "bestie"){
+                            if(val >= 50){
 
                                 specialText = `
                                 <span class="rel-bestie">
@@ -12022,7 +12329,7 @@
                                 `;
                             }
 
-                            else if(special === "friend"){
+                            else if(val >= 30){
 
                                 specialText = `
                                 <span class="rel-friend">
@@ -12031,7 +12338,7 @@
                                 `;
                             }
 
-                            else if(special === "close"){
+                            else if(val >= 18){
 
                                 specialText = `
                                 <span class="rel-close">
@@ -12039,15 +12346,31 @@
                                 </span>
                                 `;
                             }
-
-                            else if(special === "rival"){
+                            else if(val <= -30){
 
                                 specialText = `
                                 <span class="rel-rival">
-                                    (💢 rival)
+                                    (⚔️ rival)
                                 </span>
                                 `;
                             }
+
+                            
+
+                            
+
+                            else if(val <= -15){
+
+                                specialText = `
+                                <span class="rel-enemy">
+                                    (💢 enemy)
+                                </span>
+                                `;
+                            }
+
+                            
+
+                            
 
                             html += `
                             <div class="relation-item">
@@ -12064,6 +12387,7 @@
                     });
 
                     html += `</div>`;  
+                    
                 });
                 document.getElementById("reportContent")
                 .innerHTML = html;
@@ -12112,14 +12436,17 @@
                 if(value >= 18){
                     return "close-bg";
                 }
-
                 if(value <= -30){
                     return "rival-bg";
                 }
 
+                
+
                 if(value <= -15){
                     return "enemy-bg";
                 }
+
+                
 
                 return "neutral-bg";
             }
@@ -13666,6 +13993,19 @@
                     log(
                         `🏆 ${secondFinalist} lolos ke babak FINAL!`
                     );
+                    eliminatedMeta[eliminated] = {
+
+                        dating: dating[eliminated] || null,
+
+                        gang:
+                        gangs.find(g=>g.members.includes(eliminated))
+                        ?.name || null
+                    };
+                    removeDating(eliminated);
+                    let targetGangName =
+                    gangs.find(g =>
+                        g.members.includes(eliminated)
+                    )?.name || null;
 
                     await delay(DEBUG_DELAY);
 
@@ -13788,6 +14128,19 @@
                     log(
                         `👑 ${secondGrandFinalist} masuk babak GRAND FINAL!`
                     );
+                    eliminatedMeta[eliminated] = {
+
+                        dating: dating[eliminated] || null,
+
+                        gang:
+                        gangs.find(g=>g.members.includes(eliminated))
+                        ?.name || null
+                    };
+                    removeDating(eliminated);
+                    let targetGangName =
+                    gangs.find(g =>
+                        g.members.includes(eliminated)
+                    )?.name || null;
 
                     await delay(DEBUG_DELAY);
 
