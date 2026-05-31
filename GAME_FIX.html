@@ -1179,6 +1179,20 @@
                 opacity:1;
             }
         }
+        @keyframes timingPulse{
+
+            0%{
+                box-shadow:0 0 8px rgba(34,197,94,.4);
+            }
+
+            50%{
+                box-shadow:0 0 25px rgba(34,197,94,1);
+            }
+
+            100%{
+                box-shadow:0 0 8px rgba(34,197,94,.4);
+            }
+        }
         #freezeStats{
 
             display:grid;
@@ -1754,12 +1768,12 @@
                     "freeze",
                     "mistake",
                     "trash",
-                    "rolebox"
+                    "pickbox"
                 ],
                 //ALEX DEBUG
                 // art:[
                 //     // "slowtap",
-                //     "freeze"
+                //     "timing"
                 // ],
 
                 pk:[
@@ -2146,9 +2160,13 @@
                             </div>
 
                             <!-- hijau -->
-                            <div style="
+                            <div
+                            id="timingPerfectZone"
+                            style="
                             width:10%;
                             background:#22c55e;
+                            animation:timingPulse .8s infinite;
+                            box-shadow:0 0 18px rgba(34,197,94,.7);
                             ">
                             </div>
 
@@ -2244,19 +2262,67 @@
 
                             let resultText = "";
 
+                            // if(distance <= 5){
+
+                            //     score = 100;
+
+                            //     resultText = "🟢 PERFECT!";
+
+                            // }
+                            // else if(distance <= 15){
+
+                            //     score = 70;
+
+                            //     resultText = "🟡 GOOD";
+
+                            // }
                             if(distance <= 5){
 
                                 score = 100;
 
                                 resultText = "🟢 PERFECT!";
+                                for(let i=0;i<12;i++){
 
+                                    let spark =
+                                    document.createElement("div");
+
+                                    spark.innerHTML = "✨";
+
+                                    spark.style.position = "absolute";
+
+                                    spark.style.left = "50%";
+
+                                    spark.style.top = "50%";
+
+                                    spark.style.fontSize = "28px";
+
+                                    spark.style.pointerEvents = "none";
+
+                                    spark.style.transform =
+                                    `translate(
+                                    ${(Math.random()-0.5)*150}px,
+                                    ${(Math.random()-0.5)*100}px
+                                    )`;
+
+                                    content.appendChild(spark);
+
+                                    setTimeout(
+                                        ()=>spark.remove(),
+                                        800
+                                    );
+                                }
+
+                                bar.style.boxShadow =
+                                "0 0 30px rgba(34,197,94,1)";
                             }
                             else if(distance <= 15){
 
                                 score = 70;
 
-                                resultText = "🟡 GOOD";
+                                resultText = "🟡 NEAR PERFECT";
 
+                                bar.style.boxShadow =
+                                "0 0 30px rgba(250,204,21,1)";
                             }
                             else if(distance <= 25){
 
@@ -2272,21 +2338,36 @@
                                 resultText = "🔴 MISS";
                             }
 
-                            modal.classList.remove("show");
-                            content.innerHTML += `
+                            // modal.classList.remove("show");
+                            // content.innerHTML += `
 
+                            // <h2 style="margin-top:20px;">
+                            //     ${resultText}
+                            // </h2>
+
+                            // <h1>
+                            //     ${score} poin
+                            // </h1>
+                            // `;
+
+                            // resolve(
+                            //     Math.floor(score)
+                            // );
+                            content.innerHTML += `
                             <h2 style="margin-top:20px;">
-                                ${resultText}
+                            ${resultText}
                             </h2>
 
-                            <h1>
-                                ${score} poin
-                            </h1>
+                            <h1>${score} poin</h1>
                             `;
 
-                            resolve(
-                                Math.floor(score)
-                            );
+                            setTimeout(()=>{
+
+                                modal.classList.remove("show");
+
+                                resolve(score);
+
+                            },1500);
                         };
 
                         return;
@@ -4203,6 +4284,56 @@
 
                         let frozen = false;
 
+                        let freezeMistakes = 0;
+                        let freezeSuccess = 0;
+                        let maxCombo = 0;
+
+                        let trait =
+                        traitsMap[playerName];
+
+                        switch(trait){
+
+                            case "Strategis":
+
+                                freezeChance = 0.25;
+
+                                maxComboLimit = 40;
+
+                                mistakePenalty = 10;
+
+                            break;
+
+                            case "Licik":
+
+                                freezeChance = 0.35;
+
+                                maxComboLimit = 35;
+
+                                mistakePenalty = 12;
+
+                            break;
+
+                            case "Santai":
+
+                                freezeChance = 0.30;
+
+                                maxComboLimit = 25;
+
+                                mistakePenalty = 8;
+
+                            break;
+
+                            case "Emosional":
+
+                                freezeChance = 0.45;
+
+                                maxComboLimit = 60;
+
+                                mistakePenalty = 20;
+
+                            break;
+                        }
+
                         content.innerHTML = `
 
                         <h3>🧊 Freeze</h3>
@@ -4235,7 +4366,7 @@
                             height:150px;
                             border-radius:24px;
                             font-size:52px;
-                            font-weight:bold;
+                            font-weight:900;
 
                             box-shadow:
                             0 0 25px rgba(34,197,94,0.5);
@@ -4278,11 +4409,15 @@
 
                             if(frozen){
 
+                                // combo = 0;
+
+                                // score -= 15;
+                                freezeMistakes++;
+
                                 combo = 0;
 
-                                score -= 15;
-                                btn.innerHTML =
-                                "💥 -15";
+                                score -= mistakePenalty;
+
 
                                 btn.style.background =
                                 "#ef4444";
@@ -4317,7 +4452,22 @@
                                 return;
                             }
 
+                            // combo++;
+
+                            // score += 1;
                             combo++;
+
+                            combo =
+                            Math.min(
+                                combo,
+                                maxComboLimit
+                            );
+
+                            maxCombo =
+                            Math.max(
+                                maxCombo,
+                                combo
+                            );
 
                             score += 1;
 
@@ -4394,6 +4544,12 @@
 
                             setTimeout(()=>{
 
+                                // frozen = false;
+                                if(frozen){
+
+                                    freezeSuccess++;
+                                }
+
                                 frozen = false;
 
                                 content.style.background =
@@ -4414,7 +4570,11 @@
                         let freezeLoop =
                         setInterval(()=>{
 
-                            if(Math.random() < 0.60){
+                            // if(Math.random() < 0.60){
+
+                            //     startFreeze();
+                            // }
+                            if(Math.random() < freezeChance){
 
                                 startFreeze();
                             }
@@ -4451,23 +4611,23 @@
 
                                 let finalScore = score;
 
-                                let trait =
-                                traitsMap[playerName];
+                                // let trait =
+                                // traitsMap[playerName];
 
-                                if(trait === "Strategis"){
+                                // if(trait === "Strategis"){
 
-                                    finalScore += 10;
-                                }
+                                //     finalScore += 10;
+                                // }
 
-                                if(trait === "Santai"){
+                                // if(trait === "Santai"){
 
-                                    finalScore += 5;
-                                }
+                                //     finalScore += 5;
+                                // }
 
-                                if(trait === "Emosional"){
+                                // if(trait === "Emosional"){
 
-                                    finalScore -= 10;
-                                }
+                                //     finalScore -= 10;
+                                // }
 
                                 modal.classList.remove("show");
 
@@ -4676,6 +4836,34 @@
                     taps - (mistakes*15);
 
                     return Math.max(0,score);
+                }
+                if(type === "timing"){
+
+                    let total = 0;
+
+                    for(let round=0; round<5; round++){
+
+                        let roll = Math.random();
+
+                        if(roll < 0.15){
+
+                            total += 100;
+
+                        }else if(roll < 0.40){
+
+                            total += 70;
+
+                        }else if(roll < 0.75){
+
+                            total += 40;
+
+                        }else{
+
+                            total += 10;
+                        }
+                    }
+
+                    return total;
                 }
 
                 score += reputation[player] * 0.3;
