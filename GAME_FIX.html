@@ -1755,6 +1755,12 @@
                     "reaction",
                     "rolebox"
                 ],
+                //ALEX DEBUG
+                // bos:[
+                //     // "slowtap",
+                //     "timing"
+                // ],
+
 
                 imun:[
                     "tap",
@@ -1951,7 +1957,7 @@
             // }
             async function openMiniGame(type){
 
-                return new Promise(resolve=>{
+                return new Promise(async resolve=>{
 
                     let game =
                     currentMiniGames[type];
@@ -2120,167 +2126,1042 @@
 
                         return;
                     }
+                    
+                    // if(game === "timing"){
+
+                    //     let pos = 0;
+
+                    //     let dir = 1;
+
+                    //     let participants =
+                    //     currentMiniGameCandidates?.length
+                    //     ? [...currentMiniGameCandidates]
+                    //     : [playerName];
+                        
+                        
+
+                    //     let playerIsParticipant =
+                    //     participants.includes(playerName);
+
+                    //     console.log(
+                    //         "TIMING START",
+                    //         currentMiniGameCandidates
+                    //     );
+
+                    //     let scoreMap = {};
+
+                    //     content.innerHTML = `
+
+                    //     <h3>${config.label}</h3>
+
+                    //     <p>
+                    //         Tekan STOP saat bar di area hijau!
+                    //     </p>
+
+                    //     <div style="
+                    //     width:100%;
+                    //     height:30px;
+                    //     background:#1e293b;
+                    //     border-radius:20px;
+                    //     position:relative;
+                    //     overflow:hidden;
+                    //     margin-top:20px;
+                    //     display:flex;
+                    //     ">
+
+                    //         <!-- merah kiri -->
+                    //         <div style="
+                    //         width:30%;
+                    //         background:#ef4444;
+                    //         ">
+                    //         </div>
+
+                    //         <!-- kuning kiri -->
+                    //         <div style="
+                    //         width:15%;
+                    //         background:#facc15;
+                    //         ">
+                    //         </div>
+
+                    //         <!-- hijau -->
+                    //         <div
+                    //         id="timingPerfectZone"
+                    //         style="
+                    //         width:10%;
+                    //         background:#22c55e;
+                    //         animation:timingPulse .8s infinite;
+                    //         box-shadow:0 0 18px rgba(34,197,94,.7);
+                    //         ">
+                    //         </div>
+
+                    //         <!-- kuning kanan -->
+                    //         <div style="
+                    //         width:15%;
+                    //         background:#facc15;
+                    //         ">
+                    //         </div>
+
+                    //         <!-- merah kanan -->
+                    //         <div style="
+                    //         width:30%;
+                    //         background:#ef4444;
+                    //         ">
+                    //         </div>
+
+                    //         <div
+                    //         id="timingBar"
+                    //         style="
+                    //         position:absolute;
+                    //         left:0%;
+                    //         width:10%;
+                    //         height:100%;
+                    //         background:linear-gradient(
+                    //         to bottom,
+                    //         #ffffff,
+                    //         #dbeafe
+                    //         );
+
+                    //         border:2px solid #93c5fd;
+
+                    //         border-radius:12px;
+
+                    //         box-shadow:
+                    //         0 0 12px rgba(255,255,255,0.9);
+                    //         ">
+                    //         </div>
+
+                    //     </div>
+
+                    //     ${playerIsParticipant ? `
+                    //     <button id="timingBtn">
+                    //         STOP
+                    //     </button>
+                    //     ` : ``}
+                    //     `;
+
+                    //     let bar =
+                    //     document.getElementById("timingBar");
+
+                    //     let interval =
+                    //     setInterval(()=>{
+
+                    //         // pos += dir * 2;
+                    //         let speed = 3;
+
+                    //         if(pos > 35 && pos < 65){
+
+                    //             speed = 6;
+                    //         }
+
+                    //         pos += dir * speed;
+
+                    //         if(pos >= 90 || pos <= 0){
+
+                    //             dir *= -1;
+                    //         }
+
+                    //         bar.style.left = pos + "%";
+
+                    //     },20);
+                    //     if(playerIsParticipant){
+
+                    //         document.getElementById("timingBtn").onclick = async ()=>{
+
+                    //             clearInterval(interval);
+                    //             document.getElementById(
+                    //                 "timingBtn"
+                    //             ).disabled = true;
+
+                    //             let finalPos = pos;
+                    //             pos = finalPos;
+
+                    //             let center =
+                    //             finalPos + 5;
+
+                    //             // let distance =
+                    //             // Math.abs(center - 50);
+
+                    //             // let score =
+                    //             // Math.max(
+                    //             //     0,
+                    //             //     100 - distance * 4
+                    //             // );
+                    //             let distance =
+                    //             Math.abs(center - 50);
+
+                    //             let score = 0;
+
+                    //             let resultText = "";
+
+                    //             // if(distance <= 5){
+
+                    //             //     score = 100;
+
+                    //             //     resultText = "🟢 PERFECT!";
+
+                    //             // }
+                    //             // else if(distance <= 15){
+
+                    //             //     score = 70;
+
+                    //             //     resultText = "🟡 GOOD";
+
+                    //             // }
+                    //             if(distance <= 5){
+
+                    //                 score = 100;
+
+                    //                 resultText = "🟢 PERFECT!";
+                    //                 for(let i=0;i<12;i++){
+
+                    //                     let spark =
+                    //                     document.createElement("div");
+
+                    //                     spark.innerHTML = "✨";
+
+                    //                     spark.style.position = "absolute";
+
+                    //                     spark.style.left = "50%";
+
+                    //                     spark.style.top = "50%";
+
+                    //                     spark.style.fontSize = "28px";
+
+                    //                     spark.style.pointerEvents = "none";
+
+                    //                     spark.style.transform =
+                    //                     `translate(
+                    //                     ${(Math.random()-0.5)*150}px,
+                    //                     ${(Math.random()-0.5)*100}px
+                    //                     )`;
+
+                    //                     content.appendChild(spark);
+
+                    //                     setTimeout(
+                    //                         ()=>spark.remove(),
+                    //                         800
+                    //                     );
+                    //                 }
+
+                    //                 bar.style.boxShadow =
+                    //                 "0 0 30px rgba(34,197,94,1)";
+                    //             }
+                    //             else if(distance <= 15){
+
+                    //                 score = 70;
+
+                    //                 resultText = "🟡 NEAR PERFECT";
+
+                    //                 bar.style.boxShadow =
+                    //                 "0 0 30px rgba(250,204,21,1)";
+                    //             }
+                    //             else if(distance <= 25){
+
+                    //                 score = 40;
+
+                    //                 resultText = "🟠 OKAY";
+
+                    //             }
+                    //             else{
+
+                    //                 score = 10;
+
+                    //                 resultText = "🔴 MISS";
+                    //             }
+
+                    //             // modal.classList.remove("show");
+                    //             // content.innerHTML += `
+
+                    //             // <h2 style="margin-top:20px;">
+                    //             //     ${resultText}
+                    //             // </h2>
+
+                    //             // <h1>
+                    //             //     ${score} poin
+                    //             // </h1>
+                    //             // `;
+
+                    //             // resolve(
+                    //             //     Math.floor(score)
+                    //             // );
+
+
+                    //             // content.innerHTML += `
+                    //             // <h2 style="margin-top:20px;">
+                    //             // ${resultText}
+                    //             // </h2>
+
+                    //             // <h1>${score} poin</h1>
+                    //             // `;
+                    //             // modal.classList.remove("show");
+                    //             // resolve(scoreMap);
+
+                    //             // setTimeout(()=>{
+
+                    //             //     modal.classList.remove("show");
+
+                    //             //     resolve(score);
+
+                    //             // },1500);
+                                
+                    //             // let participants =
+                    //             // currentMiniGameCandidates?.length
+                    //             // ? [...currentMiniGameCandidates]
+                    //             // : [playerName];
+
+                    //             // let scoreMap = {};
+
+                    //             // scoreMap[playerName] = score;
+                    //             // content.innerHTML += `
+                    //             // <h2 style="margin-top:20px;">
+                    //             // ${resultText}
+                    //             // </h2>
+
+                    //             // `;
+                    //             // let playerIsParticipant =
+                    //             // participants.includes(playerName);
+
+                    //             if(playerIsParticipant){
+
+                    //                 scoreMap[playerName] = score;
+
+                    //                 content.innerHTML += `
+                    //                 <div style="
+                    //                 margin-top:20px;
+                    //                 text-align:left;
+                    //                 ">
+                    //                     <h2 style="margin-top:15px;">
+                    //                     ${resultText}
+                    //                     </h2>
+
+                    //                     <h3 style="
+                    //                     margin:10px 0;
+                    //                     color:#fff;
+                    //                     ">
+                    //                     ${score} poin
+                    //                     </h3>
+                    //                 </div>
+                    //                 `;
+
+                                    
+                    //                 scoreMap[playerName] = score;
+
+                    //                 await delay(1500);
+                    //             }
+                    //             if(playerIsParticipant){
+                    //                 document.getElementById("timingBtn").disabled = true;
+                    //             }
+
+
+                    //             // for(let npc of participants){
+
+                    //             //     if(npc === playerName) continue;
+
+                    //             //     let npcScore =
+                    //             //     simulateNpcMiniGame(
+                    //             //         npc,
+                    //             //         type
+                    //             //     );
+
+                    //             //     scoreMap[npc] = npcScore;
+                    //             // }
+                    //             let npcPlayers =
+                    //             participants.filter(
+                    //                 p => p !== playerName
+                    //             );
+
+                    //             for(let npc of npcPlayers){
+
+                    //                 content.innerHTML = `
+                    //                 <h2>🤖 Giliran ${npc}</h2>
+
+                    //                 <div style="
+                    //                 width:100%;
+                    //                 height:30px;
+                    //                 border-radius:20px;
+                    //                 position:relative;
+                    //                 overflow:hidden;
+                    //                 margin-top:20px;
+                    //                 display:flex;
+                    //                 ">
+
+                    //                     <div style="
+                    //                     width:30%;
+                    //                     background:#ef4444;
+                    //                     ">
+                    //                     </div>
+
+                    //                     <div style="
+                    //                     width:15%;
+                    //                     background:#facc15;
+                    //                     ">
+                    //                     </div>
+
+                    //                     <div style="
+                    //                     width:10%;
+                    //                     background:#22c55e;
+                    //                     box-shadow:0 0 12px rgba(34,197,94,.8);
+                    //                     ">
+                    //                     </div>
+
+                    //                     <div style="
+                    //                     width:15%;
+                    //                     background:#facc15;
+                    //                     ">
+                    //                     </div>
+
+                    //                     <div style="
+                    //                     width:30%;
+                    //                     background:#ef4444;
+                    //                     ">
+                    //                     </div>
+
+                    //                     <div
+                    //                     id="npcTimingBar"
+                    //                     style="
+                    //                     position:absolute;
+                    //                     left:0%;
+                    //                     width:10%;
+                    //                     height:100%;
+                    //                     background:linear-gradient(
+                    //                     to bottom,
+                    //                     #ffffff,
+                    //                     #dbeafe
+                    //                     );
+
+                    //                     border:2px solid #93c5fd;
+
+                    //                     border-radius:12px;
+
+                    //                     box-shadow:
+                    //                     0 0 12px rgba(255,255,255,0.9);
+                    //                     ">
+                    //                     </div>
+
+                    //                 </div>
+
+                    //                 <h3 id="npcTimingResult"></h3>
+                    //                 `;
+
+                    //                 // await delay(1200);
+                    //                 let npcPos = 0;
+
+                    //                 // let target =
+                    //                 // Math.floor(Math.random()*91);
+                    //                 let target;
+
+                    //                 let skill =
+                    //                 simulateNpcMiniGame(
+                    //                     npc,
+                    //                     type
+                    //                 );
+
+                    //                 if(skill >= 90){
+
+                    //                     // hijau
+                    //                     target =
+                    //                     45 + Math.random()*10;
+
+                    //                 }
+                    //                 else if(skill >= 70){
+
+                    //                     // kuning
+                    //                     target =
+                    //                     35 + Math.random()*30;
+
+                    //                 }
+                    //                 else{
+
+                    //                     // bebas
+                    //                     target =
+                    //                     Math.random()*90;
+                    //                 }
+
+                    //                 let npcBar =
+                    //                 document.getElementById(
+                    //                     "npcTimingBar"
+                    //                 );
+
+                    //                 while(npcPos < target){
+
+                    //                     npcPos += 2;
+
+                    //                     npcBar.style.left =
+                    //                     npcPos + "%";
+
+                    //                     await delay(20);
+                    //                 }
+
+                    //                 // let npcScore =
+                    //                 // simulateNpcMiniGame(
+                    //                 //     npc,
+                    //                 //     type
+                    //                 // );
+                    //                 let center =
+                    //                 target + 5;
+
+                    //                 let distance =
+                    //                 Math.abs(center - 50);
+
+                    //                 let npcScore;
+                    //                 let npcResultText = "";
+                                    
+                                    
+
+                    //                 if(distance <= 5){
+
+                    //                     npcScore = 100;
+
+                    //                     npcResultText = "🟢 PERFECT!";
+                    //                     for(let i=0;i<12;i++){
+
+                    //                         let spark =
+                    //                         document.createElement("div");
+
+                    //                         spark.innerHTML = "✨";
+
+                    //                         spark.style.position = "absolute";
+
+                    //                         spark.style.left = "50%";
+
+                    //                         spark.style.top = "50%";
+
+                    //                         spark.style.fontSize = "28px";
+
+                    //                         spark.style.pointerEvents = "none";
+
+                    //                         spark.style.transform =
+                    //                         `translate(
+                    //                         ${(Math.random()-0.5)*150}px,
+                    //                         ${(Math.random()-0.5)*100}px
+                    //                         )`;
+
+                    //                         content.appendChild(spark);
+
+                    //                         setTimeout(
+                    //                             ()=>spark.remove(),
+                    //                             800
+                    //                         );
+                    //                     }
+
+                    //                     npcBar.style.boxShadow =
+                    //                     "0 0 25px rgba(34,197,94,1)";
+
+                    //                 }
+                    //                 else if(distance <= 15){
+
+                    //                     npcScore = 70;
+
+                    //                     npcResultText = "🟡 NEAR PERFECT";
+
+                    //                     npcBar.style.boxShadow =
+                    //                     "0 0 25px rgba(250,204,21,1)";
+
+                    //                 }
+                    //                 else if(distance <= 25){
+
+                    //                     npcScore = 40;
+
+                    //                     npcResultText = "🟠 OKAY";
+
+                    //                 }
+                    //                 else{
+
+                    //                     npcScore = 10;
+
+                    //                     npcResultText = "🔴 MISS";
+                    //                 }
+
+                    //                 // scoreMap[npc] = npcScore;
+
+                    //                 // // content.innerHTML += `
+                    //                 // // <h3>${npc} = ${npcScore} poin</h3>
+                    //                 // // `;
+
+                    //                 // // await delay(1000);
+                    //                 // content.innerHTML += `
+                    //                 // <h3>✅ ${npc} = ${npcScore} poin</h3>
+                    //                 // `;
+
+                    //                 // await delay(1500);
+
+
+                    //                 if(distance <= 5){
+
+                    //                     npcResultText = "🟢 PERFECT!";
+
+                    //                 }else if(distance <= 15){
+
+                    //                     npcResultText = "🟡 NEAR PERFECT";
+
+                    //                 }else if(distance <= 25){
+
+                    //                     npcResultText = "🟠 OKAY";
+
+                    //                 }else{
+
+                    //                     npcResultText = "🔴 MISS";
+                    //                 }
+
+                    //                 scoreMap[npc] = npcScore;
+
+                    //                 content.innerHTML += `
+                    //                 <h2 style="margin-top:15px;">
+                    //                 ${npcResultText}
+                    //                 </h2>
+
+                    //                 <h3>
+                    //                 ✅ ${npc} = ${npcScore} poin
+                    //                 </h3>
+                    //                 `;
+
+                    //                 await delay(1500);
+                    //             }
+                    //             // content.innerHTML += `
+                    //             // <hr>
+                    //             // <h2>📊 HASIL AKHIR</h2>
+                    //             // `;
+                    //             // Object.entries(scoreMap)
+                    //             // .forEach(([p,s])=>{
+
+                    //             //     content.innerHTML += `
+                    //             //     <div>${p}: ${s} poin</div>
+                    //             //     `;
+                    //             // });
+                    //             log(`🎮 HASIL GAME ${type.toUpperCase()}:`);
+
+                    //             Object.entries(scoreMap)
+                    //             .forEach(([p,s])=>{
+
+                    //                 log(`${p} : ${s} poin`);
+                    //             });
+                    //             // await delay(2500);
+
+                    //             modal.classList.remove("show");
+
+                    //             // resolve(scoreMap);
+
+                    //             // setTimeout(()=>{
+
+                    //             //     modal.classList.remove("show");
+
+                    //             //     resolve(scoreMap);
+
+                    //             // },1200);
+                    //             let sorted =
+                    //             Object.entries(scoreMap)
+                    //             .sort((a,b)=>b[1]-a[1]);
+
+                    //             let winner =
+                    //             sorted[0][0];
+                    //             // log(
+                    //             //     `👑 ${winner} menang game ${type.toUpperCase()}`
+                    //             // );
+
+                    //             let highestScore =
+                    //             sorted[0][1];
+
+                    //             let tiedPlayers =
+                    //             sorted
+                    //             .filter(([p,s])=>s===highestScore)
+                    //             .map(([p])=>p);
+                    //             // if(tiedPlayers.length > 1){
+
+                    //             //     content.innerHTML += `
+                    //             //     <br>
+                    //             //     ⚔️ Tanding ulang:
+                    //             //     ${tiedPlayers.join(", ")}
+                    //             //     `;
+
+                    //             //     await delay(2000);
+
+                    //             //     currentMiniGameCandidates =
+                    //             //     tiedPlayers;
+
+                    //             //     modal.classList.remove("show");
+
+                    //             //     return resolve(
+                    //             //         await openMiniGame(type)
+                    //             //     );
+                    //             // }
+                    //             if(tiedPlayers.length > 1){
+
+                    //                 currentMiniGameCandidates =
+                    //                 [...tiedPlayers];
+
+                    //                 log(
+                    //                     `⚔️ Skor tertinggi dan seri: ${tiedPlayers.join(", ")}`
+                    //                 );
+
+                    //                 log(
+                    //                     `🔁 Permainan diulang untuk ${tiedPlayers.length} peserta`
+                    //                 );
+
+                    //                 await delay(2000);
+
+                    //                 modal.classList.remove("show");
+
+                    //                 return resolve(
+                    //                     await openMiniGame(type)
+                    //                 );
+                    //                 console.log(
+                    //                     "REPLAY CANDIDATES",
+                    //                     currentMiniGameCandidates
+                    //                 );
+                    //             }
+                    //             // await delay(2500);
+
+                    //             modal.classList.remove("show");
+                    //             currentMiniGameCandidates = [];
+
+                    //             if(type === "pk" || type === "bos" ||type === "imun" ||type === "art"){
+
+                    //                 return resolve(winner);
+                    //             }
+
+                    //             return resolve(scoreMap);
+                    //         };
+                    //     }
+                        
+
+                    //     return;
+                    // }
                     if(game === "timing"){
 
-                        let pos = 0;
+                        let participants =
+                        currentMiniGameCandidates?.length
+                        ? [...currentMiniGameCandidates]
+                        : [playerName];
 
-                        let dir = 1;
+                        console.log(
+                            "TIMING START",
+                            participants.length,
+                            participants
+                        );
 
-                        content.innerHTML = `
+                        let scoreMap = {};
 
-                        <h3>${config.label}</h3>
+                        async function playPlayerTurn(){
 
-                        <p>
-                            Tekan STOP saat bar di area hijau!
-                        </p>
+                            return new Promise(resolvePlayer=>{
 
-                        <div style="
-                        width:100%;
-                        height:30px;
-                        background:#1e293b;
-                        border-radius:20px;
-                        position:relative;
-                        overflow:hidden;
-                        margin-top:20px;
-                        display:flex;
-                        ">
+                                content.innerHTML = `
 
-                            <!-- merah kiri -->
-                            <div style="
-                            width:30%;
-                            background:#ef4444;
-                            ">
-                            </div>
+                                <h3>${config.label}</h3>
 
-                            <!-- kuning kiri -->
-                            <div style="
-                            width:15%;
-                            background:#facc15;
-                            ">
-                            </div>
+                                <p>
+                                    Tekan STOP saat bar di area hijau!
+                                </p>
 
-                            <!-- hijau -->
+                                <h2>👤 Giliran Kamu</h2>
+
+                                <div
+                                style="
+                                width:100%;
+                                height:30px;
+                                border-radius:20px;
+                                position:relative;
+                                overflow:hidden;
+                                margin-top:20px;
+                                display:flex;
+                                ">
+
+                                    <div style="width:30%;background:#ef4444;"></div>
+
+                                    <div style="width:15%;background:#facc15;"></div>
+
+                                    <div
+                                    id="timingPerfectZone"
+                                    style="
+                                    width:10%;
+                                    background:#22c55e;
+                                    animation:timingPulse .8s infinite;
+                                    box-shadow:0 0 18px rgba(34,197,94,.8);
+                                    ">
+                                    </div>
+
+                                    <div style="width:15%;background:#facc15;"></div>
+
+                                    <div style="width:30%;background:#ef4444;"></div>
+
+                                    <div
+                                    id="timingBar"
+                                    style="
+                                    position:absolute;
+                                    left:0%;
+                                    width:10%;
+                                    height:100%;
+                                    background:linear-gradient(
+                                    to bottom,
+                                    #ffffff,
+                                    #dbeafe
+                                    );
+                                    border:2px solid #93c5fd;
+                                    border-radius:12px;
+                                    box-shadow:
+                                    0 0 12px rgba(255,255,255,.9);
+                                    ">
+                                    </div>
+
+                                </div>
+
+                                <button id="timingBtn">
+                                    STOP
+                                </button>
+
+                                <div id="timingResult"></div>
+                                `;
+
+                                let pos = 0;
+                                let dir = 1;
+
+                                let bar =
+                                document.getElementById("timingBar");
+
+                                let interval =
+                                setInterval(()=>{
+
+                                    let speed = 3;
+
+                                    if(pos > 35 && pos < 65){
+                                        speed = 7;
+                                    }
+
+                                    pos += dir * speed;
+
+                                    if(pos >= 90 || pos <= 0){
+                                        dir *= -1;
+                                    }
+
+                                    bar.style.left = pos + "%";
+
+                                },20);
+
+                                document.getElementById("timingBtn").onclick = async ()=>{
+
+                                    clearInterval(interval);
+
+                                    let center = pos + 5;
+
+                                    let distance =
+                                    Math.abs(center - 50);
+
+                                    let score;
+                                    let resultText;
+
+                                    if(distance <= 5){
+
+                                        score = 100;
+
+                                        resultText = "🟢 PERFECT!";
+
+                                        bar.style.boxShadow =
+                                        "0 0 35px rgba(34,197,94,1)";
+
+                                        for(let i=0;i<12;i++){
+
+                                            let spark =
+                                            document.createElement("div");
+
+                                            spark.innerHTML = "✨";
+
+                                            spark.style.position = "absolute";
+                                            spark.style.left = "50%";
+                                            spark.style.top = "50%";
+                                            spark.style.fontSize = "28px";
+
+                                            spark.style.transform =
+                                            `translate(
+                                            ${(Math.random()-0.5)*180}px,
+                                            ${(Math.random()-0.5)*120}px
+                                            )`;
+
+                                            content.appendChild(spark);
+
+                                            setTimeout(
+                                                ()=>spark.remove(),
+                                                800
+                                            );
+                                        }
+                                    }else if(distance <= 15){
+
+                                        score = 70;
+
+                                        resultText = "🟡 NEAR PERFECT";
+
+                                        bar.style.boxShadow =
+                                        "0 0 30px rgba(250,204,21,1)";
+                                    }else if(distance <= 25){
+
+                                        score = 40;
+                                        resultText = "🟠 OKAY";
+
+                                    }else{
+
+                                        score = 10;
+                                        resultText = "🔴 MISS";
+                                    }
+
+                                    document.getElementById(
+                                        "timingResult"
+                                    ).innerHTML = `
+
+                                    <h3>${resultText}</h3>
+
+                                    <h3>${score} poin</h3>
+                                    `;
+                                    await delay(1500);
+
+                                    resolvePlayer(score);
+
+                                };
+
+                            });
+
+                        }
+
+                        async function playNpcTurn(npc){
+
+                            content.innerHTML = `
+
+                            <h3>${config.label}</h3>
+
+                            <h2>🤖 Giliran ${npc}</h2>
+
+                            <p>Sedang bermain...</p>
+
                             <div
-                            id="timingPerfectZone"
                             style="
-                            width:10%;
-                            background:#22c55e;
-                            animation:timingPulse .8s infinite;
-                            box-shadow:0 0 18px rgba(34,197,94,.7);
+                            width:100%;
+                            height:30px;
+                            border-radius:20px;
+                            position:relative;
+                            overflow:hidden;
+                            margin-top:20px;
+                            display:flex;
                             ">
+
+                                <div style="width:30%;background:#ef4444;"></div>
+
+                                <div style="width:15%;background:#facc15;"></div>
+
+                                <div
+                                id="timingPerfectZone"
+                                style="
+                                width:10%;
+                                background:#22c55e;
+                                animation:timingPulse .8s infinite;
+                                box-shadow:0 0 18px rgba(34,197,94,.8);
+                                ">
+                                </div>
+
+                                <div style="width:15%;background:#facc15;"></div>
+
+                                <div style="width:30%;background:#ef4444;"></div>
+
+                                <div
+                                id="npcBar"
+                                style="
+                                position:absolute;
+                                left:0%;
+                                width:10%;
+                                height:100%;
+                                background:white;
+                                background:linear-gradient(
+                                to bottom,
+                                #ffffff,
+                                #dbeafe
+                                );
+                                border:2px solid #93c5fd;
+                                border-radius:12px;
+                                box-shadow:
+                                0 0 12px rgba(255,255,255,.9);
+                                ">
+                                </div>
+
                             </div>
 
-                            <!-- kuning kanan -->
-                            <div style="
-                            width:15%;
-                            background:#facc15;
-                            ">
-                            </div>
+                            <div id="npcResult"></div>
+                            `;
 
-                            <!-- merah kanan -->
-                            <div style="
-                            width:30%;
-                            background:#ef4444;
-                            ">
-                            </div>
+                            let npcBar =
+                            document.getElementById("npcBar");
 
-                            <div
-                            id="timingBar"
-                            style="
-                            position:absolute;
-                            left:0%;
-                            width:10%;
-                            height:100%;
-                            background:linear-gradient(
-                            to bottom,
-                            #ffffff,
-                            #dbeafe
+                            let skill =
+                            simulateNpcMiniGame(
+                                npc,
+                                type
                             );
 
-                            border:2px solid #93c5fd;
+                            let target;
 
-                            border-radius:12px;
+                            if(skill >= 90){
 
-                            box-shadow:
-                            0 0 12px rgba(255,255,255,0.9);
-                            ">
-                            </div>
+                                target =
+                                45 + Math.random()*10;
 
-                        </div>
+                            }
+                            else if(skill >= 70){
 
-                        <button id="timingBtn">
-                            STOP
-                        </button>
-                        `;
+                                target =
+                                35 + Math.random()*30;
 
-                        let bar =
-                        document.getElementById("timingBar");
+                            }
+                            else{
 
-                        let interval =
-                        setInterval(()=>{
-
-                            // pos += dir * 2;
-                            let speed = 3;
-
-                            if(pos > 35 && pos < 65){
-
-                                speed = 6;
+                                target =
+                                Math.random()*90;
                             }
 
-                            pos += dir * speed;
 
-                            if(pos >= 90 || pos <= 0){
+                            let pos = 0;
+                            let dir = 1;
 
-                                dir *= -1;
+                            while(true){
+
+                                let speed = 3;
+
+                                if(pos > 35 && pos < 65){
+                                    speed = 7;
+                                }
+
+                                pos += dir * speed;
+
+                                if(pos >= 90 || pos <= 0){
+                                    dir *= -1;
+                                }
+
+                                npcBar.style.left = pos + "%";
+
+                                if(
+                                    (dir === 1 && pos >= target) ||
+                                    (dir === -1 && pos <= target)
+                                ){
+                                    break;
+                                }
+
+                                await delay(20);
                             }
 
-                            bar.style.left = pos + "%";
-
-                        },20);
-
-                        document
-                        .getElementById("timingBtn")
-                        .onclick = ()=>{
-
-                            clearInterval(interval);
 
                             let center =
-                            pos + 5;
+                            target + 5;
 
-                            // let distance =
-                            // Math.abs(center - 50);
-
-                            // let score =
-                            // Math.max(
-                            //     0,
-                            //     100 - distance * 4
-                            // );
                             let distance =
                             Math.abs(center - 50);
 
-                            let score = 0;
+                            let score;
+                            let resultText;
 
-                            let resultText = "";
-
-                            // if(distance <= 5){
-
-                            //     score = 100;
-
-                            //     resultText = "🟢 PERFECT!";
-
-                            // }
-                            // else if(distance <= 15){
-
-                            //     score = 70;
-
-                            //     resultText = "🟡 GOOD";
-
-                            // }
                             if(distance <= 5){
 
                                 score = 100;
 
                                 resultText = "🟢 PERFECT!";
+
+                                npcBar.style.boxShadow =
+                                "0 0 35px rgba(34,197,94,1)";
+
                                 for(let i=0;i<12;i++){
 
                                     let spark =
@@ -2289,19 +3170,14 @@
                                     spark.innerHTML = "✨";
 
                                     spark.style.position = "absolute";
-
                                     spark.style.left = "50%";
-
                                     spark.style.top = "50%";
-
                                     spark.style.fontSize = "28px";
-
-                                    spark.style.pointerEvents = "none";
 
                                     spark.style.transform =
                                     `translate(
-                                    ${(Math.random()-0.5)*150}px,
-                                    ${(Math.random()-0.5)*100}px
+                                    ${(Math.random()-0.5)*180}px,
+                                    ${(Math.random()-0.5)*120}px
                                     )`;
 
                                     content.appendChild(spark);
@@ -2311,66 +3187,120 @@
                                         800
                                     );
                                 }
-
-                                bar.style.boxShadow =
-                                "0 0 30px rgba(34,197,94,1)";
-                            }
-                            else if(distance <= 15){
+                            }else if(distance <= 15){
 
                                 score = 70;
 
                                 resultText = "🟡 NEAR PERFECT";
 
-                                bar.style.boxShadow =
+                                npcBar.style.boxShadow =
                                 "0 0 30px rgba(250,204,21,1)";
-                            }
-                            else if(distance <= 25){
+                            }else if(distance <= 25){
 
                                 score = 40;
-
                                 resultText = "🟠 OKAY";
 
-                            }
-                            else{
+                            }else{
 
                                 score = 10;
-
                                 resultText = "🔴 MISS";
                             }
 
-                            // modal.classList.remove("show");
-                            // content.innerHTML += `
+                            document.getElementById(
+                                "npcResult"
+                            ).innerHTML = `
 
-                            // <h2 style="margin-top:20px;">
-                            //     ${resultText}
-                            // </h2>
+                            <h3>${resultText}</h3>
 
-                            // <h1>
-                            //     ${score} poin
-                            // </h1>
-                            // `;
-
-                            // resolve(
-                            //     Math.floor(score)
-                            // );
-                            content.innerHTML += `
-                            <h2 style="margin-top:20px;">
-                            ${resultText}
-                            </h2>
-
-                            <h1>${score} poin</h1>
+                            <h3>${score} poin</h3>
                             `;
 
-                            setTimeout(()=>{
+                            await delay(1500);
 
-                                modal.classList.remove("show");
+                            return score;
+                        }
 
-                                resolve(score);
+                        for(let peserta of participants){
 
-                            },1500);
-                        };
+                            let score;
 
-                        return;
+                            if(peserta === playerName){
+
+                                score =
+                                await playPlayerTurn();
+
+                            }else{
+
+                                score =
+                                await playNpcTurn(
+                                    peserta
+                                );
+                            }
+
+                            scoreMap[peserta] = score;
+                            
+                        }
+                        modal.classList.remove("show");
+
+                        log(
+                            `🎮 HASIL GAME ${type.toUpperCase()}:`
+                        );
+
+                        Object.entries(scoreMap)
+                        .forEach(([p,s])=>{
+
+                            log(`${p} : ${s} poin`);
+                        });
+
+                        let sorted =
+                        Object.entries(scoreMap)
+                        .sort((a,b)=>b[1]-a[1]);
+
+                        let highestScore =
+                        sorted[0][1];
+
+                        let tiedPlayers =
+                        sorted
+                        .filter(([p,s])=>s===highestScore)
+                        .map(([p])=>p);
+
+                        if(tiedPlayers.length > 1){
+
+                            currentMiniGameCandidates =
+                            [...tiedPlayers];
+
+                            log(
+                                `⚔️ Skor tertinggi dan seri: ${tiedPlayers.join(", ")}`
+                            );
+
+                            log(
+                                `🔁 Permainan diulang untuk ${tiedPlayers.length} peserta`
+                            );
+
+                            await delay(2000);
+
+                            return resolve(
+                                await openMiniGame(type)
+                            );
+                        }
+
+                        let winner =
+                        sorted[0][0];
+
+                        modal.classList.remove("show");
+
+                        currentMiniGameCandidates = [];
+
+                        if(
+                            type === "bos" ||
+                            type === "art" ||
+                            type === "imun" ||
+                            type === "pk"
+                        ){
+                            return resolve(winner);
+                        }
+
+                        return resolve(scoreMap);
                     }
 
                     if(game === "aim"){
@@ -4837,34 +5767,34 @@
 
                     return Math.max(0,score);
                 }
-                if(type === "timing"){
+                // if(type === "timing"){
 
-                    let total = 0;
+                //     let total = 0;
 
-                    for(let round=0; round<5; round++){
+                //     for(let round=0; round<5; round++){
 
-                        let roll = Math.random();
+                //         let roll = Math.random();
 
-                        if(roll < 0.15){
+                //         if(roll < 0.15){
 
-                            total += 100;
+                //             total += 100;
 
-                        }else if(roll < 0.40){
+                //         }else if(roll < 0.40){
 
-                            total += 70;
+                //             total += 70;
 
-                        }else if(roll < 0.75){
+                //         }else if(roll < 0.75){
 
-                            total += 40;
+                //             total += 40;
 
-                        }else{
+                //         }else{
 
-                            total += 10;
-                        }
-                    }
+                //             total += 10;
+                //         }
+                //     }
 
-                    return total;
-                }
+                //     return total;
+                // }
 
                 score += reputation[player] * 0.3;
 
@@ -4933,27 +5863,45 @@
                     }
 
                     // memory kelompok tetap pakai scoremap
+                    // if(game === "memory" || game === "timing"){
+
+                    //     scoreMap = result;
+
+                    // }else{
+
+                    //     scoreMap[playerName] = result;
+                    // }
                     if(game === "memory"){
 
                         scoreMap = result;
 
-                    }else{
+                    }
+                    else if(game === "timing"){
+
+                        // timing sekarang sudah return winner
+                        return result;
+
+                    }
+                    else{
 
                         scoreMap[playerName] = result;
                     }
                 }
 
                 // NPC
-                candidates.forEach(p=>{
+                if(game !== "memory" && game !== "timing"){
 
-                    if(p === playerName) return;
+                    candidates.forEach(p=>{
 
-                    scoreMap[p] =
-                    simulateNpcMiniGame(
-                        p,
-                        roleType
-                    );
-                });
+                        if(p === playerName) return;
+
+                        scoreMap[p] =
+                        simulateNpcMiniGame(
+                            p,
+                            roleType
+                        );
+                    });
+                }
 
                 console.log(
                     `[${roleType.toUpperCase()} SCORE MAP]`,
@@ -4986,7 +5934,7 @@
                 }
                 if(
                     roleType !== "kelompok" &&
-                    game === "memory"
+                    (game === "memory" || game === "timing")
                 ){
 
                     let maxScore =
@@ -5004,7 +5952,7 @@
                     if(tied.length > 1){
 
                         log(
-                        `⚔️ ${tied.join(" & ")} harus tanding ulang MEMORY!`
+                        `⚔️ ${tied.join(" & ")} harus tanding ulang game ${game.toUpperCase()}!`
                         );
 
                         return await runRoleMiniGame(
@@ -5014,6 +5962,7 @@
                         );
                     }
                 }
+
                 console.log("FINAL SCORE MAP", scoreMap);
                 console.log("KEYS", Object.keys(scoreMap));
 
@@ -10775,8 +11724,8 @@
                         //ALEX DEBUG KANDIDAT bos BWT MINIGAME BOS
                         // let topBosCandidates = [
                         //     playerName,
-                        //     bosRank[0].name,
-                        //     bosRank[1].name
+                        //     "Kanya",
+                        //     "Indra"
                         // ];
 
                         // log(
@@ -11113,6 +12062,10 @@
 
                             roles.art =pickRealityWinner(artBottom3);
                         }
+                        console.log(
+                            "ART  =",
+                            roles.art
+                        );
 
                         stats[roles.art].art++;
 
