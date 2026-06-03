@@ -1636,6 +1636,7 @@
             // }
             let playerSpecialActionUsed = false;
             let aduDombaTarget1 = null;
+            
             // let chaosEventToday = false;
             // khusus gossip/drama/adudomba
             let socialChaosToday = false;
@@ -1717,6 +1718,7 @@
             };
             let pendingDecision = null;
             let npcRequest = null;
+            
             //amnesti comeback random
             //let comebackDone = false;
             let comebackDone = localStorage.getItem("comebackDone") === "true";
@@ -8189,6 +8191,89 @@
             //         html
             //     );
             // }
+            let socialMemory = {};
+            function addMemory(target,type,source,value){
+
+                if(!socialMemory[target]){
+
+                    socialMemory[target] = [];
+                }
+
+                socialMemory[target].push({
+
+                    type,
+                    source,
+                    value,
+                    day: dayCount
+                });
+
+                if(socialMemory[target].length > 30){
+
+                    socialMemory[target].shift();
+                }
+            }
+            function getMemoryScore(actor,target){
+
+                if(!socialMemory[actor]) return 0;
+
+                let score = 0;
+
+                socialMemory[actor]
+                .filter(m => m.source === target)
+                .forEach(m => {
+
+                    score += m.value;
+
+                });
+
+                return score;
+            }
+
+            function getGangBonus(actor,target){
+
+                let gang = gangs.find(
+                    g => g.members.includes(actor)
+                );
+
+                if(
+                    gang &&
+                    gang.members.includes(target)
+                ){
+                    return 15;
+                }
+
+                return 0;
+            }
+
+            function getDatingBonus(actor,target){
+
+                if(
+                    dating[actor] === target ||
+                    dating[target] === actor
+                ){
+                    return 25;
+                }
+
+                return 0;
+            }
+
+            function getDecisionScore(actor,target){
+
+                let score = 0;
+
+                score += relation[actor]?.[target] || 0;
+
+                score += trust[actor]?.[target] || 0;
+
+                score += getMemoryScore(actor,target);
+
+                score += getGangBonus(actor,target);
+
+                score += getDatingBonus(actor,target);
+
+                return score;
+            }
+            
             function openAduDomba(target1){
                 if(!canUseSpecialSocial()){
 
@@ -8763,6 +8848,7 @@
                     );
                 });
             }
+            
 
 
             // function addReputation(player, amount){
@@ -8963,36 +9049,146 @@
                     else if(type === "eliminate"){
 
                         // teman korban marah dan satu geng akan sangat marah
+                        // if(closeness >= 12 || sameGang){
+
+                        //     let debuff =
+                        //     Math.floor(Math.random()*4)+2;
+
+                        //     // 👥 member geng lebih sakit hati
+                        //     if(sameGang){
+                        //         debuff += 4;
+                        //     }
+
+                        //     // 👑 Boss ditakuti → penghuni susah membenci
+                        //     // if(
+                        //     //     activeRoles.bos === role &&
+                        //     //     // bossStreak[role] >= 7
+                        //     //     stats[role].bos >= 4
+                        //     // ){
+                        //     //     debuff = Math.floor(debuff * 0.4);
+                        //     // }
+                        //     if(
+                        //         role &&
+                        //         stats[role] &&
+                        //         activeRoles.bos === role &&
+                        //         stats[role].bos >= 4
+                        //     ){
+                        //         debuff = Math.floor(debuff * 0.4);
+                        //     }
+
+
+                        //     relation[p][role] -= debuff;
+                        //     // 🔥 simpan dendam ke PK
+                        //     if(!revengeTarget[p]){
+
+                        //         revengeTarget[p] = {};
+                        //     }
+
+                        //     revengeTarget[p][role] = {
+
+                        //         target: role,
+
+                        //         reason: target,
+
+                        //         anger: debuff * 2
+                        //     };
+                        //     totalReaction++;
+
+                        //     if(sameGang){
+                        //         log(
+                        //             `👥😡 ${p} marah besar karena member gengnya (${target}) diekstradisi oleh ${role}`
+                        //         );
+                        //     }else{
+                        //         log(
+                        //             `😡 ${p} kecewa dengan keputusan ${role}`
+                        //         );
+                        //     }
+
+                        //     // await delay(500);
+                        // }
+
+                        // // musuh korban senang
+                        // else if(closeness <= -12){
+
+                        //     relation[p][role] += 2;
+                        //     totalReaction++;
+
+                        //     log(
+                        //         `😏 ${p} diam-diam senang ${target} keluar`
+                        //     );
+
+                        //     // await delay(500);
+                        // }
+                        // alex new condition for kecewa/asrah/tenang
                         if(closeness >= 12 || sameGang){
+
+                            let reactionType = "kecewa";
 
                             let debuff =
                             Math.floor(Math.random()*4)+2;
 
-                            // 👥 member geng lebih sakit hati
+                            // =====================
+                            // PASRAH
+                            // =====================
+
+                            if(
+                                relation[p][role] >= 30
+                            ){
+
+                                reactionType = "pasrah";
+
+                                debuff =
+                                Math.max(
+                                    1,
+                                    Math.floor(debuff * 0.4)
+                                );
+                            }
+
+                            // =====================
+                            // MENGERTI
+                            // =====================
+
+                            if(
+                                relation[p][role] >= 50
+                            ){
+
+                                reactionType = "mengerti";
+
+                                debuff =
+                                Math.max(
+                                    1,
+                                    Math.floor(debuff * 0.2)
+                                );
+                            }
+
+                            // =====================
+                            // SATU GENG
+                            // =====================
+
                             if(sameGang){
+
+                                reactionType = "marah";
+
                                 debuff += 4;
                             }
 
-                            // 👑 Boss ditakuti → penghuni susah membenci
-                            // if(
-                            //     activeRoles.bos === role &&
-                            //     // bossStreak[role] >= 7
-                            //     stats[role].bos >= 4
-                            // ){
-                            //     debuff = Math.floor(debuff * 0.4);
-                            // }
+                            // =====================
+                            // BOSS DITAKUTI
+                            // =====================
+
                             if(
                                 role &&
                                 stats[role] &&
                                 activeRoles.bos === role &&
                                 stats[role].bos >= 4
                             ){
-                                debuff = Math.floor(debuff * 0.4);
+
+                                debuff =
+                                Math.floor(debuff * 0.4);
                             }
 
-
                             relation[p][role] -= debuff;
-                            // 🔥 simpan dendam ke PK
+
                             if(!revengeTarget[p]){
 
                                 revengeTarget[p] = {};
@@ -9006,33 +9202,41 @@
 
                                 anger: debuff * 2
                             };
+
                             totalReaction++;
 
-                            if(sameGang){
+                            // =====================
+                            // LOG REACTION
+                            // =====================
+
+                            if(reactionType === "marah"){
+
                                 log(
-                                    `👥😡 ${p} marah besar karena member gengnya (${target}) diekstradisi oleh ${role}`
-                                );
-                            }else{
-                                log(
-                                    `😡 ${p} kecewa dengan keputusan ${role}`
+                                    `👥😡 ${p} marah besar karena ${target} diekstradisi oleh ${role}`
                                 );
                             }
 
-                            // await delay(500);
-                        }
+                            else if(reactionType === "kecewa"){
 
-                        // musuh korban senang
-                        else if(closeness <= -12){
+                                log(
+                                    `💔 ${p} kecewa dengan keputusan ${role}`
+                                );
+                            }
 
-                            relation[p][role] += 2;
-                            totalReaction++;
+                            else if(reactionType === "pasrah"){
 
-                            log(
-                                `😏 ${p} diam-diam senang ${target} keluar`
-                            );
+                                log(
+                                    `😔 ${p} pasrah dengan keputusan ${role}`
+                                );
+                            }
 
-                            // await delay(500);
-                        }
+                            else if(reactionType === "mengerti"){
+
+                                log(
+                                    `🙂 ${p} memahami keputusan ${role}`
+                                );
+                            }
+}
                     }
                 }
 
@@ -14720,9 +14924,13 @@
                 log("⏳ 👑 Bos " + roles.bos + " sedang memutuskan siapa yang diselamatkan...");
                 await delay(1000);
 
+                // savedByBos =
+                // bottom3.sort((a,b)=>
+                // relation[roles.bos][b] - relation[roles.bos][a]
+                // )[0];
                 savedByBos =
                 bottom3.sort((a,b)=>
-                relation[roles.bos][b] - relation[roles.bos][a]
+                getDecisionScore(roles.bos,b) - getDecisionScore(roles.bos,a)
                 )[0];
 
                 log("👑 Bos " + roles.bos + " menyelamatkan: " + savedByBos);
@@ -14820,10 +15028,15 @@
                 }
 
                 // 🔑 NPC KUNCI
+                // let savedByKey =
+                // sisa.sort((a,b)=>
+                // relation[roles.kunci][b] -
+                // relation[roles.kunci][a]
+                // )[0];
                 let savedByKey =
                 sisa.sort((a,b)=>
-                relation[roles.kunci][b] -
-                relation[roles.kunci][a]
+                getDecisionScore(roles.kunci,b) -
+                getDecisionScore(roles.kunci,a)
                 )[0];
 
                 log("⏳ 🔑 Pemegang Kunci " +roles.kunci +" sedang memutuskan siapa yang diselamatkan...");
@@ -15316,6 +15529,12 @@
 
                 relation[playerName][name] += boost2;
                 relation[name][playerName] += boost2;
+                addMemory(
+                    name,
+                    "saved",
+                    playerName,
+                    20
+                );
                 updateSpecialRelations();
 
                 // relation[playerName][name] += 6;
@@ -15400,10 +15619,15 @@
                 }
 
                 // 🔑 NPC KUNCI
+                // let savedByKey =
+                // sisa.sort((a,b)=>
+                // relation[roles.kunci][b] -
+                // relation[roles.kunci][a]
+                // )[0];
                 let savedByKey =
                 sisa.sort((a,b)=>
-                relation[roles.kunci][b] -
-                relation[roles.kunci][a]
+                getDecisionScore(roles.kunci,b) -
+                getDecisionScore(roles.kunci,a)
                 )[0];
 
                 log("⏳ 🔑 Pemegang Kunci " +roles.kunci +" sedang memutuskan siapa yang diselamatkan...");
@@ -15552,6 +15776,12 @@
                 // removePlayerFromGang(name);
 
                 status[name] = "KELUAR";
+                addMemory(
+                    name,
+                    "betrayed",
+                    playerName,
+                    -15
+                );
                 npcDailyBonding();
                 
                 eliminatedOrder.unshift(name);
@@ -15903,6 +16133,12 @@
                     removePlayerFromGang(eliminated);
 
                     status[eliminated] = "KELUAR";
+                    addMemory(
+                        eliminated,
+                        "betrayed",
+                        roles.kunci,
+                        -15
+                    );
                     npcDailyBonding();
 
                     if(eliminated === playerName){
@@ -16084,10 +16320,15 @@
                 }
 
                 // NPC BOS
+                // savedByBos =
+                // bottom3.sort((a,b)=>
+                // relation[roles.bos][b] -
+                // relation[roles.bos][a]
+                // )[0];
                 savedByBos =
                 bottom3.sort((a,b)=>
-                relation[roles.bos][b] -
-                relation[roles.bos][a]
+                getDecisionScore(roles.bos,b) -
+                getDecisionScore(roles.bos,a)
                 )[0];
 
                 log("⏳ 👑 Bos " + roles.bos + " sedang memutuskan siapa yang diselamatkan...");
@@ -16098,6 +16339,12 @@
 
                 relation[roles.bos][savedByBos] += boost;
                 relation[savedByBos][roles.bos] += boost;
+                addMemory(
+                    savedByBos,
+                    "saved",
+                    roles.bos,
+                    20
+                );
                 // relation[roles.bos][savedByBos] += 6;
                 // relation[savedByBos][roles.bos] += 6;
                 updateSpecialRelations();
@@ -16194,10 +16441,15 @@
                 }
 
                 // NPC PK
+                // let savedByKey =
+                // sisa.sort((a,b)=>
+                // relation[roles.kunci][b] -
+                // relation[roles.kunci][a]
+                // )[0];
                 let savedByKey =
                 sisa.sort((a,b)=>
-                relation[roles.kunci][b] -
-                relation[roles.kunci][a]
+                getDecisionScore(roles.kunci,b) -
+                getDecisionScore(roles.kunci,a)
                 )[0];
 
                 log("⏳ 🔑 Pemegang Kunci " +roles.kunci +" sedang memutuskan siapa yang diselamatkan...");
