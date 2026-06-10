@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>🏠🔑Penghuni Terakhir</title>
+        <title>🏠🔑THE LAST HOUSEMATES</title>
 
         <style>
         *{
@@ -1248,7 +1248,277 @@
             0 0 10px rgba(255,255,255,.25);
 
         }
-       
+
+        .memory-modal{
+
+            position:fixed;
+            inset:0;
+
+            background:rgba(0,0,0,.8);
+
+            display:none;
+            justify-content:center;
+            align-items:center;
+
+            z-index:99999;
+        }
+
+        .memory-modal.show{
+
+            display:flex;
+        }
+
+        .memory-box{
+
+            background:#111827;
+
+            border-radius:16px;
+
+            padding:20px;
+
+            width:90%;
+            max-width:420px;
+        }
+
+        /* #finalMemoryGrid{
+
+            display:grid;
+
+            grid-template-columns:repeat(4,1fr);
+
+            gap:10px;
+
+            margin:20px 0;
+        } */
+        #finalMemoryGrid{
+
+            display:grid;
+
+            grid-template-columns:repeat(4,1fr);
+
+            gap:8px;
+
+            margin:12px 0;
+        }
+
+        /* .memory-card{
+
+            background:#1f2937;
+
+            border-radius:10px;
+
+            padding:15px;
+
+            text-align:center;
+
+            font-size:30px;
+            width:50px;
+
+            height:50px;
+
+            box-sizing:border-box; 
+        } */
+        
+
+        /* .memory-btn{
+
+            margin:5px;
+
+            padding:10px 15px;
+
+            border:none;
+
+            border-radius:8px;
+
+            cursor:pointer;
+        } */
+        .memory-btn{
+
+            margin:0;
+
+            padding:10px;
+
+            border:none;
+
+            border-radius:10px;
+
+            cursor:pointer;
+
+            font-size:22px;
+
+            width:100%;
+        }
+        #finalMemoryFeedback{
+
+            margin-top:15px;
+
+            font-size:20px;
+
+            font-weight:bold;
+
+            text-align:center;
+        }
+        #finalMemoryQuestion{
+
+            margin-top:12px;
+
+            padding:10px;
+
+            /* background:#1f2937; */
+
+            border-radius:10px;
+
+            text-align:center;
+
+            font-weight:bold;
+
+            font-size:15px;
+        }
+        /* #finalMemoryChoices{
+
+            display:grid;
+
+            grid-template-columns:repeat(2,1fr);
+
+            gap:8px;
+
+            margin-top:10px;
+        } */
+        #finalMemoryChoices{
+
+            display:grid;
+
+            gap:8px;
+
+            margin-top:10px;
+        }
+        /* Desktop */
+        @media(min-width:768px){
+            .memory-card{
+
+                background:#1f2937;
+
+                border-radius:10px;
+
+                padding:15px;
+
+                text-align:center;
+
+                font-size:30px;
+                /* width:50px;
+
+                height:50px;
+
+                box-sizing:border-box;  */
+            }
+
+            #finalMemoryChoices{
+
+                grid-template-columns:repeat(4,1fr);
+            }
+
+            .memory-btn{
+
+                height:55px;
+            }
+        }
+
+        /* Mobile */
+        @media(max-width:767px){
+            .memory-card{
+
+                background:#1f2937;
+
+                border-radius:10px;
+
+                height:48px;
+
+                display:flex;
+
+                flex-direction:column;
+
+                align-items:center;
+
+                justify-content:center;
+
+                text-align:center;
+
+                font-size:16px;
+
+                padding:0;
+            }
+
+            #finalMemoryChoices{
+
+                grid-template-columns:repeat(2,1fr);
+            }
+
+            .memory-btn{
+
+                height:48px;
+            }
+        }
+        .memory-choice{
+
+            transition:.2s;
+        }
+
+        .memory-choice:active{
+
+            transform:scale(.92);
+        }
+        .memory-choice.correct{
+
+            background:#16a34a !important;
+            color:white;
+            animation:shake .4s;
+        }
+        /* 
+        .memory-choice.wrong{
+
+            background:#dc2626 !important;
+            color:white;
+        } */
+        @keyframes shake{
+
+            0%{transform:translateX(0);}
+            25%{transform:translateX(-6px);}
+            50%{transform:translateX(6px);}
+            75%{transform:translateX(-6px);}
+            100%{transform:translateX(0);}
+        }
+
+        .memory-choice.wrong{
+
+            background:#dc2626 !important;
+            color:white;
+
+            animation:shake .4s;
+        }
+        @keyframes bounceBtn{
+
+            0%{
+                transform:scale(1);
+            }
+
+            30%{
+                transform:scale(.88);
+            }
+
+            60%{
+                transform:scale(1.08);
+            }
+
+            100%{
+                transform:scale(1);
+            }
+        }
+
+        .memory-choice.bounce{
+
+            animation:bounceBtn .35s ease;
+        }
+            
 
         </style>
     </head>
@@ -1256,7 +1526,7 @@
     <body>
 
         <header>
-            <h1>🏠🔑 Penghuni Terakhir</h1>
+            <h1>🏠🔑 THE LAST HOUSEMATES</h1>
             <h2 id="day">Hari 1</h2>
         </header>
 
@@ -1561,6 +1831,38 @@
             </div>
 
         </div>
+        <div id="finalMemoryModal" class="memory-modal">
+
+            <div class="memory-box">
+
+                <!-- <h2>🧠 MEMORY FINAL</h2> -->
+                 <h2 id="finalMemoryTitle">
+                    🎮 GAME
+                </h2>
+
+                <p id="finalMemoryRound"></p>
+
+                <p id="finalMemoryGuide"
+                style="
+                    font-size:13px;
+                    color:#cbd5e1;
+                    margin-top:8px;
+                    line-height:1.5;
+                ">
+                👀 Perhatikan baik-baik! Hafalkan isi dan posisi semua kotak sebelum pertanyaan dimulai.
+                </p>
+
+                <div id="finalMemoryGrid"></div>
+
+                <div id="finalMemoryQuestion"></div>
+
+                <div id="finalMemoryChoices"></div>
+
+                <div id="finalMemoryFeedback"></div>
+
+            </div>
+
+        </div>
 
         <button
             class="floating-player-btn mobile-only"
@@ -1603,6 +1905,36 @@
             playerGender = localStorage.getItem("playerGender") || "";
 
             let traits = ["Strategis","Emosional","Santai","Licik"];
+            const traitProfile = {
+
+                Strategis:{
+                    social:1,
+                    alliance:3,
+                    revenge:1,
+                    popularity:1
+                },
+
+                Emosional:{
+                    social:0,
+                    alliance:0,
+                    revenge:4,
+                    popularity:-1
+                },
+
+                Santai:{
+                    social:3,
+                    alliance:1,
+                    revenge:-2,
+                    popularity:2
+                },
+
+                Licik:{
+                    social:-1,
+                    alliance:4,
+                    revenge:2,
+                    popularity:-2
+                }
+            };
 
             let cities = [
                 "Jakarta",
@@ -1630,6 +1962,9 @@
             let amnestyPopularity = {};
             let rawPopularity = {};
             let legacyReputation = {};
+            let socialMemory = {};
+            let publicImage = {};
+            let currentEndgameStage = "";
             // if(Object.keys(relation).length === 0){
 
             //     relation = {};
@@ -1799,25 +2134,38 @@
                     "pickbox"
                 ],
 
+                // semifinal:[
+                //     "reaction",
+                //     "memory",
+                //     "timing",
+                //     "pickbox"
+                // ],
+
+                // final:[
+                //     "reaction",
+                //     "memory",
+                //     "tap",
+                //     "pickbox"
+                // ],
+
+                // grandfinal:[
+                //     "reaction",
+                //     "timing",
+                //     "memory",
+                //     "pickbox"
+                // ]
+                //alex debug minigame endgame
                 semifinal:[
-                    "reaction",
-                    "memory",
-                    "timing",
-                    "pickbox"
+                    "memory"
                 ],
 
                 final:[
-                    "reaction",
-                    "memory",
-                    "tap",
-                    "pickbox"
+                    "memory"
                 ],
 
                 grandfinal:[
-                    "reaction",
-                    "timing",
-                    "memory",
-                    "pickbox"
+
+                    "memory"
                 ]
             };
             const miniGameConfig = {
@@ -1975,11 +2323,11 @@
                     miniGameConfig[game];
                     if(!config){
 
-                        console.log(
-                            "INVALID MINIGAME:",
-                            type,
-                            game
-                        );
+                        // console.log(
+                        //     "INVALID MINIGAME:",
+                        //     type,
+                        //     game
+                        // );
 
                         game = "tap";
 
@@ -2835,11 +3183,11 @@
                         ? [...currentMiniGameCandidates]
                         : [playerName];
 
-                        console.log(
-                            "TIMING START",
-                            participants.length,
-                            participants
-                        );
+                        // console.log(
+                        //     "TIMING START",
+                        //     participants.length,
+                        //     participants
+                        // );
 
                         let scoreMap = {};
 
@@ -4986,6 +5334,11 @@
 
                                 return resolve(highestScore);
                             }
+                            console.log(
+                                "MEMORY RESULT",
+                                scoreMap,
+                                typeof scoreMap
+                            );
 
                             setTimeout(()=>{
 
@@ -6691,6 +7044,7 @@
                     if(!specialRelations[n]){
                         specialRelations[n] = {};
                     }
+                    // publicImage[p] = 0;
 
                     names.forEach(m=>{
 
@@ -6757,6 +7111,20 @@
                            
                         }
                     });
+                    names.forEach(p=>{
+
+                        if(socialMemory[p] == null){
+                            socialMemory[p] = 0;
+                        }
+
+                    });
+                    names.forEach(p=>{
+
+                        if(publicImage[p] == null){
+                            publicImage[p] = 0;
+                        }
+
+                    });
                 });
 
                 // document.getElementById("log").innerHTML =
@@ -6772,7 +7140,7 @@
                     document.getElementById("log").innerHTML =
                     `
                     <p>
-                        🏠 Selamat datang di Rumah Karantina...
+                        🏠 Hi Housemates! Selamat datang di Rumah Karantina, kalian adalah 20 housemates terpilih yang berhasil masuk ke rumah ini. Bersosiasilah dan survivelah selama mungkin...
                     </p>
                     `;
                 }
@@ -6863,7 +7231,7 @@
                 document.querySelector(".container").style.display = "none";
 
                 document.getElementById("day").innerText =
-                "Perkenalan Rumah Karantina";
+                "Selamat Datang di Rumah Karantina";
             }
 
 
@@ -6933,7 +7301,7 @@
                     // }
                     if(activeRoles.bos === p){
 
-                        role += "👑 Bos ";
+                        role += "👑  ";
 
                         let bosCount =
                         stats[p]?.bos || 0;
@@ -6949,20 +7317,20 @@
                     }
 
                     if(activeRoles.art === p){
-                        role += "🧹 ART ";
+                        role += "🧹  ";
                     }
 
                     if(activeRoles.imun === p){
-                        role += "🛡️ Imun ";
+                        role += "🛡️  ";
                     }
 
                     if(activeRoles.kunci === p){
-                        role += "🔑 Kunci ";
+                        role += "🔑  ";
                     }
 
                     // if(amnesters.includes(p)){
                     if(selectedAmnesters.includes(p)){
-                        role += "🎭 Amnester ";
+                        role += "🎭  ";
                     }
 
                     // let rel = p !== "KAMU" ? relation[p]["KAMU"] : 0;
@@ -6979,7 +7347,7 @@
 
                     html += `
                     <div class="card player-card ${bgClass} ${status[p]==="KELUAR" ? "out" : ""}">
-                        <b>${p}${
+                        <b>${role}${p}${
                             genderMap[p] === "pria"
                             ? "♂️"
                             : "♀️"
@@ -7032,7 +7400,7 @@
                                 ">
                                     ${
                                         status[partner] === "KELUAR"
-                                        ? `💔 Pacar ${partner} terekstradisi`
+                                        ? `💔 Pacar ${partner} tereliminasi`
                                         : `💔 Mantan ${partner}`
                                     }
                                 </div>
@@ -7079,7 +7447,7 @@
                                     margin-top:3px;
                                 ">
 
-                                👥 ${eliminatedMeta[p].gang} terekstradisi
+                                👥 ${eliminatedMeta[p].gang} tereliminasi
 
                                 </div>
 
@@ -7114,7 +7482,7 @@
                         : ""}
                         
                         
-                        <span class="role">${role}</span>
+                        
                         
                         ${p !== playerName && status[p] !== "KELUAR"
                         ? `
@@ -7136,7 +7504,7 @@
                         >
                         ${
                         status[playerName] === "KELUAR"
-                        ? "❌ Kamu Sudah Terekstradisi"
+                        ? "❌ Kamu Sudah Tereliminasi"
                         : "💬 Sosialisasi"
                         }
                         </button>
@@ -7993,9 +8361,11 @@
                     );
 
                     addReputation(provoker, 3);
+                    addPublicImage(provoker,1);
                     
 
                     addReputation(target, -4);
+                    addPublicImage(target,-5);
 
                     // beberapa penghuni mulai curiga
                     let alive =
@@ -8064,6 +8434,7 @@
                     );
 
                     addReputation(provoker, -5);
+                    addPublicImage(provoker,-5);
                     
 
                     let alive =
@@ -8191,7 +8562,7 @@
             //         html
             //     );
             // }
-            let socialMemory = {};
+            
             function addMemory(target,type,source,value){
 
                 if(!socialMemory[target]){
@@ -8222,7 +8593,20 @@
                 .filter(m => m.source === target)
                 .forEach(m => {
 
-                    score += m.value;
+                    // score += m.value;
+                    let age =
+                    dayCount - m.day;
+
+                    let multiplier =
+                    Math.max(
+                        0.3,
+                        1 - (age * 0.03)
+                    );
+
+                    score +=
+                    Math.round(
+                        m.value * multiplier
+                    );
 
                 });
 
@@ -8257,6 +8641,67 @@
                 return 0;
             }
 
+            function getRevengeScore(actor,target){
+
+                if(
+                    !revengeTarget[actor] ||
+                    !revengeTarget[actor][target]
+                ){
+                    return 0;
+                }
+
+                return -(
+                    revengeTarget[actor][target].anger
+                );
+            }
+
+            function getTraitDecisionBonus(
+                actor,
+                target
+            ){
+
+                switch(traitsMap[actor]){
+
+                    case "Emosional":
+
+                        return Math.floor(
+                            (relation[actor][target] || 0)
+                            * 0.15
+                        );
+
+                    case "Santai":
+
+                        return 2;
+
+                    case "Licik":
+
+                        return 0;
+
+                    case "Strategis":
+
+                        return 5;
+                }
+
+                return 0;
+            }
+
+            // function getPublicImageBonus(
+            //     actor,
+            //     target
+            // ){
+
+            //     if(
+            //         traitsMap[actor] !== "Strategis"
+            //     ){
+            //         return 0;
+            //     }
+
+            //     let pi =
+            //     publicImage[target] || 0;
+
+            //     return Math.floor(pi * 0.2);
+            // }
+
             function getDecisionScore(actor,target){
 
                 let score = 0;
@@ -8271,8 +8716,98 @@
 
                 score += getDatingBonus(actor,target);
 
+                score += getRevengeScore(actor,target);
+
+                score += getTraitDecisionBonus(
+                    actor,
+                    target
+                );
+
+                // score +=
+                // getPublicImageBonus(
+                //     actor,
+                //     target
+                // );
+
                 return score;
             }
+
+            // function addPublicImage(player,value,reason=""){
+
+            //     if(publicImage[player] == null){
+
+            //         publicImage[player] = 0;
+            //     }
+
+            //     publicImage[player] += value;
+
+            //     publicImage[player] = Math.max(
+            //         -100,
+            //         Math.min(100, publicImage[player])
+            //     );
+
+            //     // if(reason){
+
+            //     //     log(
+            //     //         `📣 Reputasi publik ${player} ${value > 0 ? "+" : ""}${value}
+            //     //         (${reason})`
+            //     //     );
+            //     // }
+            // }
+            function addPublicImage(player, amount){
+
+                if(publicImage[player] == null){
+                    publicImage[player] = 0;
+                }
+
+                publicImage[player] += amount;
+
+                if(publicImage[player] > 100){
+                    publicImage[player] = 100;
+                }
+
+                if(publicImage[player] < -100){
+                    publicImage[player] = -100;
+                }
+            }
+            function getAudienceStatus(player){
+
+                let pi = publicImage[player] || 0;
+
+                if(pi >= 40){
+                    return "favorit";
+                }
+
+                if(pi <= -40){
+                    return "musuh";
+                }
+
+                return "netral";
+            }
+
+            function getAudienceLabel(player){
+
+                let pi = publicImage[player] || 0;
+
+                if(pi >= 40){
+                    return "⭐ Favorit Pemirsa";
+                }
+
+                if(pi >= 20){
+                    return "🙂 Disukai";
+                }
+
+                if(pi > -20){
+                    return "😐 Netral";
+                }
+
+                if(pi > -40){
+                    return "😕 Kurang Disukai";
+                }
+
+                return "🚫 Musuh Pemirsa";
+            }
+
             
             function openAduDomba(target1){
                 if(!canUseSpecialSocial()){
@@ -8556,6 +9091,11 @@
                     log(
                     `💔 Hubungan ${targetA} dan ${targetB} memburuk (-${damage})`
                     );
+                    addPublicImage(targetA,-3);
+                    addPublicImage(targetB,-3);
+                    addPublicImage(provoker,1);
+
+                    // log(`📺 Penonton menilai ${targetA} dan ${targetB} terlalu dramatis`);
 
                     log(
                     `📉 Reputasi ${targetA} dan ${targetB} menurun`
@@ -8604,12 +9144,16 @@
                     });
 
                     addReputation(targetA, 1);
+                    addPublicImage(targetA,1);
 
                     addReputation(targetB, 1);
+                    addPublicImage(targetB,1);
 
                     relation[targetA][provoker] -= 2;
 
                     relation[targetB][provoker] -= 2;
+
+                    addPublicImage(provoker,-6);
 
                     log(
                     `📉 Reputasi ${provoker} menurun karena aksinya mulai disadari`
@@ -8800,9 +9344,11 @@
 
                 relation[target][playerName] -= damage;
 
-                addReputation(playerName,-3);
+                // addReputation(playerName,-3);
 
-                addReputation(target,-3);
+                // addReputation(target,-3);
+                addPublicImage(playerName,-4);
+                addPublicImage(target,-4);
 
                 log(
                 `💥 ${playerName} dan ${target} terlibat adu mulut besar (-${damage})`
@@ -8810,9 +9356,9 @@
 
                 await delay(700);
 
-                log(
-                `📉 Reputasi ${playerName} dan ${target} menurun`
-                );
+                // log(
+                // `📉 Reputasi ${playerName} dan ${target} menurun`
+                // );
 
                 updateSpecialRelations();
 
@@ -8964,7 +9510,10 @@
 
                     // BONUS dari legacy minggu lalu
                     basePopularity +=
-                    Math.floor((legacyReputation[p] || 0) * 0.3);
+                    Math.floor((legacyReputation[p] || 0) * 0.7);
+
+                    basePopularity +=
+                    Math.floor((publicImage[p] || 0) * 0.2);
 
                     rawPopularity[p] = basePopularity;
                 });
@@ -9131,6 +9680,35 @@
                             // PASRAH
                             // =====================
 
+                            // if(
+                            //     relation[p][role] >= 30
+                            // ){
+
+                            //     reactionType = "pasrah";
+
+                            //     debuff =
+                            //     Math.max(
+                            //         1,
+                            //         Math.floor(debuff * 0.4)
+                            //     );
+                            // }
+
+                            // // =====================
+                            // // MENGERTI
+                            // // =====================
+
+                            // if(
+                            //     relation[p][role] >= 50
+                            // ){
+
+                            //     reactionType = "mengerti";
+
+                            //     debuff =
+                            //     Math.max(
+                            //         1,
+                            //         Math.floor(debuff * 0.2)
+                            //     );
+                            // }
                             if(
                                 relation[p][role] >= 30
                             ){
@@ -9143,10 +9721,6 @@
                                     Math.floor(debuff * 0.4)
                                 );
                             }
-
-                            // =====================
-                            // MENGERTI
-                            // =====================
 
                             if(
                                 relation[p][role] >= 50
@@ -9161,15 +9735,32 @@
                                 );
                             }
 
+                            if(
+                                relation[p][role] >= 75
+                            ){
+
+                                reactionType = "ikhlas";
+
+                                debuff = 0;
+                            }
+
                             // =====================
                             // SATU GENG
                             // =====================
 
+                            // if(sameGang){
+
+                            //     reactionType = "marah";
+
+                            //     debuff += 4;
+                            // }
                             if(sameGang){
 
-                                reactionType = "marah";
-
                                 debuff += 4;
+
+                                if(relation[p][role] < 50){
+                                    reactionType = "marah";
+                                }
                             }
 
                             // =====================
@@ -9189,20 +9780,99 @@
 
                             relation[p][role] -= debuff;
 
-                            if(!revengeTarget[p]){
+                            // if(!revengeTarget[p]){
 
-                                revengeTarget[p] = {};
+                            //     revengeTarget[p] = {};
+                            // }
+
+                            // revengeTarget[p][role] = {
+
+                            //     target: role,
+
+                            //     reason: target,
+
+                            //     anger: debuff * 2
+                            // };
+
+                            // totalReaction++;
+                            // =====================
+                            // MARAH
+                            // =====================
+
+                            if(
+                                reactionType === "marah" ||
+                                reactionType === "kecewa"
+                            ){
+
+                                if(!revengeTarget[p]){
+
+                                    revengeTarget[p] = {};
+                                }
+
+                                let anger = debuff;
+
+                                if(
+                                    reactionType === "marah"
+                                ){
+
+                                    let revengeBonus = 0;
+
+                                    switch(traitsMap[p]){
+
+                                        case "Emosional":
+                                            revengeBonus = 10;
+                                            break;
+
+                                        case "Santai":
+                                            revengeBonus = -8;
+                                            break;
+
+                                        case "Licik":
+                                            revengeBonus = 5;
+                                            break;
+                                    }
+
+                                    anger = Math.max(
+                                        1,
+                                        (debuff * 2) + revengeBonus
+                                    );
+                                }
+
+                                revengeTarget[p][role] = {
+
+                                    target: role,
+
+                                    reason: target,
+
+                                    anger: anger
+                                };
                             }
 
-                            revengeTarget[p][role] = {
+                            else if(
 
-                                target: role,
+                                reactionType === "pasrah" ||
+                                reactionType === "mengerti" ||
+                                reactionType === "ikhlas"
 
-                                reason: target,
+                            ){
 
-                                anger: debuff * 2
-                            };
+                                if(
 
+                                    revengeTarget[p] &&
+                                    revengeTarget[p][role]
+
+                                ){
+
+                                    delete revengeTarget[p][role];
+                                    if(
+                                        reactionType === "ikhlas"
+                                    ){
+
+                                        trust[p][role] =
+                                        (trust[p][role] || 0) + 5;
+                                    }
+                                }
+                            }
                             totalReaction++;
 
                             // =====================
@@ -9212,7 +9882,7 @@
                             if(reactionType === "marah"){
 
                                 log(
-                                    `👥😡 ${p} marah besar karena ${target} diekstradisi oleh ${role}`
+                                    `👥😡 ${p} marah besar karena ${target} dieliminasi oleh ${role}`
                                 );
                             }
 
@@ -9236,7 +9906,15 @@
                                     `🙂 ${p} memahami keputusan ${role}`
                                 );
                             }
-}
+                            else if(
+                                reactionType === "ikhlas"
+                            ){
+
+                                log(
+                                    `🕊️ ${p} menerima keputusan ${role} dengan lapang dada`
+                                );
+                            }
+                        }
                     }
                 }
 
@@ -9841,12 +10519,14 @@
                     log(
                     `💥 ${p1} dan ${p2} terlibat adu mulut besar (-${damage})`
                     );
+                    addPublicImage(p1,-4);
+                    addPublicImage(p2,-4);
 
                     await delay(700);
 
-                    log(
-                    `📉 Reputasi ${p1} dan ${p2} menurun`
-                    );
+                    // log(
+                    // `📉 Reputasi ${p1} dan ${p2} menurun`
+                    // );
                     updateSpecialRelations();
 
                     updateGangs();
@@ -9865,7 +10545,7 @@
                 else if(roll < 0.66){
 
                     // log("🎉 Ada pesta di rumah karantina, bintang tamu juga hadir ke dalam rumah karantina!!!");
-                    log("🎉 Tim Petir mengadakan pesta besar di rumah karantina malam ini!");
+                    log("🎉 Tim Last Housemates mengadakan pesta besar di rumah karantina malam ini!");
                     await delay(1000);
 
                     log("🌟 Ada bintang tamu spesial datang dan langsung berpesta bersama penghuni!");
@@ -9893,8 +10573,8 @@
 
                         // addReputation(p1,1);
                         // addReputation(p2,1);
-                        addReputation(p1,8);
-                        addReputation(p2,8);
+                        addPublicImage(p1,2);
+                        addPublicImage(p2,2);
 
                         log(
                             `❤️ ${p1} makin dekat dengan ${p2} (+${bonus})`
@@ -10334,7 +11014,7 @@
                 if(dayCount === 0){
                     document.getElementById("day").innerText =
                     // "Game Belum Dimulai";
-                    "Perkenalan Rumah Karantina";
+                    "Selamat Datang di Rumah Karantina";
                     return;
                 }
 
@@ -10482,15 +11162,21 @@
 
                         <b>#${index+1} ${p}</b><br><br>
 
-                        👑 Bos: ${stats[p].bos}x<br>
-                        🔑 PK: ${stats[p].pk}x<br>
+                        👑 Boss: ${stats[p].bos}x<br>
+                        🔑 Key Holder: ${stats[p].pk}x<br>
                         🛡️ Imun: ${stats[p].imun}x<br>
-                        🧹 ART: ${stats[p].art}x<br>
+                        🧹 Housekeeper: ${stats[p].art}x<br>
                         🔥 Bottom 3: ${stats[p].bottom3}x<br>
                         ⚠️ Bottom 2: ${stats[p].bottom2}x<br>
                         🌟 Legacy: ${
                             Math.floor(legacyReputation[p] || 0)
                         }
+                        <br>
+                        📺 ${getAudienceLabel(p)}
+                        <br>
+                        <small>
+                        Public Image: ${publicImage[p] || 0}
+                        </small>
                     </div>
                     `;
                 });
@@ -11096,7 +11782,7 @@
                 //     log(
                 //         "🏆 Selamat " +
                 //         alive[0] +
-                //         " menjadi Penghuni Terakhir!"
+                //         " menjadi The Last Housemates!"
                 //     );
 
                 //     document.getElementById(
@@ -11116,7 +11802,7 @@
                     log(
                         "🏆 Selamat " +
                         alive[0] +
-                        " menjadi Penghuni Terakhir!"
+                        " menjadi The Last Housemates!"
                     );
 
                     isDayProcessing = true;
@@ -11414,6 +12100,10 @@
 
                             log("🔥 EVENT SEMI FINAL DIMULAI!");
                             await delay(DEBUG_DELAY);
+                            console.log(
+                                "SEMIFINALISTS:",
+                                getAlive()
+                            );
 
                             await playEndgameStage("SEMIFINAL");
                         }
@@ -11448,322 +12138,14 @@
 
                             log("🌙 Hari bebas menuju grand final");
 
-                        }else if(aliveCount === 2){
+                        }else if(weekDay === 2){
 
-                            if(weekDay === 1){
+                            log("🏆 EVENT GRAND FINAL DIMULAI!");
+                            await delay(DEBUG_DELAY);
 
-                                log("🌙 Hari bebas menuju grand final");
+                            await playEndgameStage("GRANDFINAL");
 
-                            }else if(weekDay === 2){
-
-                                let finalists = getAlive();
-
-                                // log("👑 GRAND FINAL DIMULAI!");
-                                // await delay(DEBUG_DELAY);
-
-                                // // =================
-                                // // ROUND 1
-                                // // =================
-
-                                // log("🔥 Babak 1 dimulai...");
-                                // await delay(DEBUG_DELAY);
-
-                                // let score = {};
-
-                                // score[finalists[0]] = 0;
-                                // score[finalists[1]] = 0;
-
-                                // let round1Winner =
-                                // finalists[Math.floor(Math.random()*2)];
-
-                                // score[round1Winner]++;
-
-                                // log(
-                                //     "🏆 Pemenang babak 1 = " +
-                                //     round1Winner
-                                // );
-
-                                // await delay(DEBUG_DELAY);
-
-                                // // =================
-                                // // ROUND 2
-                                // // =================
-
-                                // log("🔥 Babak 2 dimulai...");
-                                // await delay(DEBUG_DELAY);
-
-                                // let round2Winner =
-                                // finalists[Math.floor(Math.random()*2)];
-
-                                // score[round2Winner]++;
-
-                                // log(
-                                //     "🏆 Pemenang babak 2 = " +
-                                //     round2Winner
-                                // );
-
-                                // await delay(DEBUG_DELAY);
-
-                                // let finalWinner;
-
-                                // // =================
-                                // // CEK SERI
-                                // // =================
-
-                                // if(
-                                //     score[finalists[0]] ===
-                                //     score[finalists[1]]
-                                // ){
-
-                                //     log("⚔️ Penentuan babak 3...");
-                                //     await delay(DEBUG_DELAY);
-
-                                //     let round3Winner =
-                                //     finalists[Math.floor(Math.random()*2)];
-
-                                //     log(
-                                //         "👑 Pemenang babak 3 = " +
-                                //         round3Winner
-                                //     );
-
-                                //     finalWinner = round3Winner;
-
-                                // }else{
-
-                                //     finalWinner =
-                                //     score[finalists[0]] >
-                                //     score[finalists[1]]
-                                //     ? finalists[0]
-                                //     : finalists[1];
-                                // }
-                                log("🏆 GRAND FINAL DIMULAI!");
-                                await delay(DEBUG_DELAY);
-
-                                let score = {};
-
-                                score[finalists[0]] = 0;
-                                score[finalists[1]] = 0;
-
-                                // =====================================
-                                // ROUND 1
-                                // =====================================
-
-                                log("🎮 Babak 1 dimulai...");
-                                await delay(DEBUG_DELAY);
-
-                                let round1Score = {};
-
-                                for(let p of finalists){
-
-                                    // PLAYER MAIN GAME
-                                    if(p === playerName && status[playerName] !== "KELUAR"){
-
-                                        round1Score[p] =
-                                        await openMiniGame(
-                                            "grandfinal"
-                                        );
-
-                                    }else{
-
-                                        round1Score[p] =
-                                        simulateNpcMiniGame(
-                                            p,
-                                            "grandfinal"
-                                        );
-                                    }
-
-                                    log(
-                                        `🎯 ${p}: ${round1Score[p]} poin`
-                                    );
-                                }
-
-                                let round1Winner =
-                                round1Score[finalists[0]] >
-                                round1Score[finalists[1]]
-                                ? finalists[0]
-                                : finalists[1];
-
-                                score[round1Winner]++;
-
-                                log(
-                                    "🏆 Pemenang babak 1 = " +
-                                    round1Winner
-                                );
-
-                                await delay(DEBUG_DELAY);
-                                log(
-                                    `📊 SCORE SEMENTARA:
-                                ${finalists[0]} ${score[finalists[0]]}
-                                -
-                                ${score[finalists[1]]} ${finalists[1]}`
-                                );
-                                await delay(DEBUG_DELAY);
-
-                                // =====================================
-                                // ROUND 2
-                                // =====================================
-
-                                log("🎮 Babak 2 dimulai...");
-                                await delay(DEBUG_DELAY);
-
-                                let round2Score = {};
-
-                                for(let p of finalists){
-
-                                    if(p === playerName && status[playerName] !== "KELUAR"){
-
-                                        round2Score[p] =
-                                        await openMiniGame(
-                                            "grandfinal"
-                                        );
-
-                                    }else{
-
-                                        round2Score[p] =
-                                        simulateNpcMiniGame(
-                                            p,
-                                            "grandfinal"
-                                        );
-                                    }
-
-                                    // log(
-                                    //     `🎯 ${p}: ${round2Score[p]} poin`
-                                    // );
-                                    log(
-                                        `🎯 ${p} memperoleh ${round2Score[p]} poin`
-                                    );
-                                }
-
-                                let round2Winner =
-                                round2Score[finalists[0]] >
-                                round2Score[finalists[1]]
-                                ? finalists[0]
-                                : finalists[1];
-
-                                score[round2Winner]++;
-
-                                log(
-                                    "🏆 Pemenang babak 2 = " +
-                                    round2Winner
-                                );
-                                
-
-                                await delay(DEBUG_DELAY);
-                                log(
-                                    `📊 SCORE SEMENTARA:
-                                ${finalists[0]} ${score[finalists[0]]}
-                                -
-                                ${score[finalists[1]]} ${finalists[1]}`
-                                );
-                                await delay(DEBUG_DELAY);
-
-                                let finalWinner;
-
-                                // =====================================
-                                // ROUND 3 (JIKA SERI)
-                                // =====================================
-
-                                if(
-                                    score[finalists[0]] ===
-                                    score[finalists[1]]
-                                ){
-
-                                    log("⚔️ Penentuan babak 3...");
-                                    await delay(DEBUG_DELAY);
-
-                                    let round3Score = {};
-
-                                    for(let p of finalists){
-
-                                        if(p === playerName && status[playerName] !== "KELUAR"){
-
-                                            round3Score[p] =
-                                            await openMiniGame(
-                                                "grandfinal"
-                                            );
-
-                                        }else{
-
-                                            round3Score[p] =
-                                            simulateNpcMiniGame(
-                                                p,
-                                                "grandfinal"
-                                            );
-                                        }
-
-                                        log(
-                                            `🎯 ${p}: ${round3Score[p]} poin`
-                                        );
-                                    }
-
-                                    let round3Winner =
-                                    round3Score[finalists[0]] >
-                                    round3Score[finalists[1]]
-                                    ? finalists[0]
-                                    : finalists[1];
-
-                                    log(
-                                        "👑 Pemenang babak 3 = " +
-                                        round3Winner
-                                    );
-
-                                    finalWinner = round3Winner;
-
-                                }else{
-
-                                    finalWinner =
-                                    score[finalists[0]] >
-                                    score[finalists[1]]
-                                    ? finalists[0]
-                                    : finalists[1];
-                                }
-
-                                await delay(DEBUG_DELAY);
-
-                                let runnerUp =
-                                finalists.find(p => p !== finalWinner);
-
-                                eliminatedMeta[runnerUp] = {
-
-                                    dating: dating[runnerUp] || null,
-
-                                    gang:
-                                    gangs.find(g=>g.members.includes(runnerUp))
-                                    ?.name || null
-                                };
-                                removeDating(runnerUp);
-                                let targetGangName =
-                                gangs.find(g =>
-                                    g.members.includes(runnerUp)
-                                )?.name || null;
-                                removePlayerFromGang(runnerUp);
-
-
-                                status[runnerUp] = "KELUAR";
-                                
-                                eliminatedOrder.unshift(runnerUp);
-
-                                updatePlayers();
-
-                                log(
-                                    "🏆 Selamat " +
-                                    finalWinner +
-                                    " menjadi Penghuni Terakhir!"
-                                );
-                                document.getElementById("nextBtn").disabled = true;
-                                await delay(1000);
-
-                                log("🎉 Ceremonial kemenangan dimulai!");
-
-
-                                pendingDecision = true;
-
-                                setGameButtonsDisabled(true);
-
-                                saveGame();
-
-                                // return;
-                            }
+                            
                         }
                     }
 
@@ -11852,7 +12234,7 @@
                         activeRoles.bos = amnestyFrozenRoles.bos;
 
                         log(
-                            "♻️ 👑 Bos tetap setelah amnesti: " +
+                            "♻️ 👑 BOSS tetap setelah amnesti: " +
                             roles.bos
                         );
 
@@ -11864,7 +12246,7 @@
                         roles.bos = null;
                         activeRoles.bos = null;
 
-                        log("👑 Tidak ada BOS lagi di tahap ini.");
+                        log("👑 Tidak ada BOSS lagi di tahap ini.");
 
                     }else{
                         rollWeeklyMiniGames();
@@ -11944,7 +12326,7 @@
                         //         `${i+1}. ${p} — ${(reputation[p] || 0).toFixed(2)}%`
                         //     );
                         // });
-                        log("🎮 Kandidat BOS Minggu Ini:");
+                        log("🎮 Kandidat BOSS Minggu Ini:");
 
                         for(let i=0; i<topBosCandidates.length; i++){
                             let p = topBosCandidates[i];
@@ -11967,7 +12349,7 @@
                         }
 
                         await delay(DEBUG_DELAY);
-                        log("🎮👑 Games pemilihan BOS sedang berlangsung... ");
+                        log("🎮👑 Games pemilihan BOSS sedang berlangsung... ");
                         await delay(750);
 
                         // roles.bos = bosRank[0].name;
@@ -12075,12 +12457,13 @@
 
                         // 👑 bonus publik langsung
                         addReputation(roles.bos, 8);
+                        addPublicImage(roles.bos, 3);
 
                         
 
                         activeRoles.bos = roles.bos;
 
-                        log("👑 Bos: "+roles.bos);
+                        log("👑 BOSS Minggu Ini: "+roles.bos);
                         // 👑 bos veteran makin dikenal
                         if(stats[roles.bos].bos >= 2){
 
@@ -12090,32 +12473,32 @@
                             );
 
                             log(
-                            `👑 ${roles.bos} makin dikenal publik sebagai BOS ${stats[roles.bos].bos} kali`
+                            `👑 ${roles.bos} makin dikenal publik sebagai BOSS ${stats[roles.bos].bos} kali`
                             );
                         }
                         // 👑 Boss streak tracker
-                        players.forEach(p=>{
+                        // players.forEach(p=>{
 
-                            if(!bossStreak[p]){
-                                bossStreak[p] = 0;
-                            }
+                        //     if(!bossStreak[p]){
+                        //         bossStreak[p] = 0;
+                        //     }
 
-                            if(activeRoles.bos === p){
+                        //     if(activeRoles.bos === p){
 
-                                bossStreak[p]++;
+                        //         bossStreak[p]++;
 
-                            }else{
+                        //     }else{
 
-                                bossStreak[p] = 0;
-                            }
-                        });
+                        //         bossStreak[p] = 0;
+                        //     }
+                        // });
                         // if(activeRoles.bos && bossStreak[activeRoles.bos] >= 7){
-                        if(activeRoles.bos && stats[activeRoles.bos].bos >= 4){
-                            log(
-                            `👑⚠️ ${activeRoles.bos} mulai ditakuti seluruh penghuni rumah`
-                            );
-                        }
-                        addReputation(roles.bos, 8);
+                        // if(activeRoles.bos && stats[activeRoles.bos].bos >= 4){
+                        //     log(
+                        //     `👑⚠️ ${activeRoles.bos} mulai ditakuti seluruh penghuni rumah`
+                        //     );
+                        // }
+                        // addReputation(roles.bos, 8);
                     }
                 }
 
@@ -12152,7 +12535,7 @@
                         roles.art = null;
                         activeRoles.art = null;
 
-                        log("🧹 Tidak ada ART  di tahap ini.");
+                        log("🧹 Tidak ada Housekeeper  di tahap ini.");
 
                     }else{
 
@@ -12195,7 +12578,7 @@
                         //     "⚠️ Kandidat game ART: " +
                         //     bottomArtCandidates.join(", ")
                         // );
-                        log("🧹 Kandidat ART:");
+                        log("🧹 Kandidat Housekeeper:");
 
                         // bottomArtCandidates.forEach((p,i)=>{
 
@@ -12224,7 +12607,7 @@
                         }
 
                         await delay(DEBUG_DELAY);
-                        log("🎮🧹 Games pemilihan ART sedang berlangsung... ");
+                        log("🎮🧹 Games pemilihan Housekeeper sedang berlangsung... ");
                         await delay(750);
 
                         // roles.art = artRank[0].name;
@@ -12266,17 +12649,18 @@
 
                             roles.art =pickRealityWinner(artBottom3);
                         }
-                        console.log(
-                            "ART  =",
-                            roles.art
-                        );
+                        // console.log(
+                        //     "ART  =",
+                        //     roles.art
+                        // );
 
                         stats[roles.art].art++;
 
                         activeRoles.art = roles.art;
 
-                        log("🧹 ART: "+roles.art);
+                        log("🧹 Housekeeper Minggu Ini: "+roles.art);
                         addReputation(roles.art, -5);
+                        addPublicImage(roles.art, -3);
                     }
                 }
 
@@ -12371,7 +12755,7 @@
                         activeRoles.kunci = amnestyFrozenRoles.kunci;
 
                         log(
-                            "♻️ 🔑 PK tetap setelah amnesti: " +
+                            "♻️ 🔑 Key Holder tetap setelah amnesti: " +
                             roles.kunci
                         );
 
@@ -12383,7 +12767,7 @@
                         roles.kunci = null;
                         activeRoles.kunci = null;
 
-                        log("🔑 Tidak ada Pemegang Kunci  di tahap ini.");
+                        log("🔑 Tidak ada Key Holder di tahap ini.");
 
                     }else{
 
@@ -12399,7 +12783,7 @@
                             // activeRoles.imun !== p
                         );
 
-                        log("🎮🔑 Games pemilihan Pemegang Kunci berlangsung...");
+                        log("🎮🔑 Games pemilihan Key Holder berlangsung...");
 
                         await delay(900);
 
@@ -12407,7 +12791,7 @@
 
                         // roles.kunci =
                         // kandidat[Math.floor(Math.random()*kandidat.length)];
-                        console.log("PK CANDIDATES", kandidat);
+                        // console.log("PK CANDIDATES", kandidat);
                         // console.log("PLAYER", playerName);
                         if(kandidat.includes(playerName)){
 
@@ -12424,8 +12808,8 @@
                             roles.kunci =
                             kandidat[Math.floor(Math.random()*kandidat.length)];
                         }
-                        console.log("PK RESULT =", roles.kunci);
-                        console.log("TYPE =", typeof roles.kunci);
+                        // console.log("PK RESULT =", roles.kunci);
+                        // console.log("TYPE =", typeof roles.kunci);
                         
 
                         stats[roles.kunci].pk++;
@@ -12435,11 +12819,13 @@
 
                         // 🔑 boost publik mingguan
                         addReputation(roles.kunci, 4);
+                        addPublicImage(roles.kunci, 1);
+                        
                         
 
                         activeRoles.kunci = roles.kunci;
 
-                        log("🔑 Pemegang Kunci: "+roles.kunci);
+                        log("🔑 Key Holder Minggu Ini: "+roles.kunci);
                         // 🔑 PK veteran mulai dikenal publik
                         if(stats[roles.kunci].pk >= 2){
 
@@ -12449,7 +12835,7 @@
                             );
 
                             log(
-                            `🔑 ${roles.kunci} mulai dikenal publik sebagai Pemegang Kunci sebanyak ${stats[roles.kunci].pk} kali`
+                            `🔑 ${roles.kunci} mulai dikenal publik sebagai Key Holder sebanyak ${stats[roles.kunci].pk} kali`
                             );
                         }
                     }
@@ -12551,7 +12937,7 @@
                         activeRoles.imun = amnestyFrozenRoles.imun;
 
                         log(
-                            "♻️ 🛡️ Imun tetap setelah amnesti: " +
+                            "♻️ 🛡️ Immune tetap setelah amnesti: " +
                             roles.imun
                         );
 
@@ -12567,7 +12953,7 @@
                         roles.imun = null;
                         activeRoles.imun = null;
 
-                        log("🛡️ Tidak ada imun lagi di tahap ini.");
+                        log("🛡️ Tidak ada immune lagi di tahap ini.");
 
                     }else{
 
@@ -12613,7 +12999,7 @@
                         //     "🛡️ Kandidat game IMUN: " +
                         //     bottomImunCandidates.join(", ")
                         // );
-                        log("🛡️ Kandidat IMUN:");
+                        log("🛡️ Kandidat immune:");
 
                         // bottomImunCandidates.forEach((p,i)=>{
 
@@ -12642,7 +13028,7 @@
                         }
 
                         await delay(DEBUG_DELAY);
-                        log("🎮🛡️ Games pemilihan imun sedang berlangsung... ");
+                        log("🎮🛡️ Games pemilihan immune sedang berlangsung... ");
                         await delay(750);
 
                         // roles.imun = imunRank[0].name;
@@ -12686,7 +13072,7 @@
 
                         activeRoles.imun = roles.imun;
 
-                        log("🛡️ Imun: "+roles.imun);
+                        log("🛡️ Immune Minggu ini: "+roles.imun);
                     }
                 }
 
@@ -12880,7 +13266,7 @@
                     <b>
                     
                     🌙 Hari ke-${dayCount}
-                    (Malam Ekstradisi Minggu ke-${week})
+                    (Malam eliminasi Minggu ke-${week})
                     </b>
                     `);
 
@@ -12955,7 +13341,7 @@
                     resetWeeklyReputation();
                     // recalculateReputation();
                     // log("📊 Polling reputasi rumah telah direset.");
-                    log("☕ Hari santai di rumah, para penghuni menghabiskan waktu setelah malam ekstradisi.");
+                    log("☕ Hari santai di rumah, para penghuni menghabiskan waktu setelah malam eliminasi.");
                 }
 
                 // NPC sosial otomatis tiap hari
@@ -13012,9 +13398,9 @@
                             socialChaosToday = true;
                             saveGame();
 
-                            writeDump(
-                            "RANDOM HOUSE EVENT ADA"
-                            );
+                            // writeDump(
+                            // "RANDOM HOUSE EVENT ADA"
+                            // );
                         }
                     }
 
@@ -13030,9 +13416,9 @@
                             socialChaosToday = true;
                             saveGame();
 
-                            writeDump(
-                            "AUTO GOSSIP SUCCESS"
-                            );
+                            // writeDump(
+                            // "AUTO GOSSIP SUCCESS"
+                            // );
                         }
                     }
 
@@ -13048,9 +13434,9 @@
                             socialChaosToday = true;
                             saveGame();
 
-                            writeDump(
-                            "AUTO ADU DOMBA"
-                            );
+                            // writeDump(
+                            // "AUTO ADU DOMBA"
+                            // );
                         }
                     }
 
@@ -14540,7 +14926,7 @@
             // EKSTRADISI
             // function ekstradisi(){
             async function ekstradisi(){
-                log("🌙 Malam ekstradisi berlangsung...");
+                log("🌙 Malam eliminasi berlangsung...");
                 await delay(DEBUG_DELAY);
                 let alive = getAlive();
 
@@ -14693,7 +15079,7 @@
                 if(bottom3.includes(roles.imun)){
 
                     //log("🛡️ Pemegang imun masuk Bottom 3!");
-                    log("🛡️ Pemegang imun " +roles.imun +" masuk Bottom 3!");
+                    log("🛡️ Immune " +roles.imun +" masuk Bottom 3!");
 
                     let kandidatTukar = getAlive().filter(p => 
                         p !== roles.bos && 
@@ -14752,7 +15138,7 @@
                                     font-weight:bold;
                                     margin-bottom:6px;
                                 ">
-                                    🛡️ Kamu adalah pemegang imun
+                                    🛡️ Kamu adalah pemegang immune
                                 </div>
 
                                 <div style="
@@ -14776,28 +15162,54 @@
                     // [...kandidatTukar]
                     // .slice(0,3);
                     // NPC IMUN
-                    let pilihan =
-                    [...kandidatTukar]
+                    // let pilihan =
+                    // [...kandidatTukar]
 
-                    .filter(p => {
+                    // .filter(p => {
 
-                        // player lebih jarang dipilih imun
-                        if(
-                            p === playerName &&
-                            Math.random() < 0.65
-                        ){
-                            return false;
-                        }
+                    //     // player lebih jarang dipilih imun
+                    //     if(
+                    //         p === playerName &&
+                    //         Math.random() < 0.65
+                    //     ){
+                    //         return false;
+                    //     }
 
-                        return true;
-                    })
+                    //     return true;
+                    // })
 
-                    .sort(()=>0.5-Math.random())
+                    // .sort(()=>0.5-Math.random())
 
-                    .slice(0,3);
+                    // .slice(0,3);
+                    let pilihan;
+
+                    if(Math.random() < 0.8){
+
+                        pilihan =
+                        [...kandidatTukar]
+                        .sort((a,b)=>
+                            getDecisionScore(
+                                roles.imun,
+                                a
+                            )
+                            -
+                            getDecisionScore(
+                                roles.imun,
+                                b
+                            )
+                        )
+                        .slice(0,3);
+
+                    }else{
+
+                        pilihan =
+                        [...kandidatTukar]
+                        .sort(()=>0.5-Math.random())
+                        .slice(0,3);
+                    }
 
                     await delay(DEBUG_DELAY);
-                    log("⏳ 🛡️ Pemegang imun " + roles.imun + " sedang memilih penghuni untuk ditukarkan posisinya...");
+                    log("⏳ 🛡️ Immune " + roles.imun + " sedang memilih penghuni untuk ditukarkan posisinya...");
                     await delay(750);
                 
 
@@ -14940,6 +15352,25 @@
 
                 relation[roles.bos][savedByBos] += boost;
                 relation[savedByBos][roles.bos] += boost;
+                addMemory(
+                    savedByBos,
+                    "saved",
+                    roles.bos,
+                    20
+                );
+                let audienceStatus =
+                getAudienceStatus(savedByBos);
+
+                if(audienceStatus === "favorit"){
+
+                    addPublicImage(roles.bos, 5);
+
+                }
+                else if(audienceStatus === "musuh"){
+
+                    addPublicImage(roles.bos, -5);
+
+                }
                 updateSpecialRelations();
 
                 log(
@@ -15008,7 +15439,7 @@
                                 font-weight:bold;
                                 margin-bottom:6px;
                             ">
-                                🔑 Kamu adalah Pemegang Kunci
+                                🔑 Kamu adalah Key Holder
                             </div>
 
                             <div style="
@@ -15016,7 +15447,7 @@
                                 opacity:0.85;
                                 font-weight:500;
                             ">
-                                    siapa yang akan kamu ekstradisi?
+                                    siapa yang akan kamu eliminasi?
                             </div>
                         </div>
                         `,
@@ -15039,10 +15470,10 @@
                 getDecisionScore(roles.kunci,a)
                 )[0];
 
-                log("⏳ 🔑 Pemegang Kunci " +roles.kunci +" sedang memutuskan siapa yang diselamatkan...");
+                log("⏳ 🔑 Key Holder " +roles.kunci +" sedang memutuskan siapa yang diselamatkan...");
                 await delay(1000);
 
-                log("🔑 Pemegang Kunci " +roles.kunci +" menyelamatkan: " + savedByKey);
+                log("🔑 Key Holder " +roles.kunci +" menyelamatkan: " + savedByKey);
 
                 // ❌ yang tersisa dieliminasi
                 let eliminated =
@@ -15071,6 +15502,12 @@
                 // removePlayerFromGang(eliminated);
 
                 status[eliminated] = "KELUAR";
+                addMemory(
+                        eliminated,
+                        "betrayed",
+                        roles.kunci,
+                        -15
+                    );
                 npcDailyBonding();
                 
                 if(eliminated === playerName){
@@ -15083,7 +15520,20 @@
                 updatePlayers();
 
 
-                log("❌ Terekstradisi: " + eliminated);
+                log("❌ Tereliminasi: " + eliminated);
+                let audienceStatus2 =
+                getAudienceStatus(eliminated);
+
+                if(audienceStatus === "favorit"){
+
+                    addPublicImage(roles.kunci, -5);
+
+                }
+                else if(audienceStatus === "musuh"){
+
+                    addPublicImage(roles.kunci, 5);
+
+                }
                 if(getAlive().length <= 4){
 
                     endgameMode = true;
@@ -15091,7 +15541,7 @@
                 }
                 await delay(700);
 
-                log("👀 Penghuni mulai bereaksi atas ekstradisi ini...");
+                log("👀 Penghuni mulai bereaksi atas eliminasi ini...");
 
                 await delay(700);
 
@@ -15238,6 +15688,512 @@
 
             //     updatePlayers();
             // }
+            const FINAL_MEMORY_EMOJIS = [
+
+                "😀",
+                "😎",
+                "🤖",
+                "🐱",
+
+                "🎲",
+                "👑",
+                "🎯",
+                "🚀"
+            ];
+            function shuffleArray(arr){
+
+                return [...arr]
+                .sort(()=>Math.random()-0.5);
+            }
+            function renderFinalMemoryGrid(emojis){
+
+                const grid =
+                document.getElementById(
+                    "finalMemoryGrid"
+                );
+
+                grid.innerHTML = "";
+
+                emojis.forEach((emoji,index)=>{
+
+                    let div =
+                    document.createElement("div");
+
+                    div.className =
+                    "memory-card";
+
+                    div.innerHTML =
+                    `${index+1}<br>${emoji}`;
+
+                    grid.appendChild(div);
+                });
+            }
+            // function hideFinalMemoryGrid(){
+
+            //     const grid =
+            //     document.getElementById(
+            //         "finalMemoryGrid"
+            //     );
+
+            //     grid.innerHTML = "";
+
+            //     for(let i=1;i<=8;i++){
+
+            //         let div =
+            //         document.createElement("div");
+
+            //         div.className =
+            //         "memory-card";
+
+            //         div.textContent = "?";
+
+            //         grid.appendChild(div);
+            //     }
+            // }
+            function hideFinalMemoryGrid(){
+
+                document.getElementById(
+                    "finalMemoryGrid"
+                ).innerHTML = "";
+            }
+            function askFinalMemoryQuestion(
+                targetIndex,
+                answer,
+                choices
+            ){
+
+                return new Promise(resolve=>{
+
+                    document.getElementById(
+                        "finalMemoryQuestion"
+                    ).innerHTML =
+
+                    `Kotak nomor ${targetIndex+1} berisi apa?`;
+
+                    let wrap =
+                    document.getElementById(
+                        "finalMemoryChoices"
+                    );
+
+                    wrap.innerHTML = "";
+
+                    choices.forEach(emoji=>{
+
+                        let btn =
+                        document.createElement("button");
+
+                        btn.className =
+                        "memory-btn memory-choice";
+
+                        btn.textContent =
+                        emoji;
+
+                        // btn.onclick = ()=>{
+
+                        //     resolve(
+                        //         emoji === answer
+                        //     );
+                        // };
+                        // btn.onclick = async ()=>{
+
+                        //     let correct =
+                        //     emoji === answer;
+
+                        //     document.getElementById(
+                        //         "finalMemoryFeedback"
+                        //     ).innerHTML =
+
+                        //     correct
+                        //     ? "✅ Benar!"
+                        //     : "❌ Salah!";
+
+                        //     // disable semua tombol
+                        //     wrap
+                        //     .querySelectorAll("button")
+                        //     .forEach(btn=>{
+
+                        //         btn.disabled = true;
+                        //     });
+
+                        //     await delay(1500);
+
+                        //     resolve(correct);
+                        // };
+                        btn.onclick = async ()=>{
+
+                            let feedback =
+                            document.getElementById(
+                                "finalMemoryFeedback"
+                            );
+
+                            let correct =
+                            emoji === answer;
+
+                            wrap
+                            .querySelectorAll("button")
+                            .forEach(b=>{
+                                b.disabled = true;
+                            });
+
+                            // btn.style.transform =
+                            // "scale(.92)";
+                            btn.classList.add("bounce");
+
+                            feedback.innerHTML =
+                            "⏳ Mengecek jawaban...";
+
+                            await delay(800);
+
+                            feedback.innerHTML =
+                            "🎲 Hasilnya adalah...";
+
+                            await delay(1000);
+
+                            if(correct){
+
+                                btn.classList.add(
+                                    "correct"
+                                );
+
+                                feedback.innerHTML =
+                                "✅ BENAR!";
+
+                            }else{
+
+                                btn.classList.add(
+                                    "wrong"
+                                );
+
+                                let correctBtn =
+                                [...wrap.querySelectorAll("button")]
+                                .find(
+                                    b=>b.textContent === answer
+                                );
+
+                                if(correctBtn){
+
+                                    correctBtn.classList.add(
+                                        "correct"
+                                    );
+                                }
+
+                                feedback.innerHTML =
+                                "❌ SALAH!";
+                            }
+
+                            await delay(1800);
+
+                            resolve(correct);
+                        };
+
+                        wrap.appendChild(btn);
+                    });
+                });
+            }
+            async function playPlayerFinalMemory(){
+
+                return new Promise(async resolve=>{
+
+                    const modal =
+                    document.getElementById(
+                        "finalMemoryModal"
+                    );
+
+                    modal.classList.add(
+                        "show"
+                    );
+                    document.getElementById(
+                        "finalMemoryTitle"
+                    ).innerHTML =
+
+                    `🎮 GAME ${currentEndgameStage}`;
+
+                    let score = 0;
+
+                    for(
+                        let round=1;
+                        round<=8;
+                        round++
+                    ){
+
+                        document.getElementById(
+                            "finalMemoryRound"
+                        ).innerHTML =
+
+                        `Ronde ${round}/8`;
+
+                        let emojis =
+                        shuffleArray(
+                            FINAL_MEMORY_EMOJIS
+                        );
+
+                        document.getElementById(
+                            "finalMemoryQuestion"
+                        ).innerHTML = "";
+
+                        document.getElementById(
+                            "finalMemoryChoices"
+                        ).innerHTML = "";
+
+                        document.getElementById(
+                            "finalMemoryFeedback"
+                        ).innerHTML = "";
+
+                        renderFinalMemoryGrid(
+                            emojis
+                        );
+
+                        await delay(4500);
+
+                        let targetIndex =
+                        Math.floor(
+                            Math.random()*8
+                        );
+
+                        let answer =
+                        emojis[targetIndex];
+
+                        hideFinalMemoryGrid();
+
+                        let choices =
+                        shuffleArray(
+                            FINAL_MEMORY_EMOJIS
+                        );
+
+                        let correct =
+                        await askFinalMemoryQuestion(
+
+                            targetIndex,
+
+                            answer,
+
+                            choices
+                        );
+
+                        // if(correct){
+
+                        //     score++;
+
+                        //     log(
+                        //         `✅ Benar! (${score})`
+                        //     );
+
+                        // }else{
+
+                        //     log(
+                        //         `❌ Salah!`
+                        //     );
+                        // }
+                        if(correct){
+
+                            score++;
+
+                        }
+
+                        await delay(700);
+                    }
+
+                    modal.classList.remove(
+                        "show"
+                    );
+
+                    resolve(score);
+                });
+            }
+            async function debugPlayerMemoryFinal(){
+
+                let score =
+                await playPlayerFinalMemory();
+
+                log(
+                    `🏆 Skor akhir: ${score}`
+                );
+            }
+            
+            function simulateNpcFinalMemory(player){
+
+                let score =
+                Math.floor(Math.random()*5)+3;
+
+                // trait bonus
+                if(traitsMap[player] === "Strategis"){
+
+                    score += 2;
+                }
+
+                if(traitsMap[player] === "Licik"){
+
+                    score += 1;
+                }
+
+                if(traitsMap[player] === "Emosional"){
+
+                    score -= 1;
+                }
+
+                return Math.max(
+                    0,
+                    Math.min(score,8)
+                );
+            }
+            async function playFinalMemoryGame(
+                participants
+            ){
+
+                let result = {};
+
+                for(let p of participants){
+
+                    if(
+                        p === playerName &&
+                        status[playerName] !== "KELUAR"
+                    ){
+
+                        log("🧠 Giliran kamu bermain Memory Final");
+
+                        result[p] =
+                        await openFinalMemoryGame();
+
+                    }else{
+
+                        result[p] =
+                        simulateNpcFinalMemory(p);
+                    }
+                }
+
+                return result;
+            }
+            async function openFinalMemoryGame(){
+
+                return new Promise(async resolve=>{
+
+                    let score =
+                    await playPlayerFinalMemory();
+
+                    resolve(score);
+                });
+            }
+            async function getFinalMemoryRanking(
+                participants,
+                allowTieBreak = true
+            ){
+
+                let result =
+                await playFinalMemoryGame(
+                    participants
+                );
+
+                let ranking =
+                Object.entries(result)
+                .sort((a,b)=>b[1]-a[1]);
+                log("🧠 HASIL MEMORY FINAL");
+
+                ranking.forEach(([p,s],i)=>{
+
+                    log(`#${i+1} ${p} : ${s} poin`);
+                });
+
+                let highestScore =
+                ranking[0][1];
+
+                let tiedPlayers =
+                ranking
+                .filter(([p,s]) => s === highestScore)
+                .map(([p]) => p);
+
+                if(allowTieBreak && tiedPlayers.length > 1){
+
+                    log(
+                        `⚔️ Skor tertinggi seri: ${tiedPlayers.join(", ")}`
+                    );
+
+                    log(
+                        `🔁 Memory Final diulang untuk ${tiedPlayers.length} peserta`
+                    );
+
+                    await delay(1000);
+
+                    return await getFinalMemoryRanking(
+                        tiedPlayers
+                    );
+                }
+
+                
+
+                return ranking;
+            }
+            
+            // async function debugFinalMemory(){
+                
+
+            //     // let participants = [
+            //     //     playerName,
+            //     //     "Bayu",
+            //     //     "Fanny",
+            //     //     "Rio"
+            //     // ];
+                
+                    
+
+
+            //     // let result =
+            //     // await playFinalMemoryGame(participants);
+
+            //     // console.log(result);
+
+            //     // log("🧪 DEBUG FINAL MEMORY");
+
+            //     // let ranking =
+            //     // Object.entries(result)
+            //     // .sort((a,b)=>b[1]-a[1]);
+
+            //     // log("🧠 HASIL MEMORY FINAL");
+
+            //     // await delay(500);
+
+            //     // ranking.forEach(([p,s],i)=>{
+
+
+            //     //     log(`#${i+1} ${p} : ${s} poin`);
+            //     // });
+
+            //     // console.log(ranking);
+            //     let ranking =
+            //     await getFinalMemoryRanking([
+
+            //         playerName,
+            //         "Bayu",
+            //         "Fanny",
+            //         "Rio"
+            //     ]);
+
+            //     console.log(ranking);
+                
+            // }
+            async function debugSemifinalFinal(){
+
+                endgameMode = true;
+
+                players = [
+                    playerName,
+                    "Bayu",
+                    "Fanny",
+                    "Rio"
+                ];
+
+                status = {};
+
+
+                players.forEach(p=>{
+
+                    status[p] = "AMAN";
+                });
+                updatePlayers();
+
+                await playEndgameStage(
+                    "SEMIFINAL"
+                );
+            }
             async function playEndgameStage(stageName){
 
                 let alive = getAlive();
@@ -15246,11 +16202,16 @@
                 // SEMIFINAL (4 BESAR)
                 // =====================================
                 if(stageName === "SEMIFINAL"){
+                    currentEndgameStage ="SEMI FINAL";
 
                     log("🔥 SEMIFINAL DIMULAI!");
                     await delay(DEBUG_DELAY);
 
                     let semifinalists = [...alive];
+                    // console.log(
+                    //     "semifinalists:",
+                    //     semifinalists
+                    // );
 
                     // =========================
                     // BABAK 1
@@ -15259,38 +16220,47 @@
                     log("🎮 Babak 1 Semifinal!");
                     await delay(DEBUG_DELAY);
 
-                    let score1 = {};
+                    // let score1 = {};
 
-                    for(let p of semifinalists){
+                    // for(let p of semifinalists){
 
-                        // PLAYER MAIN GAME
-                        if(p === playerName  && status[playerName] !== "KELUAR"){
+                    //     // PLAYER MAIN GAME
+                    //     if(p === playerName  && status[playerName] !== "KELUAR"){
 
-                            score1[p] =
-                            await openMiniGame("semifinal");
+                    //         score1[p] =
+                    //         await openMiniGame("semifinal");
 
-                        }else{
+                    //     }else{
 
-                            score1[p] =
-                            simulateNpcMiniGame(
-                                p,
-                                "semifinal"
-                            );
-                        }
+                    //         score1[p] =
+                    //         simulateNpcMiniGame(
+                    //             p,
+                    //             "semifinal"
+                    //         );
+                    //     }
 
-                        log(`🎯 ${p}: ${score1[p]} poin`);
-                    }
+                    //     log(`🎯 ${p}: ${score1[p]} poin`);
+                    // }
 
-                    // ranking
+                    // // ranking
+                    // let ranking1 =
+                    // [...semifinalists]
+                    // .sort((a,b)=>score1[b]-score1[a]);
+
+                    // let autoFinalist = ranking1[0];
                     let ranking1 =
-                    [...semifinalists]
-                    .sort((a,b)=>score1[b]-score1[a]);
+                    await getFinalMemoryRanking(
+                        semifinalists,
+                        true
+                    );
 
-                    let autoFinalist = ranking1[0];
+                    let autoFinalist =
+                    ranking1[0][0];
 
                     log(
                         `🏆 ${autoFinalist} otomatis lolos ke babak FINAL!`
                     );
+                    
 
                     await delay(DEBUG_DELAY);
 
@@ -15312,41 +16282,51 @@
                     log("🎮 Babak 2 Semifinal!");
                     await delay(DEBUG_DELAY);
 
-                    let score2 = {};
+                    // let score2 = {};
 
-                    for(let p of round2Players){
+                    // for(let p of round2Players){
 
-                        if(
-                            p === playerName
-                            && !playerWonRound1
-                            && status[playerName] !== "KELUAR"
-                        ){
+                    //     if(
+                    //         p === playerName
+                    //         && !playerWonRound1
+                    //         && status[playerName] !== "KELUAR"
+                    //     ){
 
-                            score2[p] =
-                            await openMiniGame("semifinal");
+                    //         score2[p] =
+                    //         await openMiniGame("semifinal");
 
-                        }else{
+                    //     }else{
 
-                            score2[p] =
-                            simulateNpcMiniGame(
-                                p,
-                                "semifinal"
-                            );
-                        }
+                    //         score2[p] =
+                    //         simulateNpcMiniGame(
+                    //             p,
+                    //             "semifinal"
+                    //         );
+                    //     }
 
-                        log(`🎯 ${p}: ${score2[p]} poin`);
-                    }
+                    //     log(`🎯 ${p}: ${score2[p]} poin`);
+                    // }
 
+                    // let ranking2 =
+                    // [...round2Players]
+                    // .sort((a,b)=>score2[b]-score2[a]);
+
+                    // let secondFinalist = ranking2[0];
+                    // let eliminated = ranking2[2];
                     let ranking2 =
-                    [...round2Players]
-                    .sort((a,b)=>score2[b]-score2[a]);
-
-                    let secondFinalist = ranking2[0];
-                    let eliminated = ranking2[2];
-
-                    log(
-                        `🏆 ${secondFinalist} lolos ke babak FINAL!`
+                    await getFinalMemoryRanking(
+                        round2Players,
+                        false
                     );
+
+                    let secondFinalist =
+                    ranking2[0][0];
+
+                    let eliminated =
+                    ranking2[ranking2.length-1][0];
+
+                    status[eliminated] = "KELUAR";
+                    eliminatedOrder.unshift(eliminated);
                     eliminatedMeta[eliminated] = {
 
                         dating: dating[eliminated] || null,
@@ -15356,22 +16336,44 @@
                         ?.name || null
                     };
                     removeDating(eliminated);
+                    removePlayerFromGang(eliminated);
                     let targetGangName =
                     gangs.find(g =>
                         g.members.includes(eliminated)
                     )?.name || null;
 
-                    await delay(DEBUG_DELAY);
 
                     log(
                         `❌ ${eliminated} tereliminasi di semifinal!`
                     );
 
-                    status[eliminated] = "KELUAR";
+                    let finalists =
+                    ranking2
+                    .filter(([p])=>p!==eliminated)
+                    .map(([p])=>p);
+
+                    finalists.forEach(p=>{
+
+                        log(
+                            `🏆 ${p} lolos ke babak FINAL!`
+                        );
+                    });
+
+                    // log(
+                    //     `🏆 ${secondFinalist} lolos ke babak FINAL!`
+                    // );
+                    
+
+                    // await delay(DEBUG_DELAY);
+
+                    // log(
+                    //     `❌ ${eliminated} tereliminasi di semifinal!`
+                    // );
+
+                    // status[eliminated] = "KELUAR";
 
                     // eliminatedOrder.push(eliminated);
-                    eliminatedOrder.unshift(eliminated);
-
+                    
                     updatePlayers();
 
                     saveGame();
@@ -15383,11 +16385,16 @@
                 // FINAL (3 BESAR)
                 // =====================================
                 if(stageName === "FINAL"){
+                    currentEndgameStage ="FINAL";
 
                     log("🏆 FINAL DIMULAI!");
                     await delay(DEBUG_DELAY);
 
                     let finalists = [...alive];
+                    // console.log(
+                    //     "FINALISTS:",
+                    //     finalists
+                    // );
 
                     // =========================
                     // BABAK 1
@@ -15396,32 +16403,40 @@
                     log("🎮 Babak 1 Final!");
                     await delay(DEBUG_DELAY);
 
-                    let score1 = {};
+                    // let score1 = {};
+                    
 
-                    for(let p of finalists){
+                    // for(let p of finalists){
 
-                        if(p === playerName && status[playerName] !== "KELUAR"){
+                    //     if(p === playerName && status[playerName] !== "KELUAR"){
 
-                            score1[p] =
-                            await openMiniGame("final");
+                    //         score1[p] =
+                    //         await openMiniGame("final");
 
-                        }else{
+                    //     }else{
 
-                            score1[p] =
-                            simulateNpcMiniGame(
-                                p,
-                                "final"
-                            );
-                        }
+                    //         score1[p] =
+                    //         simulateNpcMiniGame(
+                    //             p,
+                    //             "final"
+                    //         );
+                    //     }
 
-                        log(`🎯 ${p}: ${score1[p]} poin`);
-                    }
-
+                    //     log(`🎯 ${p}: ${score1[p]} poin`);
+                    // }
                     let ranking1 =
-                    [...finalists]
-                    .sort((a,b)=>score1[b]-score1[a]);
+                    await getFinalMemoryRanking(
+                        finalists,true
+                    );
 
-                    let grandFinalist = ranking1[0];
+                    let grandFinalist =
+                    ranking1[0][0];
+
+                    // let ranking1 =
+                    // [...finalists]
+                    // .sort((a,b)=>score1[b]-score1[a]);
+
+                    // let grandFinalist = ranking1[0];
 
                     log(
                         `👑 ${grandFinalist} otomatis lolos GRAND FINAL!`
@@ -15444,40 +16459,52 @@
                     log("🎮 Babak 2 Final!");
                     await delay(DEBUG_DELAY);
 
-                    let score2 = {};
+                    // let score2 = {};
 
-                    for(let p of round2Players){
+                    // for(let p of round2Players){
 
-                        if(
-                            p === playerName
-                            && !playerWonRound1
-                            && status[playerName] !== "KELUAR"
-                        ){
+                    //     if(
+                    //         p === playerName
+                    //         && !playerWonRound1
+                    //         && status[playerName] !== "KELUAR"
+                    //     ){
 
-                            score2[p] =
-                            await openMiniGame("final");
+                    //         score2[p] =
+                    //         await openMiniGame("final");
 
-                        }else{
+                    //     }else{
 
-                            score2[p] =
-                            simulateNpcMiniGame(
-                                p,
-                                "final"
-                            );
-                        }
+                    //         score2[p] =
+                    //         simulateNpcMiniGame(
+                    //             p,
+                    //             "final"
+                    //         );
+                    //     }
 
-                        log(`🎯 ${p}: ${score2[p]} poin`);
-                    }
+                    //     log(`🎯 ${p}: ${score2[p]} poin`);
+                    // }
 
+                    // let ranking2 =
+                    // [...round2Players]
+                    // .sort((a,b)=>score2[b]-score2[a]);
+
+                    // let secondGrandFinalist =
+                    // ranking2[0];
+
+                    // let eliminated =
+                    // ranking2[1];
                     let ranking2 =
-                    [...round2Players]
-                    .sort((a,b)=>score2[b]-score2[a]);
+                    await getFinalMemoryRanking(
+                        round2Players,true
+                    );
 
                     let secondGrandFinalist =
-                    ranking2[0];
+                    ranking2[0][0];
 
                     let eliminated =
-                    ranking2[1];
+                    ranking2[
+                        ranking2.length - 1
+                    ][0];
 
                     log(
                         `👑 ${secondGrandFinalist} masuk babak GRAND FINAL!`
@@ -15491,6 +16518,7 @@
                         ?.name || null
                     };
                     removeDating(eliminated);
+                    removePlayerFromGang(eliminated);
                     let targetGangName =
                     gangs.find(g =>
                         g.members.includes(eliminated)
@@ -15513,6 +16541,455 @@
 
                     return;
                 }
+
+                // =====================================
+                // GRANDFINAL (2 BESAR)
+                // =====================================
+                // if(stageName === "GRANDFINAL"){
+                //     // let finalists = getAlive();
+                //     let finalists = [...alive];
+                //     console.log(
+                //         "GRAND FINALISTS:",
+                //         finalists
+                //     );
+
+                    
+                //     log("🏆 GRAND FINAL DIMULAI!");
+                //     await delay(DEBUG_DELAY);
+
+                //     let score = {};
+
+                //     score[finalists[0]] = 0;
+                //     score[finalists[1]] = 0;
+
+                //     // =====================================
+                //     // ROUND 1
+                //     // =====================================
+
+                //     log("🎮 Babak 1 dimulai...");
+                //     await delay(DEBUG_DELAY);
+
+                //     let round1Score = {};
+
+                //     for(let p of finalists){
+
+                //         // PLAYER MAIN GAME
+                //         if(p === playerName && status[playerName] !== "KELUAR"){
+
+                //             round1Score[p] =
+                //             await openMiniGame(
+                //                 "grandfinal"
+                //             );
+
+                //         }else{
+
+                //             round1Score[p] =
+                //             simulateNpcMiniGame(
+                //                 p,
+                //                 "grandfinal"
+                //             );
+                //         }
+
+                //         log(
+                //             `🎯 ${p}: ${round1Score[p]} poin`
+                //         );
+                //     }
+
+                //     let round1Winner =
+                //     round1Score[finalists[0]] >
+                //     round1Score[finalists[1]]
+                //     ? finalists[0]
+                //     : finalists[1];
+
+                //     score[round1Winner]++;
+
+                //     log(
+                //         "🏆 Pemenang babak 1 = " +
+                //         round1Winner
+                //     );
+
+                //     await delay(DEBUG_DELAY);
+                //     log(
+                //         `📊 SCORE SEMENTARA:
+                //     ${finalists[0]} ${score[finalists[0]]}
+                //     -
+                //     ${score[finalists[1]]} ${finalists[1]}`
+                //     );
+                //     await delay(DEBUG_DELAY);
+
+                //     // =====================================
+                //     // ROUND 2
+                //     // =====================================
+
+                //     log("🎮 Babak 2 dimulai...");
+                //     await delay(DEBUG_DELAY);
+
+                //     let round2Score = {};
+
+                //     for(let p of finalists){
+
+                //         if(p === playerName && status[playerName] !== "KELUAR"){
+
+                //             round2Score[p] =
+                //             await openMiniGame(
+                //                 "grandfinal"
+                //             );
+
+                //         }else{
+
+                //             round2Score[p] =
+                //             simulateNpcMiniGame(
+                //                 p,
+                //                 "grandfinal"
+                //             );
+                //         }
+
+                //         // log(
+                //         //     `🎯 ${p}: ${round2Score[p]} poin`
+                //         // );
+                //         log(
+                //             `🎯 ${p} memperoleh ${round2Score[p]} poin`
+                //         );
+                //     }
+
+                //     let round2Winner =
+                //     round2Score[finalists[0]] >
+                //     round2Score[finalists[1]]
+                //     ? finalists[0]
+                //     : finalists[1];
+
+                //     score[round2Winner]++;
+
+                //     log(
+                //         "🏆 Pemenang babak 2 = " +
+                //         round2Winner
+                //     );
+                    
+
+                //     await delay(DEBUG_DELAY);
+                //     log(
+                //         `📊 SCORE SEMENTARA:
+                //     ${finalists[0]} ${score[finalists[0]]}
+                //     -
+                //     ${score[finalists[1]]} ${finalists[1]}`
+                //     );
+                //     await delay(DEBUG_DELAY);
+
+                //     let finalWinner;
+
+                //     // =====================================
+                //     // ROUND 3 (JIKA SERI)
+                //     // =====================================
+
+                //     if(
+                //         score[finalists[0]] ===
+                //         score[finalists[1]]
+                //     ){
+
+                //         log("⚔️ Penentuan babak 3...");
+                //         await delay(DEBUG_DELAY);
+
+                //         let round3Score = {};
+
+                //         for(let p of finalists){
+
+                //             if(p === playerName && status[playerName] !== "KELUAR"){
+
+                //                 round3Score[p] =
+                //                 await openMiniGame(
+                //                     "grandfinal"
+                //                 );
+
+                //             }else{
+
+                //                 round3Score[p] =
+                //                 simulateNpcMiniGame(
+                //                     p,
+                //                     "grandfinal"
+                //                 );
+                //             }
+
+                //             log(
+                //                 `🎯 ${p}: ${round3Score[p]} poin`
+                //             );
+                //         }
+
+                //         let round3Winner =
+                //         round3Score[finalists[0]] >
+                //         round3Score[finalists[1]]
+                //         ? finalists[0]
+                //         : finalists[1];
+
+                //         log(
+                //             "👑 Pemenang babak 3 = " +
+                //             round3Winner
+                //         );
+
+                //         finalWinner = round3Winner;
+
+                //     }else{
+
+                //         finalWinner =
+                //         score[finalists[0]] >
+                //         score[finalists[1]]
+                //         ? finalists[0]
+                //         : finalists[1];
+                //     }
+
+                //     await delay(DEBUG_DELAY);
+
+                //     let runnerUp =
+                //     finalists.find(p => p !== finalWinner);
+
+                //     eliminatedMeta[runnerUp] = {
+
+                //         dating: dating[runnerUp] || null,
+
+                //         gang:
+                //         gangs.find(g=>g.members.includes(runnerUp))
+                //         ?.name || null
+                //     };
+                //     removeDating(runnerUp);
+                //     let targetGangName =
+                //     gangs.find(g =>
+                //         g.members.includes(runnerUp)
+                //     )?.name || null;
+                //     removePlayerFromGang(runnerUp);
+
+
+                //     status[runnerUp] = "KELUAR";
+                    
+                //     eliminatedOrder.unshift(runnerUp);
+
+                //     updatePlayers();
+
+                //     log(
+                //         "🏆 Selamat " +
+                //         finalWinner +
+                //         " menjadi The Last Housemates!"
+                //     );
+                //     document.getElementById("nextBtn").disabled = true;
+                //     await delay(1000);
+
+                //     log("🎉 Ceremonial kemenangan dimulai!");
+
+
+                //     pendingDecision = true;
+
+                //     setGameButtonsDisabled(true);
+
+                //     saveGame();
+
+                //     // return;
+                // }
+                // =====================================
+                // GRAND FINAL (2 BESAR)
+                // =====================================
+
+                if(stageName === "GRANDFINAL"){
+                    currentEndgameStage ="GRAND FINAL";
+
+                    log("🏆 GRAND FINAL DIMULAI!");
+                    await delay(DEBUG_DELAY);
+
+                    let finalists = getAlive();
+
+                    let score = {};
+
+                    finalists.forEach(p=>{
+
+                        score[p] = 0;
+                    });
+
+                    // =========================
+                    // BABAK 1
+                    // =========================
+
+                    log("🎮 Babak 1 dimulai...");
+                    await delay(DEBUG_DELAY);
+
+                    let ranking1 =
+                    await getFinalMemoryRanking(
+                        finalists,true
+                    );
+
+                    let winner1 =
+                    ranking1[0][0];
+
+                    score[winner1]++;
+
+                    log(
+                        `🏅 Pemenang babak 1 = ${winner1}`
+                    );
+
+                    log(
+                        `📊 SCORE SEMENTARA: ${
+                            finalists[0]
+                        } ${score[finalists[0]]} - ${
+                            score[finalists[1]]
+                        } ${finalists[1]}`
+                    );
+
+                    await delay(DEBUG_DELAY);
+
+                    // =========================
+                    // BABAK 2
+                    // =========================
+
+                    log("🎮 Babak 2 dimulai...");
+                    await delay(DEBUG_DELAY);
+
+                    let ranking2 =
+                    await getFinalMemoryRanking(
+                        finalists,true
+                    );
+
+                    let winner2 =
+                    ranking2[0][0];
+
+                    score[winner2]++;
+
+                    log(
+                        `🏅 Pemenang babak 2 = ${winner2}`
+                    );
+
+                    // log(
+                    //     `📊 SCORE SEMENTARA: ${
+                    //         finalists[0]
+                    //     } ${score[finalists[0]]} - ${
+                    //         score[finalists[1]]
+                    //     } ${finalists[1]}`
+                    // );
+
+                    await delay(DEBUG_DELAY);
+
+                    let finalWinner = null;
+
+                    // ==================================
+                    // MENANG 2-0
+                    // ==================================
+
+                    if(score[winner2] === 2){
+                        log(
+                            `📊 SCORE AKHIR: ${
+                                finalists[0]
+                            } ${score[finalists[0]]} - ${
+                                score[finalists[1]]
+                            } ${finalists[1]}`
+                        );
+
+                        finalWinner = winner2;
+                        
+
+                        // log(
+                        //     `👑 ${finalWinner} memenangkan GRAND FINAL`
+                        // );
+                    }
+
+                    // ==================================
+                    // SKOR 1-1 → BABAK 3
+                    // ==================================
+
+                    else{
+                        log(
+                        `📊 SCORE SEMENTARA: ${
+                                finalists[0]
+                            } ${score[finalists[0]]} - ${
+                                score[finalists[1]]
+                            } ${finalists[1]}`
+                        );
+
+                        log("⚔️ Skor imbang 1 - 1");
+                        log("🎮 Penentuan babak 3...");
+
+                        await delay(DEBUG_DELAY);
+
+                        let ranking3 =
+                        await getFinalMemoryRanking(
+                            finalists,true
+                        );
+
+                        let winner3 =
+                        ranking3[0][0];
+
+                        finalWinner = winner3;
+                        score[winner3]++;
+
+                        log(
+                            `🏅 Pemenang babak 3 = ${winner3}`
+                        );
+                        log(
+                            `📊 SCORE AKHIR: ${
+                                finalists[0]
+                            } ${score[finalists[0]]} - ${
+                                score[finalists[1]]
+                            } ${finalists[1]}`
+                        );
+                    }
+
+                    // ==================================
+                    // PENENTUAN JUARA
+                    // ==================================
+
+                    await delay(DEBUG_DELAY);
+
+                    let runnerUp =
+                    finalists.find(
+                        p => p !== finalWinner
+                    );
+
+                    eliminatedMeta[runnerUp] = {
+
+                        dating:
+                        dating[runnerUp] || null,
+
+                        gang:
+                        gangs.find(
+                            g =>
+                            g.members.includes(runnerUp)
+                        )?.name || null
+                    };
+
+                    removeDating(runnerUp);
+
+                    removePlayerFromGang(
+                        runnerUp
+                    );
+
+                    status[runnerUp] =
+                    "KELUAR";
+
+                    eliminatedOrder.unshift(
+                        runnerUp
+                    );
+
+                    updatePlayers();
+
+                    log(
+                        "🏆 Selamat " +
+                        finalWinner +
+                        " menjadi The Last Housemates!"
+                    );
+
+                    document.getElementById(
+                        "nextBtn"
+                    ).disabled = true;
+
+                    await delay(1000);
+
+                    log(
+                        "🎉 Ceremonial kemenangan dimulai!"
+                    );
+
+                    pendingDecision = true;
+
+                    setGameButtonsDisabled(true);
+
+                    saveGame();
+
+                    return;
+                }
+
             }
 
             async function playerSaveByBoss(name){
@@ -15535,6 +17012,19 @@
                     playerName,
                     20
                 );
+                let audienceStatus =
+                getAudienceStatus(name);
+
+                if(audienceStatus === "favorit"){
+
+                    addPublicImage(playerName, 5);
+
+                }
+                else if(audienceStatus === "musuh"){
+
+                    addPublicImage(playerName, -5);
+
+                }
                 updateSpecialRelations();
 
                 // relation[playerName][name] += 6;
@@ -15599,7 +17089,7 @@
                                 font-weight:bold;
                                 margin-bottom:6px;
                             ">
-                                🔑 Kamu adalah Pemegang Kunci
+                                🔑 Kamu adalah Key Holder
                             </div>
 
                             <div style="
@@ -15607,7 +17097,7 @@
                                 opacity:0.85;
                                 font-weight:500;
                             ">
-                                    siapa yang akan kamu ekstradisi?
+                                    siapa yang akan kamu eliminasi?
                             </div>
                         </div>
                         `,
@@ -15630,9 +17120,9 @@
                 getDecisionScore(roles.kunci,a)
                 )[0];
 
-                log("⏳ 🔑 Pemegang Kunci " +roles.kunci +" sedang memutuskan siapa yang diselamatkan...");
+                log("⏳ 🔑 Key Holder " +roles.kunci +" sedang memutuskan siapa yang diselamatkan...");
                 await delay(1000);
-                log("🔑 Pemegang Kunci " +roles.kunci +" menyelamatkan: " + savedByKey);
+                log("🔑 Key Holder " +roles.kunci +" menyelamatkan: " + savedByKey);
 
                 let eliminated =
                 sisa.find(p=>p!==savedByKey);
@@ -15661,6 +17151,12 @@
                 // removePlayerFromGang(eliminated);
 
                 status[eliminated] = "KELUAR";
+                addMemory(
+                        eliminated,
+                        "betrayed",
+                        roles.kunci,
+                        -15
+                    );
                 npcDailyBonding();
                 
                 if(eliminated === playerName){
@@ -15671,10 +17167,23 @@
                 // updatePlayers();
 
 
-                log("❌ Terekstradisi: " + eliminated);
+                log("❌ Tereliminasi: " + eliminated);
+                let audienceStatus3 =
+                getAudienceStatus(eliminated);
+
+                if(audienceStatus === "favorit"){
+
+                    addPublicImage(roles.kunci, -5);
+
+                }
+                else if(audienceStatus === "musuh"){
+
+                    addPublicImage(roles.kunci, 5);
+
+                }
                 await delay(700);
 
-                log("👀 Penghuni mulai bereaksi atas ekstradisi ini...");
+                log("👀 Penghuni mulai bereaksi atas eliminasi malam hari ini...");
 
                 await delay(700);
 
@@ -15685,6 +17194,11 @@
                     targetGangName
                 );
                 removePlayerFromGang(eliminated);
+                if(getAlive().length <= 4){
+
+                    endgameMode = true;
+
+                }
 
                 //updatePlayers();
 
@@ -15727,7 +17241,7 @@
                             font-weight:bold;
                             margin-bottom:6px;
                         ">
-                            🔑 Kamu adalah Pemegang Kunci
+                            🔑 Kamu adalah Key Holder
                         </div>
 
                         <div style="
@@ -15735,7 +17249,7 @@
                             opacity:0.85;
                             font-weight:500;
                         ">
-                                siapa yang akan kamu ekstradisi?
+                                siapa yang akan kamu eliminasi?
                         </div>
                     </div>
                     `,
@@ -15788,7 +17302,7 @@
                 // updatePlayers();
 
 
-                log("🔑 Kamu mengekstradisi: " + name);
+                log("🔑 Kamu mengeliminasi: " + name);
                 let savedPerson =
                 extraditionState.bottom2.filter(
                     p => p !== name
@@ -15798,6 +17312,19 @@
 
                 relation[playerName][savedPerson] += keyBoost2;
                 relation[savedPerson][playerName] += keyBoost2;
+                let audienceStatus =
+                getAudienceStatus(name);
+
+                if(audienceStatus === "favorit"){
+
+                    addPublicImage(playerName, -5);
+
+                }
+                else if(audienceStatus === "musuh"){
+
+                    addPublicImage(playerName, 5);
+
+                }
                 updateSpecialRelations();
 
                 // relation[playerName][savedPerson] += 4;
@@ -15808,7 +17335,7 @@
                     savedPerson +
                     " meningkat!"
                 );
-                log("👀 Penghuni mulai bereaksi atas ekstradisi ini...");
+                log("👀 Penghuni mulai bereaksi atas eliminasi malam hari ini...");
 
                 await delay(700);
 
@@ -16162,7 +17689,7 @@
                     //     log(
                     //         "🏆 Selamat " +
                     //         remaining[0] +
-                    //         " menjadi Penghuni Terakhir!"
+                    //         " menjadi The Last Housemates!"
                     //     );
 
                     //     // setGameButtonsDisabled(true);
@@ -16187,7 +17714,7 @@
                         log(
                             "🏆 Selamat " +
                             remaining[0] +
-                            " menjadi Penghuni Terakhir!"
+                            " menjadi The Last Housemates!"
                         );
 
                         // updatePlayers();
@@ -16347,6 +17874,19 @@
                 );
                 // relation[roles.bos][savedByBos] += 6;
                 // relation[savedByBos][roles.bos] += 6;
+                let audienceStatus =
+                getAudienceStatus(savedByBos);
+
+                if(audienceStatus === "favorit"){
+
+                    addPublicImage(roles.bos, 5);
+
+                }
+                else if(audienceStatus === "musuh"){
+
+                    addPublicImage(roles.bos, -5);
+
+                }
                 updateSpecialRelations();
 
                 log(
@@ -16421,7 +17961,7 @@
                                 font-weight:bold;
                                 margin-bottom:6px;
                             ">
-                                🔑 Kamu adalah Pemegang Kunci
+                                🔑 Kamu adalah Key Holder
                             </div>
 
                             <div style="
@@ -16429,7 +17969,7 @@
                                 opacity:0.85;
                                 font-weight:500;
                             ">
-                                    siapa yang akan kamu ekstradisi?
+                                    siapa yang akan kamu eliminasi?
                             </div>
                         </div>
                         `,
@@ -16452,9 +17992,9 @@
                 getDecisionScore(roles.kunci,a)
                 )[0];
 
-                log("⏳ 🔑 Pemegang Kunci " +roles.kunci +" sedang memutuskan siapa yang diselamatkan...");
+                log("⏳ 🔑 Key Holder " +roles.kunci +" sedang memutuskan siapa yang diselamatkan...");
                 await delay(1000);
-                log("🔑 Pemegang Kunci " + roles.kunci + " menyelamatkan: " + savedByKey);
+                log("🔑 Key Holder " + roles.kunci + " menyelamatkan: " + savedByKey);
 
                 // relation[roles.kunci][savedByKey] += 4;
                 // relation[savedByKey][roles.kunci] += 4;
@@ -16500,6 +18040,12 @@
                 // removePlayerFromGang(eliminated);
 
                 status[eliminated] = "KELUAR";
+                addMemory(
+                        eliminated,
+                        "betrayed",
+                        roles.kunci,
+                        -15
+                    );
                 npcDailyBonding();
                
                 if(eliminated === playerName){
@@ -16511,10 +18057,23 @@
                 updatePlayers();
 
 
-                log("❌ Terekstradisi: " + eliminated);
+                log("❌ Tereliminasi: " + eliminated);
+                let audienceStatus4 =
+                getAudienceStatus(eliminated);
+
+                if(audienceStatus === "favorit"){
+
+                    addPublicImage(roles.kunci, -5);
+
+                }
+                else if(audienceStatus === "musuh"){
+
+                    addPublicImage(roles.kunci, 5);
+
+                }
                 await delay(700);
 
-                log("👀 Penghuni mulai bereaksi atas ekstradisi ini...");
+                log("👀 Penghuni mulai bereaksi atas eliminasi malam hari ini...");
 
                 await delay(700);
 
@@ -16558,17 +18117,18 @@
                     rawPopularity = parsed.rawPopularity || {};
                     reputation = parsed.reputation || {};
                     legacyReputation = parsed.legacyReputation || {};
+                    publicImage = parsed.publicImage || {};
                     playerSpecialActionUsed = parsed.playerSpecialActionUsed || false;
                     // chaosEventToday = parsed.chaosEventToday || false;
-                    console.log(
-                        "LOAD socialChaosToday =",
-                        parsed.socialChaosToday
-                    );
-                    socialChaosToday =parsed.socialChaosToday ?? false;
-                    console.log(
-                        "AFTER SET socialChaosToday =",
-                        socialChaosToday
-                    );                
+                    // console.log(
+                    //     "LOAD socialChaosToday =",
+                    //     parsed.socialChaosToday
+                    // );
+                    // socialChaosToday =parsed.socialChaosToday ?? false;
+                    // console.log(
+                    //     "AFTER SET socialChaosToday =",
+                    //     socialChaosToday
+                    // );                
                     
                     traitsMap = parsed.traitsMap;
                     cityMap = parsed.cityMap || {};
@@ -16634,8 +18194,10 @@
                         final:null,
                         grandfinal:null
                     };
-                    currentMiniGameCandidates =
-                    parsed.currentMiniGameCandidates || [];
+                    // currentMiniGameCandidates =
+                    // parsed.currentMiniGameCandidates || [];
+                    currentMiniGameCandidates = [];
+                    socialMemory = parsed.socialMemory || {};
                     //document.getElementById("log").innerHTML = parsed.logHTML || "";
                     document.getElementById("log").innerHTML =
                     (parsed.logHTML || "")
@@ -16828,7 +18390,9 @@
                     stats,
                     endgameMode,
                     currentMiniGames,
-                    currentMiniGameCandidates,
+                    // currentMiniGameCandidates,
+                    socialMemory,
+                    publicImage,
 
                                         
                     logHTML: document.getElementById("log").innerHTML
@@ -16966,7 +18530,7 @@
 
                 document.getElementById("day").innerText =
                 // "Game Belum Dimulai";
-                "Perkenalan Rumah Karantina";
+                "Selamat Datang di Rumah Karantina";
 
             }
             
