@@ -8031,6 +8031,17 @@
 
                 let alive = getAlive();
 
+                gangs.forEach(g=>{
+
+                    console.log(
+                        g.name,
+                        "Leader:",
+                        g.leader,
+                        "Members:",
+                        g.members
+                    );
+                });
+
                 // =====================
                 // hapus member mati
                 // =====================
@@ -8263,8 +8274,17 @@
 
                         // mulai benci leader
                         if(relLeader > 40){
+                            
                             return;
                         }
+                        console.log(
+                            "[BETRAYAL]",
+                            member,
+                            "leader:",
+                            g.leader,
+                            "rel:",
+                            relLeader
+                        );
 
                         let targetGang = null;
 
@@ -8280,7 +8300,7 @@
                                 relation[member]?.[otherMember] || 0;
 
                                 if(
-                                    rel >= 65 &&
+                                    rel >= 50 &&
                                     (!targetGang || rel >
                                     (
                                         relation[member]?.[
@@ -8298,7 +8318,7 @@
                             return;
                         }
 
-                        if(Math.random() > 0.30){
+                        if(Math.random() > 0.45){
                             return;
                         }
 
@@ -8343,7 +8363,7 @@
 
                 gangs.forEach(g=>{
 
-                    if(g.members.length < 3){
+                    if(g.members.length < 2){
                         return;
                     }
 
@@ -8359,12 +8379,27 @@
                         relation[member]?.[g.leader] || 0;
 
                         if(relLeader <= 20){
+                            console.log(
+                                "KUDETA SUPPORTER",
+                                member,
+                                g.name
+                            );
+                            console.log(
+                                "[KUDETA]",
+                                member,
+                                "leader:",
+                                g.leader,
+                                "rel:",
+                                relLeader,
+                                "gang:",
+                                g.name
+                            );
 
                             supporters.push(member);
                         }
                     });
 
-                    if(supporters.length < 2){
+                    if(supporters.length < 1){
                         return;
                     }
 
@@ -8397,6 +8432,8 @@
                     if(Math.random() > 0.10){
                         return;
                     }
+
+                    
 
                     let oldLeader = g.leader;
 
@@ -11318,30 +11355,7 @@
                     let gang2 =
                     gangs.find(g=>g.members.includes(p2));
 
-                    if(
-                        gang1 &&
-                        gang2 &&
-                        gang1 !== gang2
-                    ){
-
-                        gang1.members.forEach(m=>{
-
-                            if(m === p1) return;
-
-                            relation[m][p2] -= 2;
-                        });
-
-                        gang2.members.forEach(m=>{
-
-                            if(m === p2) return;
-
-                            relation[m][p1] -= 2;
-                        });
-
-                        log(
-                        `🔥 Konflik antar geng memperkeruh situasi`
-                        );
-                    }
+                    
 
                     relation[p1][p2] -= damage;
                     relation[p2][p1] -= damage;
@@ -11366,6 +11380,31 @@
                     log(
                     `⚡ ${p1} mulai kesal dengan ${p2}`
                     );
+
+                    if(
+                        gang1 &&
+                        gang2 &&
+                        gang1 !== gang2
+                    ){
+
+                        gang1.members.forEach(m=>{
+
+                            if(m === p1) return;
+
+                            relation[m][p2] -= 2;
+                        });
+
+                        gang2.members.forEach(m=>{
+
+                            if(m === p2) return;
+
+                            relation[m][p1] -= 2;
+                        });
+
+                        log(
+                        `🔥 Konflik antar geng memperkeruh situasi`
+                        );
+                    }
 
                     await delay(700);
 
