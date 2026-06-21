@@ -7600,7 +7600,10 @@
             }
             function canInteract(){
 
-                return !isDayProcessing
+
+
+                return weekDay !== 6
+                && !isDayProcessing
                 && !pendingDecision
                 && !npcRequest;
             }
@@ -8027,6 +8030,120 @@
                 Math.floor(Math.random()*9999);
             }
 
+            function getGangOf(player){
+
+                return gangs.find(
+                    g => g.members.includes(player)
+                );
+            }
+
+            function getWorstEnemy(player){
+
+                let alive =
+                getAlive().filter(
+                    p => p !== player
+                );
+
+                let worst = null;
+                let worstScore = 9999;
+
+                alive.forEach(target=>{
+
+                    let rel =
+                    relation[player]?.[target] || 0;
+
+                    if(rel < worstScore){
+
+                        worstScore = rel;
+                        worst = target;
+                    }
+                });
+
+                if(worstScore > -5){
+
+                    return null;
+                }
+
+                return worst;
+            }
+
+            function getGangEnemyBonus(
+                actor,
+                target
+            ){
+
+                let gang =
+                getGangOf(actor);
+
+                if(
+                    !gang ||
+                    !gang.enemyMap
+                ){
+                    return 0;
+                }
+
+                let bonus = 0;
+
+                Object.entries(
+                    gang.enemyMap
+                ).forEach(([member,enemy])=>{
+
+                    if(enemy === target){
+
+                        if(member === actor){
+
+                            bonus += 25;
+
+                        }else{
+
+                            bonus += 10;
+                        }
+                    }
+                });
+
+                return bonus;
+            }
+            function getGangEnemies(gang){
+
+                let enemies = [];
+
+                Object.values(gang.enemyMap || {})
+                .forEach(enemy=>{
+
+                    if(
+                        enemy &&
+                        !enemies.includes(enemy)
+                    ){
+                        enemies.push(enemy);
+                    }
+                });
+
+                return enemies;
+            }
+
+            function assignRivalGang(){
+
+                if(gangs.length < 2){
+                    return;
+                }
+
+                gangs.forEach(g=>{
+
+                    if(g.rivalGang){
+                        return;
+                    }
+
+                    let other =
+                    gangs.find(x => x !== g);
+
+                    if(other){
+
+                        g.rivalGang =
+                        other.name;
+                    }
+                });
+            }
+
             function updateGangs(){
 
                 let alive = getAlive();
@@ -8038,7 +8155,9 @@
                         "Leader:",
                         g.leader,
                         "Members:",
-                        g.members
+                        g.members,
+                        "Enemy Per member:",
+                        g.enemyMap
                     );
                 });
 
@@ -8111,6 +8230,8 @@
                         log(
                         `💥 ${g.name} bubar`
                         );
+
+                        g.enemyMap = {};
 
                         return false;
                     }
@@ -8187,14 +8308,48 @@
 
                                     leader:a,
 
-                                    members:[a,b]
+                                    members:[a,b],
+
+                                    enemyMap:{},
+
+                                    rivalGang:null
                                 };
 
                                 gangs.push(newGang);
 
+                                newGang.enemyMap[a] =
+                                getWorstEnemy(a);
+
+                                newGang.enemyMap[b] =
+                                getWorstEnemy(b);
+
+                                
+
                                 log(
                                 `👥 ${a} dan ${b} membentuk ${newGang.name}`
                                 );
+
+                                log(
+                                `🎯 Musuh ${a}: ${
+                                newGang.enemyMap[a] || "Tidak ada"
+                                }`
+                                );
+
+                                log(
+                                `🎯 Musuh ${b}: ${
+                                newGang.enemyMap[b] || "Tidak ada"
+                                }`
+                                );
+
+                                let enemies =
+                                getGangEnemies(newGang);
+
+                                if(enemies.length){
+
+                                    log(
+                                    `🎯 Target ${newGang.name}: ${enemies.join(", ")}`
+                                    );
+                                }
                             }
 
                             // a punya geng
@@ -8220,6 +8375,24 @@
                                 }else{
 
                                     acceptChance = 50;
+                                }
+
+                                let influenceBonus = 0;
+
+                                if(activeRoles.bos === a){
+
+                                    influenceBonus += 15;
+                                }
+
+                                if(activeRoles.kunci === a){
+
+                                    influenceBonus += 8;
+                                }
+
+                                acceptChance += influenceBonus;
+                                if(acceptChance > 100){
+
+                                    acceptChance = 100;
                                 }
 
                                 // gangA.members.push(b);
@@ -8248,6 +8421,74 @@
                                     `😒 ${b} menolak ajakan tersebut`
                                     );
                                 }
+                            }
+                            else if(
+                                gangA &&
+                                gangB &&
+                                gangA !== gangB &&
+                                gangA.members.length < 4 &&
+                                relAB >= 55 &&
+                                relBA >= 35
+                            ){
+                                let acceptChance = 25;
+
+                                if(relAB >= 90){
+
+                                    acceptChance = 75;
+
+                                }else if(relAB >= 80){
+
+                                    acceptChance = 50;
+                                }
+                                let influenceBonus = 0;
+
+                                if(activeRoles.bos === a){
+
+                                    influenceBonus += 15;
+                                }
+
+                                if(activeRoles.kunci === a){
+
+                                    influenceBonus += 8;
+                                }
+
+                                acceptChance += influenceBonus;
+                                if(acceptChance > 100){
+
+                                    acceptChance = 100;
+                                }
+
+                                log(
+                                `👥 ${a} mengajak ${b} meninggalkan ${gangB.name}`
+                                );
+
+                                if(Math.random()*100 < acceptChance){
+
+                                    gangB.members =
+                                    gangB.members.filter(
+                                        m => m !== b
+                                    );
+
+                                    gangA.members.push(b);
+
+                                    log(
+                                    `💔 ${b} meninggalkan ${gangB.name}`
+                                    );
+
+                                    log(
+                                    `🤝 ${b} bergabung dengan ${gangA.name}`
+                                    );
+
+                                }else{
+
+                                    relation[a][b] -= 3;
+                                    relation[b][a] -= 3;
+
+                                    log(
+                                    `😒 ${b} menolak ajakan tersebut`
+                                    );
+                                }
+                                
                             }
 
                             
@@ -8327,6 +8568,7 @@
                         g.members.filter(
                             m => m !== member
                         );
+                        delete g.enemyMap[member];
 
                         let damage = Math.floor(Math.random()*8)+8;
 
@@ -8364,6 +8606,7 @@
                 gangs.forEach(g=>{
 
                     if(g.members.length < 2){
+                        g.enemyMap = {};
                         return;
                     }
 
@@ -8452,6 +8695,229 @@
                 });
 
                 // updatePlayers();
+                assignRivalGang();
+            }
+
+            async function processGangDirection(){
+
+                gangs.forEach(g=>{
+
+                    if(
+                        !g.members ||
+                        g.members.length < 2
+                    ){
+                        return;
+                    }
+
+                    let enemies =
+                    getGangEnemies(g);
+
+                    // =====================
+                    // GENG PUNYA MUSUH
+                    // =====================
+
+                    if(enemies.length > 0){
+
+                        let target =
+                        enemies[
+                            Math.floor(
+                                Math.random()*enemies.length
+                            )
+                        ];
+
+                        g.members.forEach(member=>{
+
+                            if(
+                                member === target ||
+                                status[member] === "KELUAR"
+                            ){
+                                return;
+                            }
+
+                            relation[member][target] -= 1;
+
+                            if(
+                                trust[member] &&
+                                trust[member][target] !== undefined
+                            ){
+                                trust[member][target] -= 1;
+                            }
+                        });
+
+                        return;
+                    }
+
+                    // =====================
+                    // GENG TANPA MUSUH
+                    // =====================
+
+                    let roll = Math.random();
+
+                    // 40% cari musuh baru
+                    if(roll < 0.40){
+
+                        let member =
+                        g.members[
+                            Math.floor(
+                                Math.random()*g.members.length
+                            )
+                        ];
+
+                        let enemy =
+                        getWorstEnemy(member);
+
+                        if(enemy){
+
+                            g.enemyMap[member] = enemy;
+
+                            log(
+                            `🎯 ${member} mulai menganggap ${enemy} sebagai ancaman bagi ${g.name}`
+                            );
+
+                            return;
+                        }
+                    }
+
+                    // 30% makin kompak
+                    if(roll < 0.70){
+
+                        g.members.forEach(a=>{
+
+                            g.members.forEach(b=>{
+
+                                if(a === b) return;
+
+                                relation[a][b] += 1;
+                            });
+                        });
+
+                        log(
+                        `🤝 ${g.name} semakin kompak`
+                        );
+
+                        return;
+                    }
+
+                    // 30% konflik internal
+
+                    let memberA =
+                    g.members[
+                        Math.floor(
+                            Math.random()*g.members.length
+                        )
+                    ];
+
+                    let memberB =
+                    g.members.find(
+                        x => x !== memberA
+                    );
+
+                    if(memberB){
+
+                        relation[memberA][memberB] -= 3;
+                        relation[memberB][memberA] -= 3;
+
+                        log(
+                        `⚡ Mulai muncul perbedaan pendapat di ${g.name}`
+                        );
+                    }
+                });
+            }
+            // async function processGangRivalryEvent(){
+
+            //     if(gangs.length < 2){
+            //         return;
+            //     }
+
+            //     if(Math.random() > 0.12){
+            //         return;
+            //     }
+
+            //     let gangA =
+            //     gangs[Math.floor(
+            //         Math.random()*gangs.length
+            //     )];
+
+            //     let gangB =
+            //     gangs.find(
+            //         g => g.name === gangA.rivalGang
+            //     );
+
+            //     if(!gangB){
+            //         return;
+            //     }
+
+            //     let a =
+            //     gangA.members[
+            //         Math.floor(
+            //             Math.random()*gangA.members.length
+            //         )
+            //     ];
+
+            //     let b =
+            //     gangB.members[
+            //         Math.floor(
+            //             Math.random()*gangB.members.length
+            //         )
+            //     ];
+
+            //     let damage =
+            //     Math.floor(Math.random()*6)+5;
+
+            //     relation[a][b] -= damage;
+            //     relation[b][a] -= damage;
+
+            //     log(
+            //     `⚔️ Konflik antar geng terjadi`
+            //     );
+
+            //     log(
+            //     `⚔️ ${a} (${gangA.name}) berselisih dengan ${b} (${gangB.name})`
+            //     );
+            // }
+
+            function updateGangEnemiesAfterElimination(
+                eliminated
+            ){
+
+                gangs.forEach(g=>{
+
+                    Object.keys(
+                        g.enemyMap || {}
+                    ).forEach(member=>{
+
+                        if(
+                            g.enemyMap[member] !==
+                            eliminated
+                        ){
+                            return;
+                        }
+
+                        if(Math.random() < 0.5){
+
+                            g.enemyMap[member] = null;
+
+                            log(
+                            `😴 ${member} kehilangan target utamanya`
+                            );
+
+                        }else{
+
+                            let newEnemy =
+                            getWorstEnemy(member);
+
+                            g.enemyMap[member] =
+                            newEnemy;
+
+                            if(newEnemy){
+
+                                log(
+                                `🎯 ${member} mulai mengincar ${newEnemy}`
+                                );
+                            }
+                        }
+                    });
+                });
             }
 
             function getPartner(player){
@@ -9138,6 +9604,11 @@
                     target
                 );
 
+                score += getGangEnemyBonus(
+                    actor,
+                    target
+                );
+
                 // score +=
                 // getPublicImageBonus(
                 //     actor,
@@ -9164,6 +9635,11 @@
                 score += getRevengeScore(actor,target);
 
                 score += getTraitDecisionBonus(
+                    actor,
+                    target
+                );
+
+                score += getGangEnemyBonus(
                     actor,
                     target
                 );
@@ -10690,10 +11166,19 @@
                         members:[
                             playerName,
                             target
-                        ]
+                        ],
+                        enemyMap:{},
+
+                        rivalGang:null
                     };
 
                     gangs.push(newGang);
+                    newGang.enemyMap[playerName] =
+                    getWorstEnemy(playerName);
+
+                    newGang.enemyMap[target] =
+                    getWorstEnemy(target);
+                    
 
                     log(
                     `🐍 ${target} meninggalkan ${oldGang.name}`
@@ -10702,6 +11187,28 @@
                     log(
                     `👥 Kamu dan ${target} membentuk ${newGang.name}`
                     );
+
+                    log(
+                    `🎯 Musuh ${playerName}: ${
+                    newGang.enemyMap[playerName] || "Tidak ada"
+                    }`
+                    );
+
+                    log(
+                    `🎯 Musuh ${target}: ${
+                    newGang.enemyMap[target] || "Tidak ada"
+                    }`
+                    );
+
+                    let enemies =
+                    getGangEnemies(newGang);
+
+                    if(enemies.length){
+
+                        log(
+                        `🎯 Target ${newGang.name}: ${enemies.join(", ")}`
+                        );
+                    }
 
                     log(
                     `💔 Mantan anggota ${oldGang.name} merasa dikhianati`
@@ -10731,7 +11238,11 @@
 
                         leader: playerName,
 
-                        members: [playerName]
+                        members: [playerName],
+
+                        enemyMap: {},
+
+                        rivalGang:null
                     };
 
                     gangs.push(playerGang);
@@ -10761,6 +11272,9 @@
                 relation[playerName][target] += bonus;
                 relation[target][playerName] += bonus;
 
+                playerGang.enemyMap[target] =
+                getWorstEnemy(target);
+
                 log(
                 `👥 Kamu dan ${target} membentuk ${playerGang.name}`
                 );
@@ -10772,6 +11286,24 @@
                 log(
                 `🤝 Hubungan kalian meningkat (+${bonus})`
                 );
+
+                log(
+                `🎯 Musuh ${target}: ${
+                playerGang.enemyMap[target] || "Tidak ada"
+                }`
+                );
+
+                let enemies =
+                getGangEnemies(playerGang);
+
+                if(enemies.length){
+
+                    log(
+                    `🎯 Target ${playerGang.name}: ${enemies.join(", ")}`
+                    );
+                }
+
+
 
                 updateSpecialRelations();
                 updatePlayers();
@@ -11663,7 +12195,7 @@
                         let relBA =
                         relation[b][a] || 0;
                         // =====================
-                        // NPC INVITE PLAYER GANG
+                        // NPC ngajak player masuk geng NPC
                         // =====================
 
                         if(
@@ -11727,6 +12259,73 @@
                                 return;
                             }
                         }
+                        // =====================
+                        // NPC Mau Gabung Geng Player
+                        // =====================
+                        let playerGang =
+                        gangs.find(
+                            g => g.members.includes(playerName)
+                        );
+
+                        if(
+                            playerGang &&
+                            !playerGang.members.includes(a)
+                        )
+                        {
+                            let rel =
+                            relation[a][playerName] || 0;
+
+                            if(
+                                rel >= 70 &&
+                                Math.random() < 0.25
+                            ){
+                                log(
+                                `👥 ${a} tertarik untuk masuk ${playerGang.name}`
+                                );
+
+                                await delay(1200);
+
+                                await openNpcRequest({
+
+                                    type:"join_player_gang",
+
+                                    from:a
+                                });
+
+                                return;
+                            }
+                        }
+
+                        // =====================
+                        // NPC ngajak player bikin geng baru
+                        // =====================
+                        if(
+                            !getGangOf(playerName) &&
+                            !getGangOf(a)
+                        )
+                        {
+                            let rel =
+                            relation[a][playerName] || 0;
+                             if(
+                                rel >= 65 &&
+                                Math.random() < 0.15
+                            ){
+                                log(
+                                `👥 ${a} tertarik membentuk geng baru bersamamu`
+                                );
+                                await delay(1200);
+
+                                await openNpcRequest({
+
+                                    type:"new_gang",
+
+                                    from:a
+                                });
+
+                                return;
+                            }
+                        }
+
                         // =====================
                         // NPC CONFESS
                         // =====================
@@ -12452,7 +13051,7 @@
                     document.getElementById("npcRequestContent");
 
                     // =====================
-                    // GENG INVITE
+                    // NPC ngajak player masuk geng NPC
                     // =====================
 
                     if(data.type === "gang"){
@@ -12470,6 +13069,50 @@
 
                         <button onclick="rejectNpcRequest()">
                             ❌ Tolak
+                        </button>
+                        `;
+                    }
+
+                    // =====================
+                    // NPC Mau Gabung Geng Player
+                    // =====================
+
+                    else if(data.type === "join_player_gang"){
+
+                        content.innerHTML  = `
+                        <p>
+                        ${data.from} ingin bergabung dengan gengmu
+                        </p>
+
+                        <button onclick="acceptNpcRequest()">
+                            ✅ Terima
+                        </button>
+
+                        <button onclick="rejectNpcRequest()">
+                            ❌ Tolak
+                        </button>
+                        `;
+                    }
+                    // =====================
+                    // NPC ngajak player bikin geng baru
+                    // =====================
+
+                    else if(data.type === "new_gang"){
+
+                        title =
+                        "👥 Tawaran Geng";
+
+                        content.innerHTML  = `
+                        <p>
+                        ${data.from} ingin membentuk geng baru bersamamu
+                        </p>
+
+                        <button onclick="acceptNpcRequest()">
+                        ✅ Terima
+                        </button>
+
+                        <button onclick="rejectNpcRequest()">
+                        ❌ Tolak
                         </button>
                         `;
                     }
@@ -12509,7 +13152,7 @@
                 if(!npcRequest) return;
 
                 // =====================
-                // GENG
+                // NPC ngajak player masuk geng NPC
                 // =====================
 
                 if(npcRequest.type === "gang"){
@@ -12525,14 +13168,137 @@
                         relation[playerName][npcRequest.from] += 10;
                         relation[npcRequest.from][playerName] += 10;
 
+                        gang.enemyMap[playerName] =
+                        getWorstEnemy(playerName);
+
                         log(
                         `👥 Kamu resmi bergabung dengan ${gang.name}`
                         );
+
+                        log(
+                        `🎯 Musuh ${playerName}: ${
+                        gang.enemyMap[playerName] || "Tidak ada"
+                        }`
+                        );
+
+                        let enemies =
+                        getGangEnemies(gang);
+
+                        if(enemies.length){
+
+                            log(
+                            `🎯 Target ${gang.name}: ${enemies.join(", ")}`
+                            );
+                        }
 
                         if(npcRequest.resolve){
                             npcRequest.resolve(true);
                         }
 
+                    }
+                }
+                else if(
+                    npcRequest.type ===
+                    "join_player_gang"
+                ){
+                    let playerGang =
+                    gangs.find(
+                        g => g.members.includes(playerName)
+                    );
+
+                    if(
+                        playerGang &&
+                        !playerGang.members.includes(
+                            npcRequest.from
+                        )
+                    ){
+
+                        playerGang.members.push(
+                            npcRequest.from
+                        );
+                        playerGang.enemyMap[npcRequest.from] =getWorstEnemy(npcRequest.from);
+                        // getWorstEnemy(
+                        //     npcRequest.from
+                        // );
+                        log(
+                        `👥 ${npcRequest.from} bergabung dengan ${playerGang.name}`
+                        );
+                        let enemies =
+                        getGangEnemies(playerGang);
+                        
+                        log(
+                        `🎯 Musuh ${playerName}: ${
+                        gang.enemyMap[playerName] || "Tidak ada"
+                        }`
+                        );
+
+                        if(enemies.length){
+
+                            log(
+                            `🎯 Target ${playerGang}: ${enemies.join(", ")}`
+                            );
+                        }
+
+                        
+                        if(npcRequest.resolve){
+                            npcRequest.resolve(true);
+                        }
+                    }
+                }
+                else if(
+                    npcRequest.type ===
+                    "new_gang"
+                ){
+                    let newGang = {
+
+                        name:getRandomGangName(),
+
+                        leader:playerName,
+
+                        members:[
+                            playerName,
+                            npcRequest.from
+                        ],
+
+                        enemyMap:{},
+
+                        rivalGang:null
+                    };
+
+                    gangs.push(newGang);
+                    newGang.enemyMap[playerName] =
+                    getWorstEnemy(playerName);
+
+                    newGang.enemyMap[npcRequest.from] =
+                    getWorstEnemy(npcRequest.from);
+
+                    log(
+                    `👥 Kamu dan ${npcRequest.from} membentuk ${newGang.name}`
+                    );
+
+                    log(
+                    `🎯 Musuh ${playerName}: ${
+                    newGang.enemyMap[playerName] || "Tidak ada"
+                    }`
+                    );
+
+                    log(
+                    `🎯 Musuh ${npcRequest.from}: ${
+                    newGang.enemyMap[npcRequest.from] || "Tidak ada"
+                    }`
+                    );
+
+                    let enemies =
+                    getGangEnemies(newGang);
+
+                    if(enemies.length){
+
+                        log(
+                        `🎯 Target ${newGang.name}: ${enemies.join(", ")}`
+                        );
+                    }
+                    if(npcRequest.resolve){
+                        npcRequest.resolve(true);
                     }
                 }
 
@@ -12573,9 +13339,27 @@
 
                 relation[npcRequest.from][playerName] -= 12;
 
-                log(
-                `💔 Kamu menolak perasaan ${npcRequest.from}`
-                );
+                // log(
+                // `💔 Kamu menolak perasaan ${npcRequest.from}`
+                // );
+                if(npcRequest.type === "dating"){
+
+                    log(
+                    `💔 Kamu menolak perasaan ${npcRequest.from}`
+                    );
+
+                }else if(npcRequest.type === "gang"){
+
+                    log(
+                    `👥 Kamu menolak ajakan geng dari ${npcRequest.from}`
+                    );
+
+                }else{
+
+                    log(
+                    `❌ Kamu menolak permintaan ${npcRequest.from}`
+                    );
+                }
                 if(npcRequest.resolve){
                     npcRequest.resolve(false);
                 }
@@ -14519,6 +15303,22 @@
                     //     await randomDramaEvent();
                     // }
                 }
+                if(
+                    gangs.length > 0 &&
+                    Math.random() < 0.35
+                ){
+                    await processGangDirection();
+                    // socialChaosToday = true;
+                    saveGame();
+                }
+                // if(
+                //     gangs.length >= 2 &&
+                //     Math.random() < 0.20
+                // ){
+
+                //     await processGangRivalryEvent();
+                // }
+                
                 // console.log(
                 //     "NEXT DAY BEFORE",
                 //     weekDay
@@ -16652,6 +17452,8 @@
                     "eliminate",
                     targetGangName
                 );
+                await delay(700);
+                updateGangEnemiesAfterElimination(eliminated);
                 removePlayerFromGang(eliminated);
                 
                 saveGame();
@@ -18324,6 +19126,10 @@
                     "eliminate",
                     targetGangName
                 );
+
+                await delay(700);
+                updateGangEnemiesAfterElimination(eliminated);
+
                 removePlayerFromGang(eliminated);
                 if(getAlive().length <= 4){
 
@@ -18498,6 +19304,10 @@
                     "eliminate",
                     targetGangName
                 );
+
+                await delay(700);
+                updateGangEnemiesAfterElimination(name);
+
                 removePlayerFromGang(name);
                 if(getAlive().length <= 4){
 
@@ -19280,6 +20090,10 @@
                     "eliminate",
                     targetGangName
                 );
+
+                await delay(700);
+                updateGangEnemiesAfterElimination(eliminated);
+
                 removePlayerFromGang(eliminated);
 
                 //updatePlayers();
