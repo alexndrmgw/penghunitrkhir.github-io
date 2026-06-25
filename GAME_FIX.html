@@ -107,6 +107,11 @@
             font-size: 12px;
             color: gold;
         }
+        .mobile-buttons{
+
+            display:flex;
+
+        }
 
         button {
             padding: 10px;
@@ -418,9 +423,21 @@
         .log{
             scrollbar-gutter: stable;
         }
+        .mobile-bottom-nav{
+
+                display:none;
+            }
 
         /* MOBILE */
         @media (max-width: 768px){
+
+
+            .mobile-buttons{
+
+                display:none;
+            }
+
+
 
             header{
                 /* padding:12px 10px; */
@@ -433,7 +450,8 @@
                 margin-bottom:8px; */
                 /* font-size:30px;
                 margin-bottom:6px; */
-                font-size:28px;
+                /* font-size:28px; */
+                font-size:22px;
                 margin:0 0 2px 0;
                 line-height:1.1;
             }
@@ -441,7 +459,8 @@
             header h2{
                 /* font-size:18px;
                 line-height:1.4; */
-                font-size:16px;
+                /* font-size:16px; */
+                font-size:15px;
                 line-height:1.2;
                 margin:0;
             }
@@ -480,7 +499,8 @@
                 overflow:visible; */
                 width:100%;
                 /* padding:12px; */
-                padding:4px 12px 12px;
+                /* padding:4px 12px 12px; */
+                padding:4px 12px 86px;
                 pointer-events:auto;
             }
 
@@ -494,7 +514,12 @@
 
                 min-height:0;
 
-                max-height:55vh;
+                /* max-height:55vh; */
+                height:calc(100dvh - 180px);
+
+                max-height:none;
+
+                padding-bottom:20px;
 
                 overflow-y:auto;
                 overflow-x:hidden;
@@ -508,6 +533,8 @@
                 box-sizing:border-box;
 
                 margin-top:6px;
+                margin-bottom:8px;
+                font-size:14px;
             }
             .log p{
                 margin:0 0 10px 0;
@@ -543,16 +570,16 @@
                 font-size:14px;
                 padding:10px;
             } */
-             .mobile-buttons{
+            /* .mobile-buttons{
 
-                /* display:grid;
+                 display:grid;
 
                 grid-template-columns:1fr 1fr;
 
                 gap:10px;
 
                 padding:10px 14px;
-                margin-top:-10px; */
+                margin-top:-10px; 
                 display:grid;
 
                 grid-template-columns:1fr 1fr;
@@ -562,9 +589,110 @@
                 padding:4px 14px 10px;
 
                 margin-top:-14px;
+            } */
+
+            /* .mobile-bottom-nav{
+
+                display:none;
+
+            } */
+            .mobile-bottom-nav{
+
+                display:flex;
+
+                position:fixed;
+
+                bottom:0;
+
+                left:0;
+
+                width:100%;
+
+                height:72px;
+
+                background:#111827;
+
+                border-top:1px solid #374151;
+
+                justify-content:space-around;
+
+                align-items:center;
+
+                z-index:9999;
+
             }
 
-            .mobile-buttons button{
+            .mobile-bottom-nav button{
+
+                flex:1;
+
+                background:none;
+
+                color:white;
+
+                border:none;
+
+                border-radius:0;
+
+                display:flex;
+
+                flex-direction:column;
+
+                justify-content:center;
+
+                align-items:center;
+
+                gap:4px;
+
+                font-size:12px;
+
+                padding:0;
+                
+
+            }
+
+            #nextBtnMobile{
+
+                flex:1.2;
+
+                background:#22c55e !important;
+
+                color:white;
+
+                height:82px;
+
+                margin-top:-26px;
+
+                border-radius:18px;
+
+                font-weight:bold;
+
+                box-shadow:
+                    0 10px 25px rgba(34,197,94,.45);
+
+                transition:.2s;
+            }
+
+            #nextBtnMobile div{
+
+                font-size:30px;
+            }
+
+            #nextBtnMobile span{
+
+                font-size:12px;
+
+                font-weight:700;
+            }
+            
+
+            .mobile-bottom-nav button div{
+
+                font-size:22px;
+
+            }
+
+            /* .mobile-buttons button{
 
                 width:100%;
 
@@ -573,6 +701,28 @@
                 padding:12px 10px;
 
                 border-radius:12px;
+            } */
+            .mobile-bottom-nav button:disabled{
+
+                /* opacity:.35;
+
+                filter:grayscale(100%); */
+                background:#475569 !important;
+                box-shadow:none;
+                filter:grayscale(100%);
+                opacity:.6;
+                transform:none;
+
+            }
+            #nextBtnMobile:disabled div{
+                opacity:.55;
+            }
+            .mobile-bottom-nav span{
+
+                font-size:10px;
+
+                line-height:1.1;
+
             }
             .danger-btn{
                 grid-column:1 / -1;
@@ -1694,7 +1844,7 @@
 
                     <div class="mobile-buttons">
 
-                        <button id="nextBtn" onclick="nextDay()">➡️ Ganti Hari</button>
+                        <button id="nextBtn" onclick="nextDay()">📅 Ganti Hari</button>
 
                         <!-- <button id="socialBtn" onclick="socialize()">
                             💬 Sosialisasi
@@ -1864,12 +2014,46 @@
 
         </div>
 
-        <button
+        <!-- <button
             class="floating-player-btn mobile-only"
             onclick="openPlayersModal()"
         >
             👥 
-        </button>
+        </button> -->
+        <div class="mobile-bottom-nav">
+
+            <button onclick="openPlayersModal()">
+                <div>👥</div>
+                <span>Peserta</span>
+            </button>
+
+           
+
+            <button onclick="lihatRelasi()">
+                <div>❤️</div>
+                <span>Skor Relasi</span>
+            </button>
+
+            
+
+             <button id="nextBtnMobile" onclick="nextDay()">
+                <div >➡️</div>
+                <span>Ganti Hari</span>
+            </button>
+
+            <button onclick="showReport()">
+                <div>📊</div>
+                <span>Report</span>
+            </button>
+
+            
+
+            <button onclick="resetGame()">
+                <div>🔄</div>
+                <span>Reset Game</span>
+            </button>
+
+        </div>
 
         <script>
             // ⬇️ TARUH DI SINI (PALING ATAS)
@@ -7778,7 +7962,7 @@
                         🧠 <b>Strategis</b><br>
                         ✔️ Mudah membangun aliansi<br>
                         ✔️ Reputasi lebih stabil<br>
-                        ✔️ Lebih mudah jadi pemimpin<br>
+                        ✔️ Lebih mudah jadi pemegang jabatan penting<br>
                         ❌ Tidak terlalu kuat dalam konflik emosional
                         `;
                         break;
@@ -8092,11 +8276,11 @@
 
                         if(member === actor){
 
-                            bonus += 25;
+                            bonus += 50;
 
                         }else{
 
-                            bonus += 10;
+                            bonus += 25;
                         }
                     }
                 });
@@ -8716,6 +8900,36 @@
                     // GENG PUNYA MUSUH
                     // =====================
 
+                    // if(enemies.length > 0){
+
+                    //     let target =
+                    //     enemies[
+                    //         Math.floor(
+                    //             Math.random()*enemies.length
+                    //         )
+                    //     ];
+
+                    //     g.members.forEach(member=>{
+
+                    //         if(
+                    //             member === target ||
+                    //             status[member] === "KELUAR"
+                    //         ){
+                    //             return;
+                    //         }
+
+                    //         relation[member][target] -= 1;
+
+                    //         if(
+                    //             trust[member] &&
+                    //             trust[member][target] !== undefined
+                    //         ){
+                    //             trust[member][target] -= 1;
+                    //         }
+                    //     });
+
+                    //     return;
+                    // }
                     if(enemies.length > 0){
 
                         let target =
@@ -8743,6 +8957,49 @@
                                 trust[member][target] -= 1;
                             }
                         });
+
+                        // 25% muncul drama geng
+                        if(Math.random() < 0.25){
+
+                            let member =
+                            g.members[
+                                Math.floor(
+                                    Math.random()*g.members.length
+                                )
+                            ];
+
+                            log(
+                            `🎯 ${member} mengingatkan anggota ${g.name} untuk menargetkan ${target}`
+                            );
+                        }
+
+                        // 15% gosip kolektif
+                        if(Math.random() < 0.15){
+
+                            addPublicImage(target,-2);
+
+                            log(
+                            `🐍 ${g.name} menyebarkan gosip tentang ${target}`
+                            );
+                        }
+
+                        // 10% makin kompak karena musuh bersama
+                        if(Math.random() < 0.10){
+
+                            g.members.forEach(a=>{
+
+                                g.members.forEach(b=>{
+
+                                    if(a===b) return;
+
+                                    relation[a][b] += 1;
+                                });
+                            });
+
+                            log(
+                            `🤝 ${g.name} semakin kompak karena memiliki musuh bersama`
+                            );
+                        }
 
                         return;
                     }
@@ -10365,15 +10622,57 @@
                     );
                 }
 
-                addReputation(playerName,-3);
+                // addReputation(playerName,-3);
 
-                addReputation(target,-3);
-                addPublicImage(playerName,-2);
-                addPublicImage(target,-2);
+                // addReputation(target,-3);
+                // addPublicImage(playerName,-2);
+                // addPublicImage(target,-2);
 
                 log(
                 `💥 ${playerName} dan ${target} terlibat adu mulut besar (-${damage})`
                 );
+
+                let audienceRoll =
+                Math.random();
+
+                if(audienceRoll < 0.33){
+
+                    addReputation(playerName,3);
+                    addPublicImage(playerName,4);
+
+                    addReputation(target,-3);
+                    addPublicImage(target,-4);
+
+                    log(
+                    `📺 Penonton memihak ${playerName}`
+                    );
+
+                }
+                else if(audienceRoll < 0.66){
+
+                    addReputation(target,3);
+                    addPublicImage(target,4);
+
+                    addReputation(playerName,-3);
+                    addPublicImage(playerName,-4);
+
+                    log(
+                    `📺 Penonton memihak ${target}`
+                    );
+
+                }
+                else{
+
+                    addReputation(playerName,2);
+                    addReputation(target,2);
+
+                    addPublicImage(playerName,1);
+                    addPublicImage(target,1);
+
+                    log(
+                    `🍿 Drama mereka jadi tontonan favorit penonton`
+                    );
+                }
 
                 await delay(700);
 
@@ -10582,7 +10881,7 @@
                     if(type === "save"){
 
                         // teman target suka role
-                        if(closeness >= 12){
+                        if(closeness >= 8){
 
                             let buff =
                             Math.floor(Math.random()*3)+2;
@@ -10599,7 +10898,7 @@
                         }
 
                         // musuh target iri
-                        else if(closeness <= -12){
+                        else if(closeness <= -8){
 
                             relation[p][role] -= 2;
                             totalReaction++;
@@ -10678,19 +10977,32 @@
                         // }
 
                         // // musuh korban senang
-                        // else if(closeness <= -12){
+                        if(closeness <= -8){
 
-                        //     relation[p][role] += 2;
-                        //     totalReaction++;
+                            relation[p][role] += 2;
+                            totalReaction++;
 
-                        //     log(
-                        //         `😏 ${p} diam-diam senang ${target} keluar`
-                        //     );
+                            log(
+                                `😏 ${p} diam-diam senang ${target} keluar`
+                            );
 
-                        //     // await delay(500);
-                        // }
+                            // await delay(500);
+                        }
+                        else if(closeness <= -15){
+
+                            relation[p][role] += 4;
+
+                            addPublicImage(role,2);
+
+                            totalReaction++;
+
+                            log(
+                            `🎉 ${p} sangat senang karena rivalnya (${target}) akhirnya keluar`
+                            );
+                        }
+
                         // alex new condition for kecewa/asrah/tenang
-                        if(closeness >= 12 || sameGang){
+                        if(closeness >= 8 || sameGang){
 
                             let reactionType = "kecewa";
 
@@ -11224,47 +11536,183 @@
                 }
 
                 // belum punya geng → bikin baru
+                // if(!playerGang){
+
+                //     // playerGang = {
+
+                //     //     name: "Circle " + playerName,
+
+                //     //     members: [playerName]
+                //     // };
+                //     playerGang = {
+
+                //         name: getRandomGangName(),
+
+                //         leader: playerName,
+
+                //         members: [playerName],
+
+                //         enemyMap: {},
+
+                //         rivalGang:null
+                //     };
+
+                //     gangs.push(playerGang);
+                // }
+
+                // // max 4
+                // if(playerGang.members.length >= 4){
+
+                //     log("⚠️ Circle kamu sudah penuh");
+
+                //     closeSocialModal();
+
+                //     return;
+                // }
+
+                // // recruit
+                // // playerGang.members.push(target);
+                // if(!playerGang.members.includes(target)){
+
+                //     playerGang.members.push(target);
+                // }
+                // dailySocialCount++;
+
+                // let bonus =
+                // Math.floor(Math.random()*6)+4;
+
+                // relation[playerName][target] += bonus;
+                // relation[target][playerName] += bonus;
+
+                // playerGang.enemyMap[target] =
+                // getWorstEnemy(target);
+
+                // log(
+                // `👥 Kamu dan ${target} membentuk ${playerGang.name}`
+                // );
+
+                // log(
+                // `👥 ${target} resmi masuk ${playerGang.name}`
+                // );
+
+                // log(
+                // `🤝 Hubungan kalian meningkat (+${bonus})`
+                // );
+
+                // log(
+                // `🎯 Musuh ${target}: ${
+                // playerGang.enemyMap[target] || "Tidak ada"
+                // }`
+                // );
+
+                // let enemies =
+                // getGangEnemies(playerGang);
+
+                // if(enemies.length){
+
+                //     log(
+                //     `🎯 Target ${playerGang.name}: ${enemies.join(", ")}`
+                //     );
+                // }
+
+
+
+                // updateSpecialRelations();
+                // updatePlayers();
+                // saveGame();
+
+                // closeSocialModal();
+            }
+
+            function recruitToGang(target){
+
+                let playerGang =
+                gangs.find(g=>g.members.includes(playerName));
+
                 if(!playerGang){
 
-                    // playerGang = {
-
-                    //     name: "Circle " + playerName,
-
-                    //     members: [playerName]
-                    // };
-                    playerGang = {
-
-                        name: getRandomGangName(),
-
-                        leader: playerName,
-
-                        members: [playerName],
-
-                        enemyMap: {},
-
-                        rivalGang:null
-                    };
-
-                    gangs.push(playerGang);
-                }
-
-                // max 4
-                if(playerGang.members.length >= 4){
-
-                    log("⚠️ Circle kamu sudah penuh");
-
-                    closeSocialModal();
-
+                    log("⚠️ Kamu belum punya geng");
                     return;
                 }
 
-                // recruit
-                // playerGang.members.push(target);
-                if(!playerGang.members.includes(target)){
+                let targetGang =
+                gangs.find(g=>g.members.includes(target));
 
-                    playerGang.members.push(target);
+                if(targetGang){
+
+                    // log(`⚠️ ${target} sudah punya geng`);
+                    // return;
+                    let rel =
+                    relation[playerName][target] || 0;
+
+                    let chance = 0;
+
+                    if(rel >= 50){
+
+                        chance = 100;
+
+                    }else if(rel >= 30){
+
+                        chance = 70;
+
+                    }else if(rel >= 18){
+
+                        chance = 40;
+
+                    }else{
+
+                        chance = 0;
+                    }
+
+                    if(Math.random()*100 > chance){
+
+                        log(
+                        `😒 ${target} masih setia kepada ${targetGang.name}`
+                        );
+
+                        relation[playerName][target] -= 3;
+                        relation[target][playerName] -= 3;
+
+                        updatePlayers();
+                        saveGame();
+
+                        closeSocialModal();
+
+                        return;
+                    }
+
+                    // simpan geng lama
+                    let oldGang = targetGang;
+
+                    // rusak relasi dengan geng lama
+                    oldGang.members.forEach(m=>{
+
+                        if(m === target) return;
+
+                        relation[target][m] -= 8;
+                        relation[m][target] -= 8;
+                    });
+
+                    // keluar dari geng lama
+                    removePlayerFromGang(target);
+
+                    log(
+                    `🐍 ${target} meninggalkan ${oldGang.name}`
+                    );
+
+                    log(
+                    `💔 Mantan anggota ${oldGang.name} merasa dikhianati`
+                    );
+                    return;
                 }
-                dailySocialCount++;
+
+                if(playerGang.members.length >= 4){
+
+                    log("⚠️ Geng kamu penuh");
+                    return;
+                }
+
+                playerGang.members.push(target);
 
                 let bonus =
                 Math.floor(Math.random()*6)+4;
@@ -11274,10 +11722,6 @@
 
                 playerGang.enemyMap[target] =
                 getWorstEnemy(target);
-
-                log(
-                `👥 Kamu dan ${target} membentuk ${playerGang.name}`
-                );
 
                 log(
                 `👥 ${target} resmi masuk ${playerGang.name}`
@@ -11299,11 +11743,11 @@
                 if(enemies.length){
 
                     log(
-                    `🎯 Target ${playerGang.name}: ${enemies.join(", ")}`
+                    `🎯 Target ${playerGang.name}: ${
+                    enemies.join(", ")
+                    }`
                     );
                 }
-
-
 
                 updateSpecialRelations();
                 updatePlayers();
@@ -11894,8 +12338,8 @@
 
                     // addReputation(p1,-2);
                     // addReputation(p2,-2);
-                    addReputation(p1,-12);
-                    addReputation(p2,-12);
+                    // addReputation(p1,-12);
+                    // addReputation(p2,-12);
 
                     // log("⚡ DRAMA RUMAH TERJADI!");
                     // await delay(700);
@@ -11943,10 +12387,54 @@
                     log(
                     `💥 ${p1} dan ${p2} terlibat adu mulut besar (-${damage})`
                     );
-                    addReputation(p1,-3);
-                    addReputation(p2,-3);
-                    addPublicImage(p1,-2);
-                    addPublicImage(p2,-2);
+                    // addReputation(p1,-3);
+                    // addReputation(p2,-3);
+                    // addPublicImage(p1,-2);
+                    // addPublicImage(p2,-2);
+                    let audienceRoll =
+                    Math.random();
+
+                    if(audienceRoll < 0.33){
+
+                        // p1 dianggap korban
+                        addReputation(p1,3);
+                        addPublicImage(p1,4);
+
+                        addReputation(p2,-3);
+                        addPublicImage(p2,-4);
+
+                        log(
+                        `📺 Penonton memihak ${p1}`
+                        );
+
+                    }
+                    else if(audienceRoll < 0.66){
+
+                        // p2 dianggap korban
+                        addReputation(p2,3);
+                        addPublicImage(p2,4);
+
+                        addReputation(p1,-3);
+                        addPublicImage(p1,-4);
+
+                        log(
+                        `📺 Penonton memihak ${p2}`
+                        );
+
+                    }
+                    else{
+
+                        // drama menghibur
+                        addReputation(p1,2);
+                        addReputation(p2,2);
+
+                        addPublicImage(p1,1);
+                        addPublicImage(p2,1);
+
+                        log(
+                        `🍿 Drama mereka jadi tontonan favorit penonton`
+                        );
+                    }
 
                     await delay(700);
 
@@ -12175,8 +12663,14 @@
                 // =====================
 
                 for(let a of alive){
+                    if(status[a] === "KELUAR"){
+                        continue;
+                    }
 
                     for(let b of alive){
+                        if(status[b] === "KELUAR"){
+                            continue;
+                        }
 
                         if(a === b) continue;
 
@@ -12917,27 +13411,53 @@
                 </button>
                 `;
 
-                if(!targetGang && !sameGang){
+                // if(!targetGang && !sameGang){
+
+                //     content += `
+                //     <button onclick="inviteToGang('${target}')">
+                //         👥 Bentuk Geng
+                //     </button>
+                //     `;
+                // }
+                if(!sameGang){
 
                     content += `
                     <button onclick="inviteToGang('${target}')">
-                        👥 Bentuk Geng
+                        👥 Bentuk Geng Baru
                     </button>
                     `;
+
+                    // content += `
+                    // <button onclick="recruitToGang('${target}')">
+                    //     ➕ Rekrut ke ${playerGang.name}
+                    // </button>
+                    // `;
                 }
 
+                // if(
+                //     targetGang &&
+                //     !sameGang
+                // ){
+
+                //     content += `
+                //     <button onclick="inviteToGang('${target}')">
+                //         👥 Bentuk Geng
+                //     </button>
+
+                //     <button onclick="joinTargetGang('${target}')">
+                //         ↩️ Masuk Geng ${targetGang.name}
+                //     </button>
+                //     `;
+                // }
                 if(
+                    playerGang &&
                     targetGang &&
                     !sameGang
                 ){
 
                     content += `
-                    <button onclick="inviteToGang('${target}')">
-                        👥 Bentuk Geng
-                    </button>
-
-                    <button onclick="joinTargetGang('${target}')">
-                        ↩️ Masuk Geng ${targetGang.name}
+                    <button onclick="recruitToGang('${target}')">
+                        ➕ Rekrut ke ${playerGang.name}
                     </button>
                     `;
                 }
@@ -13037,6 +13557,13 @@
                 },10);
             }
             function openNpcRequest(data){
+                if(
+                    npcRequest &&
+                    npcRequest.from &&
+                    status[npcRequest.from] === "KELUAR"
+                ){
+                    npcRequest = null;
+                }
                 return new Promise(resolve=>{
                     // ⚠️ jangan buka popup baru kalau masih ada request
                     if(npcRequest) return;
@@ -13099,7 +13626,7 @@
 
                     else if(data.type === "new_gang"){
 
-                        title =
+                        content.title =
                         "👥 Tawaran Geng";
 
                         content.innerHTML  = `
@@ -13228,14 +13755,14 @@
                         
                         log(
                         `🎯 Musuh ${playerName}: ${
-                        gang.enemyMap[playerName] || "Tidak ada"
+                        playerGang.enemyMap[playerName] || "Tidak ada"
                         }`
                         );
 
                         if(enemies.length){
 
                             log(
-                            `🎯 Target ${playerGang}: ${enemies.join(", ")}`
+                            `🎯 Target ${playerGang.name}: ${enemies.join(", ")}`
                             );
                         }
 
@@ -15304,8 +15831,7 @@
                     // }
                 }
                 if(
-                    gangs.length > 0 &&
-                    Math.random() < 0.35
+                    gangs.length > 0
                 ){
                     await processGangDirection();
                     // socialChaosToday = true;
@@ -16730,9 +17256,16 @@
                 const nextBtn =
                 document.getElementById("nextBtn");
 
+                const nextBtnMobile =
+                document.getElementById("nextBtnMobile");
+
                 if(nextBtn){
 
                     nextBtn.disabled = state;
+                }
+                if(nextBtnMobile){
+
+                    nextBtnMobile.disabled = state;
                 }
 
                 const socialBtn =
@@ -16748,18 +17281,41 @@
 
                 let btn =
                 document.getElementById("nextBtn");
+
+                let btnMobile =
+                document.getElementById("nextBtnMobile");
                 
                 let finalState =
                 state || pendingDecision;
 
                 //btn.disabled = state;
-                btn.disabled = !!finalState;
+                // btn.disabled = !!finalState;
 
-                btn.style.opacity =
-                finalState ? "0.5" : "1";
+                // btn.style.opacity =
+                // finalState ? "0.5" : "1";
 
-                btn.style.cursor =
-                finalState ? "not-allowed" : "pointer";
+                // btn.style.cursor =
+                // finalState ? "not-allowed" : "pointer";
+
+                // //buat mobile
+                // btnMobile.disabled = !!finalState;
+
+                // btnMobile.style.opacity =
+                // finalState ? "0.5" : "1";
+
+                // btnMobile.style.cursor =
+                // finalState ? "not-allowed" : "pointer";
+                if(btn){
+                    btn.disabled = !!finalState;
+                    btn.style.opacity = finalState ? "0.5" : "1";
+                    btn.style.cursor = finalState ? "not-allowed" : "pointer";
+                }
+
+                if(btnMobile){
+                    btnMobile.disabled = !!finalState;
+                    btnMobile.style.opacity = finalState ? "0.5" : "1";
+                    btnMobile.style.cursor = finalState ? "not-allowed" : "pointer";
+                }
             }
 
             function delay(ms){
@@ -18882,6 +19438,12 @@
                         "nextBtn"
                     ).disabled = true;
 
+                    document.getElementById(
+                        "nextBtnMobile"
+                    ).disabled = true;
+
+                    
+
                     await delay(1000);
 
                      log(
@@ -20347,6 +20909,16 @@
 
                         nextBtn.style.cursor = "not-allowed";
 
+                        //disable buat tombol ganti hari mobile
+                        const nextBtnMobile =
+                        document.getElementById("nextBtnMobile");
+
+                        nextBtnMobile.disabled = true;
+
+                        nextBtnMobile.style.opacity = "0.5";
+
+                        nextBtnMobile.style.cursor = "not-allowed";
+
                         // game sudah tamat
                         if(pendingDecision){
 
@@ -20355,6 +20927,7 @@
                             setGameButtonsDisabled(true);
 
                             nextBtn.disabled = true;
+                            nextBtnMobile.disabled = true;
                             // document.getElementById( "socialBtn").disabled = true;
                         }
                     }
