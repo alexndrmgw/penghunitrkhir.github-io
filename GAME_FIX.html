@@ -7577,9 +7577,36 @@
                         </div>
                         📍 Kota: ${cityMap[p]}<br>
                         
+                        
+                        
                         ${p !== playerName
                         ? `❤️ Ke Kamu: ${rel}<br>`
                         : ""}
+
+                        ${
+                        status[p] === "KELUAR" &&
+                        eliminatedMeta[p]?.placement
+                        ? `
+                        <div style="
+                            font-size:12px;
+                            color:#ffd166;
+                            font-weight:bold;
+                            margin-top:2px;
+                        ">
+                        ${
+                            eliminatedMeta[p].placement === "runnerup"
+                            ? "🥈 Runner Up"
+                            : eliminatedMeta[p].placement === "final"
+                            ? "🥉 Final"
+                            : eliminatedMeta[p].placement === "semifinal"
+                            ? "☠️ Semifinal"
+                            : ""
+                        }
+                        </div>
+                        `
+                        : ""
+                        }
+
                         ${
                         eliminatedMeta[p]?.history?.length
                         ? eliminatedMeta[p].history.map(h => `
@@ -7750,6 +7777,24 @@
                 });
                 //somehow klo mau tampilin reputasi kesini
                 // 📺 Rep: ${(reputation[p] || 0).toFixed(2)}%
+                // backup tampilan spanhistory eliminated by di card
+                // ${p !== playerName
+                //         ? `❤️ Ke Kamu: ${rel}<br>`
+                //         : ""}
+                //         ${
+                //         eliminatedMeta[p]?.history?.length
+                //         ? eliminatedMeta[p].history.map(h => `
+                //             <div style="
+                //                 font-size:12px;
+                //                 color:#fca5a5;
+                //                 margin-top:2px;
+                //             ">
+                //                 ☠️ ${h.eliminatedBy}
+                //                 (Minggu ke-${h.week})
+                //             </div>
+                //         `).join("")
+                //         : ""
+                //         }
 
                 document.getElementById("players").innerHTML = html;
                 // let socialBtn =
@@ -18652,10 +18697,11 @@
                 endgameMode = true;
 
                 players = [
-                    playerName,
+                    // playerName,
                     "Bayu",
                     "Fanny",
-                    "Rio"
+                    "Rio",
+                    "Kanya"
                 ];
 
                 status = {};
@@ -18810,7 +18856,9 @@
 
                         gang:
                         gangs.find(g=>g.members.includes(eliminated))
-                        ?.name || null
+                        ?.name || null,
+
+                        placement:"semifinal"
                     };
                     removeDating(eliminated);
                     removePlayerFromGang(eliminated);
@@ -18992,7 +19040,9 @@
 
                         gang:
                         gangs.find(g=>g.members.includes(eliminated))
-                        ?.name || null
+                        ?.name || null,
+
+                        placement:"final"
                     };
                     removeDating(eliminated);
                     removePlayerFromGang(eliminated);
@@ -19424,7 +19474,9 @@
                         gangs.find(
                             g =>
                             g.members.includes(runnerUp)
-                        )?.name || null
+                        )?.name || null,
+
+                        placement:"runnerup"
                     };
 
                     removeDating(runnerUp);
