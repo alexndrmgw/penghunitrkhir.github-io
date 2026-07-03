@@ -440,6 +440,44 @@
             transition:.2s;
         }
 
+        /* ================= ROLE BOX ================= */
+
+        .rolebox-grid{
+            display:grid;
+            grid-template-columns:repeat(5,1fr);
+            gap:18px;
+            justify-items:center;
+            margin:20px 0;
+        }
+
+        .rolebox-btn{
+            width:100px;
+            height: 100px;
+
+            border:none;
+            border-radius:18px;
+
+            font-weight:bold;
+            font-size:18px;
+            cursor:pointer;
+
+            transition:.25s;
+        }
+
+        .rolebox-btn.question{
+            background:#f59e0b;
+            color:#ec4899;
+            font-size:60px;
+        }
+
+        .rolebox-btn.revealed{
+            background:#22c55e;
+            color:#000;
+
+            box-shadow:
+            0 0 18px rgba(34,197,94,.6);
+        }
+
         /* MOBILE */
         @media (max-width: 768px){
 
@@ -841,6 +879,40 @@
                 width:30px;
                 height:30px;
                 font-size:16px;
+            }
+
+            /*rolebox mobile */
+            .rolebox-grid{
+
+                grid-template-columns:repeat(4,1fr);
+
+                gap:8px;
+
+                margin:18px 0;
+                justify-items:center;
+
+            }
+
+            .rolebox-btn{
+
+                /* width:88px;
+                height:88px; */
+
+                border-radius:16px;
+
+                /* font-size:15px; */
+                width:54px;
+                height:54px;
+
+                font-size:11px;
+                border-radius:12px;
+                white-space:nowrap;
+                text-overflow:ellipsis;
+            }
+
+            .rolebox-btn.question{
+
+                font-size:22px;
             }
 
         }
@@ -2363,7 +2435,7 @@
                 //ALEX DEBUG
                 // bos:[
                 //     // "slowtap",
-                //     "timing"
+                //     "rolebox"
                 // ],
 
 
@@ -2394,6 +2466,10 @@
                     "tap",
                     "rolebox"
                 ],
+                // //ALEX DEBUG
+                // pk:[
+                //     "rolebox"
+                // ],
 
                 kelompok:[
                     "target",
@@ -4388,6 +4464,10 @@
                             Math.random()*candidates.length
                         );
 
+                        function isMobile(){
+
+                            return window.innerWidth <= 768;
+                        }
                         content.innerHTML = `
 
                         <h3>${config.label}</h3>
@@ -4398,12 +4478,7 @@
 
                         <div
                         id="roleBoxArea"
-                        style="
-                        display:flex;
-                        gap:14px;
-                        flex-wrap:wrap;
-                        margin-top:20px;
-                        justify-content:center;
+                        class="rolebox-grid"
                         ">
                         </div>
 
@@ -4571,20 +4646,24 @@
                                 let npcBox =
                                 area.children[chosenBox];
 
-                                npcBox.style.background =
-                                "#22c55e";
+                                // npcBox.style.background =
+                                // "#22c55e";
 
-                                npcBox.style.border =
-                                "3px solid #4ade80";
+                                // npcBox.style.border =
+                                // "3px solid #4ade80";
+                                npcBox.classList.remove("question");
+                                npcBox.classList.add("revealed");
 
-                                npcBox.style.boxShadow =
-                                "0 0 18px rgba(34,197,94,0.8)";
+                                // npcBox.style.boxShadow =
+                                // "0 0 18px rgba(34,197,94,0.8)";
 
                                 npcBox.innerHTML =
                                 npc;
 
-                                npcBox.style.fontSize =
-                                "16px";
+                                // npcBox.style.fontSize =
+                                // "16px";
+
+                                npcBox.style.fontSize =isMobile() ? "10px" : "16px";
                                 // npcBox.style.fontSize =
                                 // "14px";
 
@@ -4607,6 +4686,20 @@
                             revealRoleBoxes();
                         }
                         function revealRoleBoxes(){
+                            const revealIconSize =
+                            window.innerWidth <= 768
+                            ? "34px"
+                            : "52px";
+
+                            const revealBorder =
+                            window.innerWidth <= 768
+                            ? "3px"
+                            : "4px";
+
+                            const revealGlow =
+                            window.innerWidth <= 768
+                            ? "0 0 14px rgba(34,197,94,.9)"
+                            : "0 0 20px rgba(34,197,94,.9)";
 
                             [...area.children]
                             .forEach((box,k)=>{
@@ -4619,37 +4712,75 @@
 
                                 // reset style
                                 box.style.transition = "all 0.3s ease";
+                                box.classList.remove("question","revealed");
                                 box.style.background = "#1e293b";
 
                                 if(isWinningBox){
 
                                     // box.innerHTML =
                                     // roleSymbol;
-                                    box.innerHTML = `
+                                    // box.innerHTML = `
 
+                                    // <div style="
+                                    // display:flex;
+                                    // align-items:center;
+                                    // justify-content:center;
+                                    // width:100%;
+                                    // height:100%;
+                                    // font-size:52px;
+                                    // line-height:1;
+                                    // ">
+                                    //     ${roleSymbol}
+                                    // </div>
+
+                                    // `;
+                                    // box.classList.add("revealed");
+
+                                    // box.style.background =
+                                    // "#facc15";
+
+                                    // box.style.color =
+                                    // "#111";
+                                    box.innerHTML = `
                                     <div style="
                                     display:flex;
                                     align-items:center;
                                     justify-content:center;
                                     width:100%;
                                     height:100%;
-                                    font-size:52px;
+                                    font-size:${revealIconSize};
                                     line-height:1;
                                     ">
                                         ${roleSymbol}
                                     </div>
-
                                     `;
 
-                                    box.style.background =
-                                    "#facc15";
+                                    box.classList.add("revealed");
 
-                                    box.style.color =
-                                    "#111";
+                                    box.style.background = "#facc15";
+                                    box.style.color = "#111";
 
                                 }else{
 
                                     // box.innerHTML = "❌";
+                                    // box.innerHTML = `
+                                    // <div style="
+                                    // display:flex;
+                                    // align-items:center;
+                                    // justify-content:center;
+                                    // width:100%;
+                                    // height:100%;
+                                    // font-size:52px;
+                                    // line-height:1;
+                                    // color:white;
+                                    // ">
+                                    //     ❌
+                                    // </div>
+
+                                    // `;
+
+                                    // box.style.background =
+                                    // "#7f1d1d";
                                     box.innerHTML = `
                                     <div style="
                                     display:flex;
@@ -4657,27 +4788,31 @@
                                     justify-content:center;
                                     width:100%;
                                     height:100%;
-                                    font-size:52px;
+                                    font-size:${revealIconSize};
                                     line-height:1;
                                     color:white;
                                     ">
                                         ❌
                                     </div>
-
                                     `;
 
-                                    box.style.background =
-                                    "#7f1d1d";
+                                    box.style.background = "#7f1d1d";
                                 }
 
                                 // highlight pilihan player
                                 if(isPlayerChoice){
 
+                                    // box.style.border =
+                                    // "4px solid #22c55e";
+
+                                    // box.style.boxShadow =
+                                    // "0 0 20px rgba(34,197,94,0.9)";
+
                                     box.style.border =
-                                    "4px solid #22c55e";
+                                    `${revealBorder} solid #22c55e`;
 
                                     box.style.boxShadow =
-                                    "0 0 20px rgba(34,197,94,0.9)";
+                                    revealGlow;
                                 }
                             });
 
@@ -4728,42 +4863,43 @@
                             // btn.style.padding = "20px";
 
                             // btn.style.borderRadius = "16px";
-                            btn.style.width = "100px";
+                            // btn.style.width = "100px";
 
-                            btn.style.height = "100px";
+                            // btn.style.height = "100px";
 
-                            btn.style.fontSize = "58px";
-                            btn.style.lineHeight = "1";
+                            // btn.style.fontSize = "58px";
+                            // btn.style.lineHeight = "1";
 
-                            btn.style.borderRadius = "18px";
+                            // btn.style.borderRadius = "18px";
 
-                            btn.style.padding = "6px";
+                            // btn.style.padding = "6px";
 
-                            btn.style.boxSizing =
-                            "border-box";
+                            // btn.style.boxSizing =
+                            // "border-box";
 
-                            btn.style.display =
-                            "flex";
+                            // btn.style.display =
+                            // "flex";
 
-                            btn.style.alignItems =
-                            "center";
+                            // btn.style.alignItems =
+                            // "center";
 
-                            btn.style.justifyContent =
-                            "center";
+                            // btn.style.justifyContent =
+                            // "center";
 
-                            btn.style.textAlign =
-                            "center";
+                            // btn.style.textAlign =
+                            // "center";
 
-                            btn.style.wordBreak =
-                            "break-word";
+                            // btn.style.wordBreak =
+                            // "break-word";
 
-                            btn.style.overflow =
-                            "hidden";
+                            // btn.style.overflow =
+                            // "hidden";
 
-                            btn.style.transition =
-                            "all 0.25s ease";
+                            // btn.style.transition =
+                            // "all 0.25s ease";
 
-                            btn.style.flexShrink = "0";
+                            // btn.style.flexShrink = "0";
+                            btn.className = "rolebox-btn question";
 
                             btn.dataset.index = i;
                             btn.disabled = true;
@@ -4783,19 +4919,22 @@
                                     "roleBoxTimer"
                                 ).innerHTML = "";
 
-                                btn.style.background =
-                                "#22c55e";
-                                btn.style.border =
-                                "3px solid #4ade80";
+                                // btn.style.background =
+                                // "#22c55e";
+                                // btn.style.border =
+                                // "3px solid #4ade80";
 
-                                btn.style.boxShadow =
-                                "0 0 18px rgba(34,197,94,0.8)";
+                                // btn.style.boxShadow =
+                                // "0 0 18px rgba(34,197,94,0.8)";
+                                btn.classList.remove("question");
+                                btn.classList.add("revealed");
 
                                 btn.innerHTML =
                                 playerName;
 
-                                btn.style.fontSize =
-                                "16px";
+                                // btn.style.fontSize =
+                                // "16px";
+                                btn.style.fontSize =isMobile() ? "10px" : "16px";
                                 // btn.style.fontSize =
                                 // "14px";
                                 btn.style.textShadow ="0 0 8px rgba(255,255,255,0.35)";
