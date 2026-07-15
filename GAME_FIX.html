@@ -915,6 +915,32 @@
                 font-size:22px;
             }
 
+            .decision-card{
+
+                padding:12px;
+
+            }
+
+            .decision-name{
+
+                font-size:17px;
+
+            }
+
+            .decision-info{
+
+                font-size:13px;
+
+            }
+
+            .decision-action{
+
+                font-size:14px;
+
+                padding:11px;
+
+            }
+
         }
         /* MODAL MOBILE PESERTA */
         .modal-overlay{
@@ -1051,7 +1077,9 @@
             background: #1f2937;
 
             width: 90%;
-            max-width: 400px;
+            max-width: 600px;
+
+            max-height: 820px;
 
             padding: 25px;
 
@@ -1062,6 +1090,9 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.4);
 
             animation: fadeUp 0.3s ease;
+            position:relative;
+            display:flex;
+            flex-direction:column;
         }
 
         .name-modal-content h2{
@@ -1089,6 +1120,28 @@
 
         .name-modal-content button{
             width: 100%;
+        }
+
+        .start-game-footer{
+
+            position:sticky;
+            bottom:0;
+
+            padding:14px 0 4px;
+
+            background:rgba(31,41,55,.92);
+
+            backdrop-filter:blur(10px);
+
+            border-top:1px solid rgba(255,255,255,.08);
+        }
+        .welcome-body{
+
+            flex:1;
+
+            overflow-y:auto;
+
+            padding-right:6px;
         }
 
         @keyframes fadeUp{
@@ -1170,6 +1223,13 @@
 
             color:white;
         } */
+
+        .playerNameInput{
+            /* margin-top:14px; */
+
+            text-align:left;
+
+        }
 
         .select-group{
 
@@ -1320,6 +1380,154 @@
             padding:5px 0;
 
             font-size:14px;
+        }
+
+        .decision-card{
+
+            background:#111827;
+
+            border-radius:16px;
+
+            padding:16px;
+
+            margin-bottom:16px;
+
+            border:1px solid rgba(255,255,255,.08);
+
+            box-shadow:0 6px 18px rgba(0,0,0,.3);
+
+            transition:.2s;
+
+        }
+
+        .decision-header{
+
+            display:flex;
+
+            justify-content:space-between;
+
+            align-items:center;
+
+            margin-bottom:12px;
+
+        }
+
+        .decision-name{
+
+            font-size:20px;
+
+            font-weight:bold;
+
+        }
+        .decision-divider{
+
+            width:100%;
+
+            height:1px;
+
+            background:rgba(255,255,255,.12);
+
+            margin:10px 0 12px 0;
+
+        }
+
+        .decision-city{
+
+            opacity:.8;
+
+            font-size:13px;
+
+        }
+
+        .decision-info{
+
+            line-height:1.8;
+
+            font-size:14px;
+
+            margin-bottom:14px;
+
+        }
+
+        .decision-action{
+
+            width:100%;
+
+            padding:12px;
+
+            font-weight:bold;
+
+            border-radius:12px;
+
+        }
+
+        .decision-action:hover{
+
+            transform:translateY(-1px);
+
+        }
+
+        .decision-action.boss{
+
+            background:#10b981;
+
+        }
+
+        .decision-action.pk{
+
+            background:#ef4444;
+            color:#e5e7eb;
+
+        }
+
+        .decision-action.imun{
+
+            background:#3b82f6;
+
+        }
+
+        .decision-action.warning{
+
+            background:#f59e0b;
+
+        }
+
+        .decision-card.selectable{
+
+            cursor:pointer;
+
+        }
+
+        .decision-card.selectable:hover{
+
+            transform:translateY(-2px);
+
+        }
+
+        .decision-card.selected{
+
+            border-color:#22c55e;
+
+            background:#123923;
+
+        }
+        .decision-top{
+
+            display:flex;
+
+            justify-content:space-between;
+
+            align-items:center;
+
+        }
+        .decision-check{
+
+            font-size:24px;
+
+            font-weight:bold;
+
+            color:#22c55e;
+
         }
 
         /* .rel-positive{
@@ -1810,6 +2018,156 @@
 
             animation:bounceBtn .35s ease;
         }
+        #traitDescription{
+
+            margin-top:10px;
+
+            padding:12px;
+
+            border-radius:12px;
+
+            background:#111827;
+
+            color:#d1d5db;
+
+            border:1px solid rgba(255,255,255,.08);
+
+            font-size:13px;
+
+            line-height:1.5;
+
+            text-align:left;
+
+            transition:.2s;
+
+        }
+        #subTraitDescription{
+
+            margin-top:10px;
+
+            padding:12px;
+
+            border-radius:12px;
+
+            background:#111827;
+
+            color:#d1d5db;
+
+            border:1px solid rgba(255,255,255,.08);
+
+            font-size:13px;
+
+            line-height:1.5;
+
+            text-align:left;
+
+        }
+        @media (max-width:480px){
+
+            .name-modal-content{
+
+                width:92vw;
+
+                max-height:92vh;
+
+                overflow-y:auto;
+
+                padding:20px;
+
+                border-radius:18px;
+
+            }
+
+            .name-modal-content h2{
+
+                font-size:20px;
+
+                margin-bottom:2px;
+
+            }
+
+            .name-modal-content p{
+
+                font-size:15px;
+
+                margin-bottom:10px;
+
+            }
+
+            .gender-buttons{
+                
+                gap:2px;
+
+            }
+
+            .gender-buttons button{
+
+                height:41px;
+
+                font-size:12px;
+                justify-content:center;
+
+            }
+
+            .select-group{
+
+                margin-bottom:8px;
+                font-size:8px;
+
+            }
+
+            .select-group label{
+
+                font-size:13px;
+
+            }
+
+            .name-modal-content input,
+
+            .name-modal-content select{
+
+                height:41px;
+
+                font-size:12px;
+
+            }
+
+            #traitDescription{
+
+                margin-top:8px;
+
+                padding:10px;
+
+                font-size:11px;
+
+                line-height:1.25;
+
+                border-radius:10px;
+
+            }
+            #subTraitDescription{
+
+                margin-top:8px;
+
+                padding:10px;
+
+                font-size:11px;
+
+                line-height:1.25;
+
+                border-radius:10px;
+
+            }
+
+            .start-game-btn{
+
+                height:36px;
+
+                font-size:12px;
+
+            }
+
+        }
             
 
         </style>
@@ -1844,128 +2202,179 @@
         <div id="nameModal" class="name-modal">
 
             <div class="name-modal-content">
+                <div class="welcome-header">
+                    <h2>🎮 Selamat Datang</h2>
+                    <p>Masukkan data kamu:</p>
+                </div>
 
-                <h2>🎮 Selamat Datang</h2>
-
-                <p>Masukkan data kamu:</p>
-
-                <input
+                <div class="welcome-body">
+                    <br>
+                    <input
                     type="text"
                     id="playerNameInput"
                     placeholder="Nama kamu"
-                >
-
-                <br>
-
-                <!-- <select id="genderInput">
-
-                    <option value="">
-                        Pilih Gender
-                    </option>
-
-                    <option value="pria">
-                        👨 Pria
-                    </option>
-
-                    <option value="wanita">
-                        👩 Wanita
-                    </option>
-
-                </select> -->
-                <div class="gender-buttons">
-
-                    <button
-                        id="btnPria"
-                        onclick="selectGender('pria')"
-                        type="button"
                     >
-                        ♂️ Pria
-                    </button>
 
-                    <button
-                        id="btnWanita"
-                        onclick="selectGender('wanita')"
-                        type="button"
-                    >
-                        ♀️ Wanita
-                    </button>
-
-                </div>
-                <div class="select-group">
-
-                    <label>🎭 Trait</label>
-
-                    <select
-                    id="playerTrait"
-                    required
-                    onchange="updateTraitDescription()"
-                    >
-                        
+                    <!-- <select id="genderInput">
 
                         <option value="">
-                            Pilih Trait
+                            Pilih Gender
                         </option>
 
-                        <option value="Strategis">
-                            🧠 Strategis
+                        <option value="pria">
+                            👨 Pria
                         </option>
 
-                        <option value="Licik">
-                            🐍 Licik
+                        <option value="wanita">
+                            👩 Wanita
                         </option>
 
-                        <option value="Santai">
-                            😴 Santai
-                        </option>
+                    </select> -->
+                    <div class="gender-buttons">
 
-                        <option value="Emosional">
-                            😡 Emosional
-                        </option>
+                        <button
+                            id="btnPria"
+                            onclick="selectGender('pria')"
+                            type="button"
+                        >
+                            ♂️ Pria
+                        </button>
 
-                    </select>
-                    <div id="traitDescription"
-                    style="
-                    margin-top:10px;
-                    padding:12px;
-                    border-radius:12px;
-                    background:#111827;
-                    font-size:13px;
-                    line-height:1.5;
-                    color:#d1d5db;
-                    border:1px solid rgba(255,255,255,0.08);
-                    ">
-                        Pilih trait untuk melihat detail kemampuan.
+                        <button
+                            id="btnWanita"
+                            onclick="selectGender('wanita')"
+                            type="button"
+                        >
+                            ♀️ Wanita
+                        </button>
+
+                    </div>
+                    <div class="select-group">
+
+                        <label>🎭 Trait</label>
+
+                        <select
+                        id="playerTrait"
+                        required
+                        onchange="updateTraitDescription()"
+                        >
+                            
+
+                            <option value="">
+                                Pilih Trait
+                            </option>
+
+                            <option value="Strategis">
+                                🧠 Strategis
+                            </option>
+
+                            <option value="Licik">
+                                🐍 Licik
+                            </option>
+
+                            <option value="Santai">
+                                😴 Santai
+                            </option>
+
+                            <option value="Emosional">
+                                😡 Emosional
+                            </option>
+
+                        </select>
+                        <div id="traitDescription">
+                            Pilih trait untuk melihat detail kemampuan.
+                        </div>
+
+                    </div>
+                    <div class="select-group">
+
+                        <label>✨ Personality</label>
+
+                        <select
+                            id="playerSubTrait"
+                            onchange="updateSubTraitDescription()"
+                        >
+
+                            <option value="">
+                                Pilih Personality
+                            </option>
+
+                        </select>
+
+                        <div id="subTraitDescription">
+
+                            Pilih personality untuk melihat deskripsinya.
+
+                        </div>
+
+                    </div>
+                    <div class="select-group">
+
+                        <label>
+                        🎂 Umur
+                        </label>
+
+                        <input
+                        type="number"
+                        id="playerAge"
+                        min="17"
+                        max="45"
+                        placeholder="17 - 45"
+                        />
+
                     </div>
 
-                </div>
-                <div class="select-group">
+                    <div class="select-group">
 
-                    <label>📍 Asal Kota</label>
+                        <label>
+                        💼 Pekerjaan
+                        </label>
 
-                    <select id="playerCity" required>
+                        <select id="playerJob">
 
                         <option value="">
-                            Pilih Kota
+                        Pilih pekerjaan
                         </option>
 
-                        <option value="Jakarta">Jakarta</option>
-                        <option value="Bandung">Bandung</option>
-                        <option value="Surabaya">Surabaya</option>
-                        <option value="Yogyakarta">Yogyakarta</option>
-                        <option value="Semarang">Semarang</option>
-                        <option value="Medan">Medan</option>
-                        <option value="Palembang">Palembang</option>
-                        <option value="Makassar">Makassar</option>
-                        <option value="Bali">Bali</option>
+                        </select>
 
-                    </select>
+                    </div>
+                    <div class="select-group">
+
+                        <label>📍 Asal Kota</label>
+
+                        <select id="playerCity" required>
+
+                            <option value="">
+                                Pilih Kota
+                            </option>
+
+                            <option value="Jakarta">Jakarta</option>
+                            <option value="Bandung">Bandung</option>
+                            <option value="Surabaya">Surabaya</option>
+                            <option value="Yogyakarta">Yogyakarta</option>
+                            <option value="Semarang">Semarang</option>
+                            <option value="Medan">Medan</option>
+                            <option value="Palembang">Palembang</option>
+                            <option value="Makassar">Makassar</option>
+                            <option value="Bali">Bali</option>
+
+                        </select>
+
+                    </div>
+                    <br>
 
                 </div>
-                <br>
 
-                <button onclick="savePlayerName()">
-                    Mulai Game
-                </button>
+                <div class="start-game-footer">
+
+                    <button
+                        class="start-game-btn"
+                        onclick="savePlayerName()"
+                    >
+                        🎮 Mulai Game
+                    </button>
+                </div>
 
             </div>
 
@@ -2275,6 +2684,191 @@
                 "Bali"
             ];
 
+            const jobs = [
+
+                "Mahasiswa",
+                "Pelajar",
+                "Karyawan Swasta",
+                "Guru",
+                "Dokter",
+                "Perawat",
+                "Barista",
+                "Chef",
+                "Content Creator",
+                "Programmer",
+                "Desainer Grafis",
+                "Fotografer",
+                "Musisi",
+                "Atlet",
+                "Sales",
+                "Marketing",
+                "Akuntan",
+                "Pengusaha",
+                "Admin Kantor",
+                "Freelancer",
+                "Make Up Artist",
+                "Pramugari",
+                "Kasir",
+                "Streamer",
+                "Petani",
+                "Polisi",
+                "Tentara"
+
+            ];
+
+
+            const subTraits = [
+
+                "😆 Humoris",
+                "😊 Friendly",
+                "📏 Perfeksionis",
+                "💋 Centil",
+                "🤫 Pendiam",
+                "💪 Kompetitif",
+                "🌞 Optimis",
+                "🎭 Dramatis",
+                "👑 Karismatik",
+                "🎨 Kreatif",
+                "📚 Cerdas",
+                "😌 Penyabar",
+                "🔥 Ambisius",
+                "🧘 Kalem",
+                "🗣️ Cerewet",
+                "🎉 Supel"
+
+            ];
+            const subTraitDescriptions = {
+
+                "😆 Humoris":`
+                <b>😆 Humoris</b><br>
+
+                ✔️ Mudah mencairkan suasana<br>
+                ✔️ Disukai banyak orang<br>
+                ❌ Kadang kurang serius<br>
+                `,
+
+                "😊 Friendly":`
+                <b>😊 Friendly</b><br>
+
+                ✔️ Mudah berteman<br>
+                ✔️ Cepat dipercaya<br>
+                ❌ Sulit menolak permintaan<br>
+                `,
+
+                "📏 Perfeksionis":`
+                <b>📏 Perfeksionis</b><br>
+
+                ✔️ Sangat teliti<br>
+                ✔️ Jarang melakukan kesalahan<br>
+                ❌ Mudah stres<br>
+                `,
+
+                "💋 Centil":`
+                <b>💋 Centil</b><br>
+
+                ✔️ Mudah menarik perhatian<br>
+                ✔️ Pandai mencairkan suasana<br>
+                ❌ Sering bikin salah paham<br>
+                `,
+
+                "🤫 Pendiam":`
+                <b>🤫 Pendiam</b><br>
+
+                ✔️ Sulit ditebak<br>
+                ✔️ Jarang memancing konflik<br>
+                ❌ Sulit membangun hubungan<br>
+                `,
+
+                "💪 Kompetitif":`
+                <b>💪 Kompetitif</b><br>
+
+                ✔️ Tidak mudah menyerah<br>
+                ✔️ Selalu ingin menang<br>
+                ❌ Sulit menerima kekalahan<br>
+                `,
+
+                "🌞 Optimis":`
+                <b>🌞 Optimis</b><br>
+
+                ✔️ Berpikir positif<br>
+                ✔️ Menyemangati orang lain<br>
+                ❌ Kadang terlalu percaya diri<br>
+                `,
+
+                "🎭 Dramatis":`
+                <b>🎭 Dramatis</b><br>
+
+                ✔️ Ekspresif<br>
+                ✔️ Mudah menarik perhatian<br>
+                ❌ Reaksi sering berlebihan<br>
+                `,
+
+                "👑 Karismatik":`
+                <b>👑 Karismatik</b><br>
+
+                ✔️ Mudah dihormati<br>
+                ✔️ Memiliki aura pemimpin<br>
+                ❌ Sering menjadi pusat perhatian<br>
+                `,
+
+                "🎨 Kreatif":`
+                <b>🎨 Kreatif</b><br>
+
+                ✔️ Banyak ide baru<br>
+                ✔️ Fleksibel<br>
+                ❌ Kadang sulit fokus<br>
+                `,
+
+                "📚 Cerdas":`
+                <b>📚 Cerdas</b><br>
+
+                ✔️ Cepat memahami situasi<br>
+                ✔️ Analitis<br>
+                ❌ Kadang overthinking<br>
+                `,
+
+                "😌 Penyabar":`
+                <b>😌 Penyabar</b><br>
+
+                ✔️ Tidak mudah terpancing<br>
+                ✔️ Tenang menghadapi masalah<br>
+                ❌ Lambat mengambil keputusan<br>
+                `,
+
+                "🔥 Ambisius":`
+                <b>🔥 Ambisius</b><br>
+
+                ✔️ Selalu mengejar target<br>
+                ✔️ Gigih<br>
+                ❌ Sulit puas<br>
+                `,
+
+                "🧘 Kalem":`
+                <b>🧘 Kalem</b><br>
+
+                ✔️ Membawa suasana tenang<br>
+                ✔️ Jarang panik<br>
+                ❌ Kurang agresif<br>
+                `,
+
+                "🗣️ Cerewet":`
+                <b>🗣️ Cerewet</b><br>
+
+                ✔️ Mudah membuka percakapan<br>
+                ✔️ Aktif bersosialisasi<br>
+                ❌ Kadang terlalu banyak bicara<br>
+                `,
+
+                "🎉 Supel":`
+                <b>🎉 Supel</b><br>
+
+                ✔️ Mudah akrab<br>
+                ✔️ Cepat diterima kelompok<br>
+                ❌ Sulit menjaga rahasia<br>
+                `
+
+                };
+
             let players = [];
             let names = [];
             let status = {};
@@ -2305,6 +2899,14 @@
             let socialMemory = {};
             let publicImage = {};
             let currentEndgameStage = "";
+            let dayProcessingState = null;
+            let pendingConflictTarget = null;
+
+            let pendingGossip = null;
+
+            let pendingAduDomba = null;
+            let pendingRandomEvent = null;
+            let isResettingGame = false;
             // if(Object.keys(relation).length === 0){
 
             //     relation = {};
@@ -2362,6 +2964,9 @@
                 "Silvy":"wanita",
                 "Zahra":"wanita"
             };
+            let ageMap = {};
+            let jobMap = {};
+            let subTraitMap = {};
 
             let roles = {
                 bos:null,
@@ -2602,6 +3207,40 @@
                     npcBase:50
                 }
             };
+
+            function generateRandomAge(){
+
+                let r = Math.random();
+
+                if(r < 0.45){
+
+                    return rand(17,22);
+
+                }
+
+                if(r < 0.80){
+
+                    return rand(23,29);
+
+                }
+
+                if(r < 0.95){
+
+                    return rand(30,35);
+
+                }
+
+                return rand(36,45);
+
+            }
+
+            function rand(min,max){
+
+                return Math.floor(
+                    Math.random()*(max-min+1)
+                )+min;
+
+            }
             // async function openMiniGame(type){
 
             //     return new Promise(resolve=>{
@@ -7183,6 +7822,35 @@
                 let selectedCity =
                 document.getElementById("playerCity").value;
 
+                let age =
+                parseInt(
+                document.getElementById("playerAge").value
+                );
+
+                if(isNaN(age)){
+
+                    alert("Silakan isi umur terlebih dahulu!");
+                    return;
+
+                }
+
+                if(age < 17 || age > 45){
+
+                    alert("Silakan isi umur yang sesuai (17 - 45 tahun)!");
+                    return;
+
+                }
+
+                let job =
+                document.getElementById("playerJob").value;
+
+                if(!job){
+
+                    alert("Silakan pilih pekerjaan terlebih dahulu!");
+                    return;
+
+                }
+
                 if(!selectedTrait){
 
                     alert("Pilih trait dulu!");
@@ -7197,11 +7865,31 @@
                     return;
                 }
 
+                let subTrait =
+                document.getElementById(
+                "playerSubTrait"
+                ).value;
+
+                if(!subTrait){
+
+                    alert("Pilih Personality.");
+
+                    return;
+
+                }
+
+                
+
                 playerName = value;
                 genderMap[playerName] = playerGender;
                 traitsMap[playerName] = selectedTrait;
 
                 cityMap[playerName] = selectedCity;
+
+                ageMap[playerName] = age;
+                jobMap[playerName] = job;
+
+                subTraitMap[playerName]=subTrait;
 
                 localStorage.setItem("playerName", playerName);
                 localStorage.setItem("playerGender",playerGender);
@@ -7448,6 +8136,44 @@
                         cities[
                             Math.floor(Math.random()*cities.length)
                         ];
+                    }
+                    if(!subTraitMap[n]){
+                        subTraitMap[n]=
+
+                            subTraits[
+                            Math.floor(
+                            Math.random()*subTraits.length
+                            )
+                        ];
+                    }
+
+                    // ageMap[n] = generateRandomAge();
+
+                    // jobMap[n] =
+                    // jobs[
+                    //     Math.floor(Math.random()*jobs.length)
+                    // ];
+                    // if(n !== playerName){
+
+                    //     ageMap[n] = generateRandomAge();
+
+                    //     jobMap[n] =
+                    //     jobs[
+                    //         Math.floor(Math.random()*jobs.length)
+                    //     ];
+
+                    // }
+                    if(n !== playerName){
+
+                        if(ageMap[n] == null){
+                            ageMap[n] = generateRandomAge();
+                        }
+
+                        if(jobMap[n] == null){
+                            jobMap[n] =
+                            jobs[Math.floor(Math.random() * jobs.length)];
+                        }
+
                     }
                     // relation[n] = {};
                     // names.forEach(m=>{
@@ -7762,23 +8488,36 @@
 
                     html += `
                     <div class="card player-card ${bgClass} ${status[p]==="KELUAR" ? "out" : ""}">
-                        <b>${role}${p}${
+                        <b>${
+                            genderMap[p] === "pria"
+                            ? "🙎🏻‍♂️"
+                            : "🙎🏻‍♀️"
+                        }${p}${
                             genderMap[p] === "pria"
                             ? "♂️"
                             : "♀️"
-                        }</b><br>
+                        }${role}</b><br>
                         Status: ${status[p]}<br>
                         <div>
                             ${getTraitIcon(traitsMap[p])}
                             ${traitsMap[p]}
                         </div>
-                        📍 Kota: ${cityMap[p]}<br>
+                        ${subTraitMap[p]}<br>
+                        📍 ${cityMap[p]}<br>
                         
                         
                         
                         ${p !== playerName
                         ? `❤️ Ke Kamu: ${rel}<br>`
                         : ""}
+
+                        <br>
+
+                        🎂 ${ageMap[p]} Tahun
+
+                        <br>
+
+                        💼 ${jobMap[p]}
 
                         ${
                         status[p] === "KELUAR" &&
@@ -8263,6 +9002,22 @@
                 }
 
                 el.innerHTML = text;
+            }
+            function updateSubTraitDescription(){
+
+                let val =
+                document.getElementById(
+                    "playerSubTrait"
+                ).value;
+
+                document.getElementById(
+                    "subTraitDescription"
+                ).innerHTML =
+
+                    subTraitDescriptions[val] ||
+
+                    "Pilih personality untuk melihat deskripsinya.";
+
             }
             function getSocialModifier(player, currentChange){
 
@@ -9588,8 +10343,28 @@
                 });
             }
             async function processGossip(provoker, target){
+                if(!pendingGossip){
+                    console.log("CREATE PENDING");
+                    console.log("CURRENT", pendingGossip);
+
+                    pendingGossip = {
+
+                        provoker,
+                        target,
+
+                        chance:null,
+                        successRoll:null,
+                        affected:null,
+                        affectedFail:null
+
+                    };
+
+                    saveGame();
+                }
+                setProcessingState("NPC_GOSSIP");
                 isDayProcessing = true;
                 updatePlayers();
+                
 
                 // validasi
                 if(
@@ -9597,6 +10372,8 @@
                     !target ||
                     provoker === target
                 ){
+                    pendingGossip = null;
+                    clearProcessingState();
                     return false;
                 }
 
@@ -9605,8 +10382,13 @@
                     status[provoker] === "KELUAR" ||
                     status[target] === "KELUAR"
                 ){
+                    pendingGossip = null;
+                    clearProcessingState();
                     return false;
                 }
+                socialChaosToday = true;
+
+                saveGame();
 
                 log(
                 `🐍 ${provoker} mulai membuat gossip tentang ${target}`
@@ -9720,8 +10502,27 @@
                 }
 
                 // roll
+                // let success =
+                // Math.random() * 100 < chance;
+                if(pendingGossip.chance == null){
+
+                    pendingGossip.chance = chance;
+
+                    saveGame();
+                }
+
+                chance = pendingGossip.chance;
+
+                if(pendingGossip.successRoll == null){
+
+                    pendingGossip.successRoll =
+                    Math.random();
+
+                    saveGame();
+                }
+
                 let success =
-                Math.random() * 100 < chance;
+                pendingGossip.successRoll * 100 < chance;
 
                 // =====================
                 // SUCCESS
@@ -9768,9 +10569,21 @@
                         p !== target
                     );
 
+                    // let affected =
+                    // alive.sort(()=>Math.random()-0.5)
+                    // .slice(0,3);
+                    if(!pendingGossip.affected){
+
+                        pendingGossip.affected =
+                        alive
+                            .sort(()=>Math.random()-0.5)
+                            .slice(0,3);
+
+                        saveGame();
+                    }
+
                     let affected =
-                    alive.sort(()=>Math.random()-0.5)
-                    .slice(0,3);
+                    pendingGossip.affected;
 
                     alive.forEach(p=>{
 
@@ -9802,6 +10615,8 @@
                     updatePlayers();
 
                     // saveGame();
+                    pendingGossip = null;
+                    clearProcessingState();
 
                     return true;
                 }
@@ -9836,9 +10651,21 @@
                         p !== provoker
                     );
 
+                    // let affected =
+                    // alive.sort(()=>Math.random()-0.5)
+                    // .slice(0,2);
+                    if(!pendingGossip.affectedFail){
+
+                        pendingGossip.affectedFail =
+                        alive
+                            .sort(()=>Math.random()-0.5)
+                            .slice(0,2);
+
+                        saveGame();
+                    }
+
                     let affected =
-                    alive.sort(()=>Math.random()-0.5)
-                    .slice(0,2);
+                    pendingGossip.affectedFail;
 
                     affected.forEach(p=>{
 
@@ -9866,6 +10693,8 @@
                     updatePlayers();
 
                     // saveGame();
+                    pendingGossip = null;
+                    clearProcessingState();
                     return false;
                 }
                 // updateSpecialRelations();
@@ -10333,8 +11162,30 @@
 
 
             async function processAduDomba(provoker,targetA,targetB){
+                if(!pendingAduDomba){
+
+                    pendingAduDomba = {
+
+                        provoker,
+
+                        targetA,
+
+                        targetB,
+
+                        successRoll:null,
+
+                        damage:null
+
+                    };
+
+                    saveGame();
+                }
+                setProcessingState("NPC_ADU_DOMBA");
                 isDayProcessing = true;
                 updatePlayers();
+                socialChaosToday = true;
+
+                saveGame();
 
                 // validasi
                 if(
@@ -10342,6 +11193,8 @@
                     !targetA ||
                     !targetB
                 ){
+                    pendingAduDomba = null;
+                    clearProcessingState();
                     return false;
                 }
 
@@ -10350,6 +11203,8 @@
                     provoker === targetA ||
                     provoker === targetB
                 ){
+                    pendingAduDomba = null;
+                    clearProcessingState();
                     return false;
                 }
 
@@ -10359,6 +11214,8 @@
                     status[targetA] === "KELUAR" ||
                     status[targetB] === "KELUAR"
                 ){
+                    pendingAduDomba = null;
+                    clearProcessingState();
                     return false;
                 }
 
@@ -10499,8 +11356,29 @@
                     chance = 10;
                 }
 
+                // let success =
+                // Math.random() * 100 < chance;
+
+                if(pendingAduDomba.chance == null){
+                    pendingAduDomba.chance =
+                    Math.random();
+
+                    // console.log(
+                    //     "GENERATE SUCCESS ROLL",
+                    //     pendingAduDomba.chance
+                    // );
+
+                    saveGame();
+                }
+                // console.log(
+                //     "USE SUCCESS ROLL",
+                //     pendingAduDomba.chance
+                // );
+
+                chance = pendingAduDomba.chance;
+
                 let success =
-                Math.random() * 100 < chance;
+                pendingAduDomba.successRoll * 100 < chance;
 
                 // =====================
                 // SUCCESS
@@ -10522,8 +11400,18 @@
 
                     await delay(700);
 
+                    // let damage =
+                    // Math.floor(Math.random()*5)+3;
+                    if(pendingAduDomba.damage == null){
+
+                        pendingAduDomba.damage =
+                        Math.floor(Math.random()*5)+3;
+
+                        saveGame();
+                    }
+
                     let damage =
-                    Math.floor(Math.random()*5)+3;
+                    pendingAduDomba.damage;
 
                     relation[targetA][targetB] -= damage;
 
@@ -10584,6 +11472,10 @@
                     updatePlayers();
 
                     // saveGame();
+                    pendingAduDomba = null;
+
+                    clearProcessingState();
+
                     return true;
                 }
 
@@ -10642,6 +11534,11 @@
                     updatePlayers();
 
                     // saveGame();
+
+                    pendingAduDomba = null;
+
+                    clearProcessingState();
+
                     return false;
                 }
                 
@@ -10662,9 +11559,9 @@
                 getAlive();
 
                 // jangan terlalu sering
-                if(Math.random() > 0.45){
-                    return false;
-                }
+                // if(Math.random() > 0.45){
+                //     return false;
+                // }
 
                 // pilih provoker
                 let provoker =
@@ -10694,13 +11591,34 @@
                     relation[provoker][b]
                 );
 
-                let target = candidates[0];
+                // let target = candidates[0];
+                // let target =
+                // candidates[
+                // Math.floor(Math.random()*candidates.length)
+                // ];
+                let hated = candidates.filter(
+                    p => relation[provoker][p] <= -5
+                );
 
+                if(hated.length === 0){
+
+                    hated = candidates.filter(
+                        p => relation[provoker][p] < 0
+                    );
+
+                }
+
+                if(hated.length === 0){
+                    return false;
+                }
+
+                let target =
+                hated[
+                    Math.floor(Math.random() * hated.length)
+                ];
                 // kalau relation belum negatif
                 // jangan gossip
-                if(
-                    relation[provoker][target] > -5
-                ){
+                if(relation[provoker][target] >=0){
                     return;
                 }
 
@@ -10765,6 +11683,10 @@
                 return true;
             }
             async function playerConflict(target){
+                pendingConflictTarget = target;
+
+                // saveGame();
+                setProcessingState("PLAYER_CONFLICT");
                 if(!canUseSpecialSocial()){
 
                     closeAllSocialUI();
@@ -10772,6 +11694,8 @@
                     log(
                         "⚠️ Tidak bisa melakukan konflik hari ini"
                     );
+                    pendingConflictTarget = null;
+                    clearProcessingState();
 
                     return;
                 }
@@ -10783,6 +11707,8 @@
                     log(
                     "⚠️ Rumah sedang chaos hari ini, kamu tidak bisa melakukan konflik"
                     );
+                    pendingConflictTarget = null;
+                    clearProcessingState();
 
                     return;
                 }
@@ -10792,6 +11718,8 @@
                     closeAllSocialUI();
 
                     log("⚠️ Kamu sudah memakai aksi spesial hari ini!");
+                    pendingConflictTarget = null;
+                    clearProcessingState();
                     return;
                 }
 
@@ -10941,6 +11869,10 @@
                 updateGangs();
 
                 updatePlayers();
+
+                pendingConflictTarget = null;
+
+                clearProcessingState();
 
                 saveGame();
             }
@@ -11516,7 +12448,7 @@
                     // await delay(500);
                 }
                 updateSpecialRelations();
-                updateGangs();
+                // updateGangs();
                 updatePlayers();
             }
 
@@ -12527,6 +13459,8 @@
             }
 
             async function randomHouseEvent(){
+                setProcessingState("RANDOM_EVENT");
+                
 
                 // isDayProcessing = true;
 
@@ -12534,15 +13468,43 @@
 
                 let alive = getAlive();
 
-                if(alive.length < 4) return;
+                if(alive.length < 4) 
+                {    
+                    pendingRandomEvent = null;
+                    clearProcessingState();
+                    return;
 
-                let roll = Math.random();
+                }
+
+                // let roll = Math.random();
+                let roll;
+
+                if(pendingRandomEvent){
+
+                    roll = pendingRandomEvent.roll;
+
+                }else{
+
+                    roll = Math.random();
+
+                    pendingRandomEvent = {
+
+                        roll
+
+                    };
+
+                    saveGame();
+                }
+                
 
                 // =========================
                 // ⚡ DRAMA RUMAH
                 // =========================
 
                 if(roll < 0.33){
+                    socialChaosToday = true;
+
+                    saveGame();
                     let alive = getAlive();
                     // chaosEventToday = true;
                     // socialChaosToday = true;
@@ -12569,17 +13531,68 @@
                     if(activeRoles.bos === p2){
 
                         if((stats[p2]?.bos || 0) >= 4){
+                            pendingRandomEvent = null;
+                            clearProcessingState();
+                            saveGame();
 
                             return false;
 
                         }else if(Math.random() < 0.5){
+                            pendingRandomEvent = null;
+
+                            clearProcessingState();
+
+                            saveGame();
 
                             return false;
                         }
                     }
 
-                    let damage =
-                    Math.floor(Math.random()*8) + 5;
+                    // let damage =
+                    // Math.floor(Math.random()*8) + 5;
+
+                    // pendingRandomEvent = {
+
+                    //     type:"CONFLICT",
+
+                    //     p1,
+
+                    //     p2,
+
+                    //     damage
+
+                    // };
+                    let damage;
+
+                    if(pendingRandomEvent.type==="CONFLICT"){
+
+                        p1 = pendingRandomEvent.p1;
+                        p2 = pendingRandomEvent.p2;
+                        damage = pendingRandomEvent.damage;
+
+                    }else{
+
+                        damage =
+                        Math.floor(Math.random()*8)+5;
+
+                        pendingRandomEvent = {
+
+                            roll,
+
+                            type:"CONFLICT",
+
+                            p1,
+
+                            p2,
+
+                            damage
+
+                        };
+
+                        saveGame();
+                    }
+
+                    saveGame();
 
                     let gang1 =
                     gangs.find(g=>g.members.includes(p1));
@@ -12647,8 +13660,26 @@
                     // addReputation(p2,-3);
                     // addPublicImage(p1,-2);
                     // addPublicImage(p2,-2);
-                    let audienceRoll =
-                    Math.random();
+                    // let audienceRoll =
+                    // Math.random();
+
+                    let audienceRoll;
+
+                    if(pendingRandomEvent.audienceRoll!=null){
+
+                        audienceRoll =
+                        pendingRandomEvent.audienceRoll;
+
+                    }else{
+
+                        audienceRoll =
+                        Math.random();
+
+                        pendingRandomEvent.audienceRoll =
+                        audienceRoll;
+
+                        saveGame();
+                    }
 
                     if(audienceRoll < 0.33){
 
@@ -12704,6 +13735,8 @@
                     updatePlayers();
 
                     // saveGame();
+                    pendingRandomEvent = null;
+                    clearProcessingState();
 
                     return true;
                 }
@@ -12713,6 +13746,37 @@
                 // =========================
 
                 else if(roll < 0.66){
+                    socialChaosToday = true;
+
+                    saveGame();
+                    let totalBuff;
+                    if(
+                        pendingRandomEvent &&
+                        pendingRandomEvent.type === "PARTY"
+                    ){
+
+                        totalBuff =
+                        pendingRandomEvent.totalBuff;
+
+                    }else{
+
+                        totalBuff =
+                        Math.floor(Math.random()*4)+2;
+
+                        pendingRandomEvent = {
+
+                            roll,
+
+                            type:"PARTY",
+
+                            totalBuff,
+
+                            buffs:[]
+
+                        };
+
+                        saveGame();
+                    }
 
                     // log("🎉 Ada pesta di rumah karantina, bintang tamu juga hadir ke dalam rumah karantina!!!");
                     log("🎉 Tim Last Housemates mengadakan pesta besar di rumah karantina malam ini!");
@@ -12721,21 +13785,79 @@
                     log("🌟 Ada bintang tamu spesial datang dan langsung berpesta bersama penghuni!");
                     await delay(700);
 
-                    let totalBuff =
-                    Math.floor(Math.random()*4)+2;
+                    // let totalBuff =
+                    // Math.floor(Math.random()*4)+2;
+
 
                     for(let i=0; i<totalBuff; i++){
 
-                        let p1 =
-                        alive[Math.floor(Math.random()*alive.length)];
+                        // let p1 =
+                        // alive[Math.floor(Math.random()*alive.length)];
 
-                        let p2 =
-                        alive[Math.floor(Math.random()*alive.length)];
+                        // let p2 =
+                        // alive[Math.floor(Math.random()*alive.length)];
 
-                        if(p1 === p2) continue;
+                        // if(p1 === p2) continue;
+                        
 
-                        let bonus =
-                        Math.floor(Math.random()*5)+2;
+                        // let bonus =
+                        // Math.floor(Math.random()*5)+2;
+                        // pendingRandomEvent.buffs.push({
+
+                        //     p1,
+
+                        //     p2,
+
+                        //     bonus
+
+                        // });
+                        let p1;
+                        let p2;
+                        let bonus;
+
+                        if(pendingRandomEvent.buffs[i]){
+
+                            p1 =
+                            pendingRandomEvent.buffs[i].p1;
+
+                            p2 =
+                            pendingRandomEvent.buffs[i].p2;
+
+                            bonus =
+                            pendingRandomEvent.buffs[i].bonus;
+
+                        }else{
+
+                            p1 =
+                            alive[Math.floor(Math.random()*alive.length)];
+
+                            p2 =
+                            alive[Math.floor(Math.random()*alive.length)];
+
+                            while(p1===p2){
+
+                                p2 =
+                                alive[Math.floor(Math.random()*alive.length)];
+
+                            }
+
+                            // if(p1 === p2) continue;
+
+                            bonus =
+                            Math.floor(Math.random()*5)+2;
+
+                            pendingRandomEvent.buffs.push({
+
+                                p1,
+
+                                p2,
+
+                                bonus
+
+                            });
+
+                            saveGame();
+                        }
 
                         relation[p1][p2] += bonus;
                         relation[p2][p1] += bonus;
@@ -12752,6 +13874,7 @@
 
                         await delay(500);
                     }
+                    saveGame();
                     updateSpecialRelations();
 
                     updateGangs();
@@ -12759,6 +13882,8 @@
                     updatePlayers();
 
                     // saveGame();
+                    pendingRandomEvent = null;
+                    clearProcessingState();
                     return true;
                 }
 
@@ -12826,6 +13951,8 @@
                 //         `📉 Reputasi ${target} menurun`
                 //     );
                 // }
+                pendingRandomEvent = null;
+                clearProcessingState();
                 return false;
             }
 
@@ -14347,6 +15474,7 @@
             // DAY SYSTEM
             async function nextDay(){
                 console.log("NEXT DAY TRIGGERED");
+
                 
                 // chaosEventToday = false;
                 socialChaosToday = false;
@@ -14360,6 +15488,10 @@
                 dailySocialCount = 0;
                 if(isDayProcessing) return;
                 if(pendingDecision) return;
+                console.log("========== NEXT DAY ==========");
+                console.log("dayProcessingState =", dayProcessingState);
+                console.log("isDayProcessing =", isDayProcessing);
+                console.log("pendingDecision =", pendingDecision);
                 
                 
 
@@ -14882,8 +16014,10 @@
                     return;
                 }
                 if(!endgameMode && weekDay===1){
+                    rollWeeklyMiniGames();
+                    //pindahkan semua proses ke function ini
+                    await processAssignBoss();
 
-                    
 
                     // ⛔ setelah amnesti:
                     // jangan assign ulang bos
@@ -14899,279 +16033,283 @@
                     //     skipRoleAssignmentOnce = false;
 
                     // }else 
-                    if(freezeBosAfterAmnesty){
+                    // if(freezeBosAfterAmnesty){
 
-                        // roles.bos = activeRoles.bos;
-                        roles.bos = amnestyFrozenRoles.bos;
-                        activeRoles.bos = amnestyFrozenRoles.bos;
+                    //     // roles.bos = activeRoles.bos;
+                    //     roles.bos = amnestyFrozenRoles.bos;
+                    //     activeRoles.bos = amnestyFrozenRoles.bos;
 
-                        log(
-                            "♻️ 👑 BOSS tetap setelah amnesti: " +
-                            roles.bos
-                        );
+                    //     log(
+                    //         "♻️ 👑 BOSS tetap setelah amnesti: " +
+                    //         roles.bos
+                    //     );
 
-                        freezeBosAfterAmnesty = false;
-                        saveGame()
-                    }
-                    else if(getAlive().length <= 4){
+                    //     freezeBosAfterAmnesty = false;
+                    //     saveGame()
+                    // }
+                    // else if(getAlive().length <= 4){
 
-                        roles.bos = null;
-                        activeRoles.bos = null;
+                    //     roles.bos = null;
+                    //     activeRoles.bos = null;
 
-                        log("👑 Tidak ada BOSS lagi di tahap ini.");
+                    //     log("👑 Tidak ada BOSS lagi di tahap ini.");
 
-                    }else{
-                        rollWeeklyMiniGames();
-                        // console.log(
-                        //     "[WEEKLY GAMES ROLLED]",
-                        //     currentMiniGames
-                        // );
+                    // }
+                    // else{
+                    //     rollWeeklyMiniGames();
+                    //     setProcessingState("ASSIGN_BOSS");
+                    //     // console.log(
+                    //     //     "[WEEKLY GAMES ROLLED]",
+                    //     //     currentMiniGames
+                    //     // );
 
-                        let kandidat = alive.filter(p =>
+                    //     let kandidat = alive.filter(p =>
 
-                            p !== lastWeekRoles.bos 
-                            //alex delete ddulu
-                            // &&
+                    //         p !== lastWeekRoles.bos 
+                    //         //alex delete ddulu
+                    //         // &&
 
-                            // activeRoles.art !== p &&
-                            // activeRoles.imun !== p &&
-                            // activeRoles.kunci !== p
-                        );
+                    //         // activeRoles.art !== p &&
+                    //         // activeRoles.imun !== p &&
+                    //         // activeRoles.kunci !== p
+                    //     );
 
-                        // if(preserveRolesAfterAmnesty){
+                    //     // if(preserveRolesAfterAmnesty){
 
-                        //     roles.bos = activeRoles.bos;
-                        //     //activeRoles.bos = roles.bos;
+                    //     //     roles.bos = activeRoles.bos;
+                    //     //     //activeRoles.bos = roles.bos;
 
-                        //     log(
-                        //         "♻️ 👑 Bos tetap: " +
-                        //         activeRoles.bos
-                        //     );
+                    //     //     log(
+                    //     //         "♻️ 👑 Bos tetap: " +
+                    //     //         activeRoles.bos
+                    //     //     );
 
-                        // }else{
+                    //     // }else{
 
-                        //     roles.bos = pickTop(kandidat);
+                    //     //     roles.bos = pickTop(kandidat);
 
-                        //     stats[roles.bos].bos++;
+                    //     //     stats[roles.bos].bos++;
 
-                        //     activeRoles.bos = roles.bos;
+                    //     //     activeRoles.bos = roles.bos;
 
-                        //     log("👑 Bos: "+roles.bos);
-                        // }
-                        // let topBosCandidates =
-                        // getTopCandidates(kandidat,3);
+                    //     //     log("👑 Bos: "+roles.bos);
+                    //     // }
+                    //     // let topBosCandidates =
+                    //     // getTopCandidates(kandidat,3);
 
-                        // log(
-                        //     "🎮 Kandidat game BOS: " +
-                        //     topBosCandidates.join(", ")
-                        // );
+                    //     // log(
+                    //     //     "🎮 Kandidat game BOS: " +
+                    //     //     topBosCandidates.join(", ")
+                    //     // );
 
-                        // await delay(DEBUG_DELAY);
-                        // roles.bos = pickTop(kandidat);
+                    //     // await delay(DEBUG_DELAY);
+                    //     // roles.bos = pickTop(kandidat);
 
-                        if(kandidat.length === 0){
+                    //     if(kandidat.length === 0){
 
-                            kandidat = [...alive];
-                        }
+                    //         kandidat = [...alive];
+                    //     }
 
-                        let bosRank =
-                        rankCandidates(kandidat);
+                    //     let bosRank =
+                    //     rankCandidates(kandidat);
 
-                        let topBosCandidates =
-                        bosRank.slice(0,3).map(x=>x.name);
-                        //ALEX DEBUG KANDIDAT bos BWT MINIGAME BOS
-                        // let topBosCandidates = [
-                        //     playerName,
-                        //     "Kanya",
-                        //     "Indra"
-                        // ];
+                    //     let topBosCandidates =
+                    //     bosRank.slice(0,3).map(x=>x.name);
+                    //     //ALEX DEBUG KANDIDAT bos BWT MINIGAME BOS
+                    //     // let topBosCandidates = [
+                    //     //     playerName,
+                    //     //     "Kanya",
+                    //     //     "Indra"
+                    //     // ];
 
-                        // log(
-                        //     "🎮 Kandidat game BOS: " +
-                        //     topBosCandidates.join(", ")
-                        // );
-                        // log("🎮 Kandidat BOS Minggu Ini:");
+                    //     // log(
+                    //     //     "🎮 Kandidat game BOS: " +
+                    //     //     topBosCandidates.join(", ")
+                    //     // );
+                    //     // log("🎮 Kandidat BOS Minggu Ini:");
 
-                        // topBosCandidates.forEach((p,i)=>{
+                    //     // topBosCandidates.forEach((p,i)=>{
 
-                        //     log(
-                        //         `${i+1}. ${p} — ${(reputation[p] || 0).toFixed(2)}%`
-                        //     );
-                        // });
-                        log("🎮 Kandidat BOSS Minggu Ini:");
+                    //     //     log(
+                    //     //         `${i+1}. ${p} — ${(reputation[p] || 0).toFixed(2)}%`
+                    //     //     );
+                    //     // });
+                    //     log("🎮 Kandidat BOSS Minggu Ini:");
 
-                        for(let i=0; i<topBosCandidates.length; i++){
-                            let p = topBosCandidates[i];
-                            if(i===0){
-                                log(`Kandidat ke ${i+1}`);
-                                await delay(800);
-                                log(
-                                    `${i+1}. ${p} — ${(reputation[p] || 0).toFixed(2)}%`
-                                );
-                            } 
-                            else                            
-                            {
-                                await delay(DEBUG_DELAY);
-                                log(`Kandidat ke ${i+1}`);
-                                await delay(800);
-                                log(
-                                    `${i+1}. ${p} — ${(reputation[p] || 0).toFixed(2)}%`
-                                );
-                            }
-                        }
+                    //     for(let i=0; i<topBosCandidates.length; i++){
+                    //         let p = topBosCandidates[i];
+                    //         if(i===0){
+                    //             log(`Kandidat ke ${i+1}`);
+                    //             await delay(800);
+                    //             log(
+                    //                 `${i+1}. ${p} — ${(reputation[p] || 0).toFixed(2)}%`
+                    //             );
+                    //         } 
+                    //         else                            
+                    //         {
+                    //             await delay(DEBUG_DELAY);
+                    //             log(`Kandidat ke ${i+1}`);
+                    //             await delay(800);
+                    //             log(
+                    //                 `${i+1}. ${p} — ${(reputation[p] || 0).toFixed(2)}%`
+                    //             );
+                    //         }
+                    //     }
 
-                        await delay(DEBUG_DELAY);
-                        log("🎮👑 Games pemilihan BOSS sedang berlangsung... ");
-                        await delay(750);
+                    //     await delay(DEBUG_DELAY);
+                    //     log("🎮👑 Games pemilihan BOSS sedang berlangsung... ");
+                    //     await delay(750);
 
-                        // roles.bos = bosRank[0].name;
-                        // let bosTop3 =
-                        // bosRank.slice(0,3);
+                    //     // roles.bos = bosRank[0].name;
+                    //     // let bosTop3 =
+                    //     // bosRank.slice(0,3);
 
-                        // roles.bos =
-                        // bosTop3[
-                        //     Math.floor(Math.random()*bosTop3.length)
-                        // ].name;
-                        // let bosTop3 =
-                        // bosRank.slice(0,3);
+                    //     // roles.bos =
+                    //     // bosTop3[
+                    //     //     Math.floor(Math.random()*bosTop3.length)
+                    //     // ].name;
+                    //     // let bosTop3 =
+                    //     // bosRank.slice(0,3);
 
-                        // roles.bos =
-                        // pickWeighted(bosTop3);
-                        // let bosTop3 =
-                        // bosRank.slice(0,3).map(x=>({
-                        //     name:x.name,
-                        //     // score:reputation[x.name] || 0
-                        //     score:(Math.random() * 30)+(reputation[x.name] * 0.4)
-                        // }));
-                        let bosTop3 =bosRank.slice(0,3);
+                    //     // roles.bos =
+                    //     // pickWeighted(bosTop3);
+                    //     // let bosTop3 =
+                    //     // bosRank.slice(0,3).map(x=>({
+                    //     //     name:x.name,
+                    //     //     // score:reputation[x.name] || 0
+                    //     //     score:(Math.random() * 30)+(reputation[x.name] * 0.4)
+                    //     // }));
+                    //     let bosTop3 =bosRank.slice(0,3);
 
-                        // roles.bos =
-                        // pickWeighted(bosTop3);
-                        // roles.bos =
-                        // bosTop3[
-                        //     Math.floor(Math.random()*bosTop3.length)
-                        // ].name;
-                        // roles.bos = pickRealityWinner(bosTop3);
-                        // if(topBosCandidates.includes(playerName)){
+                    //     // roles.bos =
+                    //     // pickWeighted(bosTop3);
+                    //     // roles.bos =
+                    //     // bosTop3[
+                    //     //     Math.floor(Math.random()*bosTop3.length)
+                    //     // ].name;
+                    //     // roles.bos = pickRealityWinner(bosTop3);
+                    //     // if(topBosCandidates.includes(playerName)){
 
-                        //     console.log(
-                        //         "[BOS MINIGAME START]"
-                        //     );
+                    //     //     console.log(
+                    //     //         "[BOS MINIGAME START]"
+                    //     //     );
 
-                        //     let scoreMap = {};
+                    //     //     let scoreMap = {};
 
-                        //     // PLAYER MAIN GAME
-                        //     scoreMap[playerName] =
-                        //     await openMiniGame("bos");
+                    //     //     // PLAYER MAIN GAME
+                    //     //     scoreMap[playerName] =
+                    //     //     await openMiniGame("bos");
 
-                        //     // NPC SIMULATION
-                        //     bosTop3.forEach(x=>{
+                    //     //     // NPC SIMULATION
+                    //     //     bosTop3.forEach(x=>{
 
-                        //         let p = x.name;
+                    //     //         let p = x.name;
 
-                        //         if(p === playerName) return;
+                    //     //         if(p === playerName) return;
 
-                        //         scoreMap[p] =
-                        //         simulateNpcMiniGame(
-                        //             p,
-                        //             "bos"
-                        //         );
-                        //     });
+                    //     //         scoreMap[p] =
+                    //     //         simulateNpcMiniGame(
+                    //     //             p,
+                    //     //             "bos"
+                    //     //         );
+                    //     //     });
 
-                        //     console.log(
-                        //         "[BOS SCORE MAP]",
-                        //         scoreMap
-                        //     );
+                    //     //     console.log(
+                    //     //         "[BOS SCORE MAP]",
+                    //     //         scoreMap
+                    //     //     );
 
-                        //     // cari skor tertinggi
-                        //     roles.bos =
-                        //     Object.keys(scoreMap).reduce((a,b)=>
+                    //     //     // cari skor tertinggi
+                    //     //     roles.bos =
+                    //     //     Object.keys(scoreMap).reduce((a,b)=>
 
-                        //         scoreMap[a] > scoreMap[b]
-                        //         ? a
-                        //         : b
-                        //     );
-                        //     log("🎮 HASIL GAME BOS:");
+                    //     //         scoreMap[a] > scoreMap[b]
+                    //     //         ? a
+                    //     //         : b
+                    //     //     );
+                    //     //     log("🎮 HASIL GAME BOS:");
 
-                        //     Object.entries(scoreMap)
-                        //     .forEach(([p,score])=>{
+                    //     //     Object.entries(scoreMap)
+                    //     //     .forEach(([p,score])=>{
 
-                        //         log(
-                        //             `${p} : ${score} poin`
-                        //         );
-                        //     });
+                    //     //         log(
+                    //     //             `${p} : ${score} poin`
+                    //     //         );
+                    //     //     });
 
-                        // }else{
+                    //     // }else{
 
-                        //     // AUTO SYSTEM LAMA
-                        //     roles.bos =
-                        //     pickRealityWinner(bosTop3);
-                        // }
-                        if(topBosCandidates.includes(playerName)){
+                    //     //     // AUTO SYSTEM LAMA
+                    //     //     roles.bos =
+                    //     //     pickRealityWinner(bosTop3);
+                    //     // }
+                    //     if(topBosCandidates.includes(playerName)){
 
-                            roles.bos =
-                            await runRoleMiniGame(
-                                "bos",
-                                topBosCandidates
-                            );
 
-                        }else{
+                    //         roles.bos =
+                    //         await runRoleMiniGame(
+                    //             "bos",
+                    //             topBosCandidates
+                    //         );
+                    //         clearProcessingState();
 
-                            roles.bos =
-                            pickRealityWinner(bosTop3);
-                        }
+                    //     }else{
+
+                    //         roles.bos =
+                    //         pickRealityWinner(bosTop3);
+                    //     }
                         
 
-                        stats[roles.bos].bos++;
-                        // 👑 legacy reputation BOS
-                        legacyReputation[roles.bos] =
-                        (legacyReputation[roles.bos] || 0) + 4;
+                    //     stats[roles.bos].bos++;
+                    //     // 👑 legacy reputation BOS
+                    //     legacyReputation[roles.bos] =
+                    //     (legacyReputation[roles.bos] || 0) + 4;
 
-                        // 👑 bonus publik langsung
-                        addReputation(roles.bos, 8);
-                        addPublicImage(roles.bos, 3);
+                    //     // 👑 bonus publik langsung
+                    //     addReputation(roles.bos, 8);
+                    //     addPublicImage(roles.bos, 3);
 
                         
 
-                        activeRoles.bos = roles.bos;
+                    //     activeRoles.bos = roles.bos;
 
-                        log("👑 BOSS Minggu Ini: "+roles.bos);
-                        // 👑 bos veteran makin dikenal
-                        if(stats[roles.bos].bos >= 2){
+                    //     log("👑 BOSS Minggu Ini: "+roles.bos);
+                    //     // 👑 bos veteran makin dikenal
+                    //     if(stats[roles.bos].bos >= 2){
 
-                            addReputation(
-                                roles.bos,
-                                stats[roles.bos].bos * 2
-                            );
+                    //         addReputation(
+                    //             roles.bos,
+                    //             stats[roles.bos].bos * 2
+                    //         );
 
-                            log(
-                            `👑 ${roles.bos} makin dikenal publik sebagai BOSS ${stats[roles.bos].bos} kali`
-                            );
-                        }
-                        // 👑 Boss streak tracker
-                        // players.forEach(p=>{
+                    //         log(
+                    //         `👑 ${roles.bos} makin dikenal publik sebagai BOSS ${stats[roles.bos].bos} kali`
+                    //         );
+                    //     }
+                    //     // 👑 Boss streak tracker
+                    //     // players.forEach(p=>{
 
-                        //     if(!bossStreak[p]){
-                        //         bossStreak[p] = 0;
-                        //     }
+                    //     //     if(!bossStreak[p]){
+                    //     //         bossStreak[p] = 0;
+                    //     //     }
 
-                        //     if(activeRoles.bos === p){
+                    //     //     if(activeRoles.bos === p){
 
-                        //         bossStreak[p]++;
+                    //     //         bossStreak[p]++;
 
-                        //     }else{
+                    //     //     }else{
 
-                        //         bossStreak[p] = 0;
-                        //     }
-                        // });
-                        // if(activeRoles.bos && bossStreak[activeRoles.bos] >= 7){
-                        // if(activeRoles.bos && stats[activeRoles.bos].bos >= 4){
-                        //     log(
-                        //     `👑⚠️ ${activeRoles.bos} mulai ditakuti seluruh penghuni rumah`
-                        //     );
-                        // }
-                        // addReputation(roles.bos, 8);
-                    }
+                    //     //         bossStreak[p] = 0;
+                    //     //     }
+                    //     // });
+                    //     // if(activeRoles.bos && bossStreak[activeRoles.bos] >= 7){
+                    //     // if(activeRoles.bos && stats[activeRoles.bos].bos >= 4){
+                    //     //     log(
+                    //     //     `👑⚠️ ${activeRoles.bos} mulai ditakuti seluruh penghuni rumah`
+                    //     //     );
+                    //     // }
+                    //     // addReputation(roles.bos, 8);
+                    // }
                 }
 
                 // else if(weekDay===2){
@@ -15202,138 +16340,143 @@
                 // }
                 else if(!endgameMode && weekDay===2){
 
-                    if(getAlive().length <= 4){
+                    //pindahkan semua proses ke function ini
+                    await processAssignArt();
 
-                        roles.art = null;
-                        activeRoles.art = null;
+                    // if(getAlive().length <= 4){
 
-                        log("🧹 Tidak ada Housekeeper  di tahap ini.");
+                    //     roles.art = null;
+                    //     activeRoles.art = null;
 
-                    }else{
+                    //     log("🧹 Tidak ada Housekeeper  di tahap ini.");
 
-                        let kandidat =
-                        alive.filter(p =>
-                            p !== lastWeekRoles.art&&
+                    // }else{
 
-                            activeRoles.bos !== p
-                        );
+                    //     let kandidat =
+                    //     alive.filter(p =>
+                    //         p !== lastWeekRoles.art&&
 
-                        if(kandidat.length === 0){
+                    //         activeRoles.bos !== p
+                    //     );
 
-                            kandidat = [...alive];
-                        }
+                    //     if(kandidat.length === 0){
 
-                        // let bottomArtCandidates =
-                        // getTopCandidates(kandidat,3,true);
+                    //         kandidat = [...alive];
+                    //     }
 
-                        // log(
-                        //     "⚠️ Kandidat game ART: " +
-                        //     bottomArtCandidates.join(", ")
-                        // );
+                    //     // let bottomArtCandidates =
+                    //     // getTopCandidates(kandidat,3,true);
 
-                        // await delay(DEBUG_DELAY);
+                    //     // log(
+                    //     //     "⚠️ Kandidat game ART: " +
+                    //     //     bottomArtCandidates.join(", ")
+                    //     // );
 
-                        // roles.art = pickTop(kandidat, true);
-                        let artRank =
-                        rankCandidates(kandidat,true);
+                    //     // await delay(DEBUG_DELAY);
 
-                        let bottomArtCandidates =
-                        artRank.slice(0,3).map(x=>x.name);
-                        //ALEX DEBUG KANDIDAT ART BWT MINIGAME ART
-                        // let bottomArtCandidates = [
-                        //     playerName,
-                        //     artRank[0].name,
-                        //     artRank[1].name
-                        // ];
+                    //     // roles.art = pickTop(kandidat, true);
+                    //     let artRank =
+                    //     rankCandidates(kandidat,true);
 
-                        // log(
-                        //     "⚠️ Kandidat game ART: " +
-                        //     bottomArtCandidates.join(", ")
-                        // );
-                        log("🧹 Kandidat Housekeeper:");
+                    //     let bottomArtCandidates =
+                    //     artRank.slice(0,3).map(x=>x.name);
+                    //     //ALEX DEBUG KANDIDAT ART BWT MINIGAME ART
+                    //     // let bottomArtCandidates = [
+                    //     //     playerName,
+                    //     //     artRank[0].name,
+                    //     //     artRank[1].name
+                    //     // ];
 
-                        // bottomArtCandidates.forEach((p,i)=>{
+                    //     // log(
+                    //     //     "⚠️ Kandidat game ART: " +
+                    //     //     bottomArtCandidates.join(", ")
+                    //     // );
+                    //     log("🧹 Kandidat Housekeeper:");
 
-                        //     log(
-                        //         `${i+1}. ${p} — ${(reputation[p] || 0).toFixed(2)}%`
-                        //     );
-                        // });
-                        for(let i=0; i<bottomArtCandidates.length; i++){
-                            let p = bottomArtCandidates[i];
-                            if(i===0){
-                                log(`Kandidat ke ${i+1}`);
-                                await delay(800);
-                                log(
-                                    `${i+1}. ${p} — ${(reputation[p] || 0).toFixed(2)}%`
-                                );
-                            } 
-                            else                            
-                            {
-                                await delay(DEBUG_DELAY);
-                                log(`Kandidat ke ${i+1}`);
-                                await delay(800);
-                                log(
-                                    `${i+1}. ${p} — ${(reputation[p] || 0).toFixed(2)}%`
-                                );
-                            }
-                        }
+                    //     // bottomArtCandidates.forEach((p,i)=>{
 
-                        await delay(DEBUG_DELAY);
-                        log("🎮🧹 Games pemilihan Housekeeper sedang berlangsung... ");
-                        await delay(750);
+                    //     //     log(
+                    //     //         `${i+1}. ${p} — ${(reputation[p] || 0).toFixed(2)}%`
+                    //     //     );
+                    //     // });
+                    //     for(let i=0; i<bottomArtCandidates.length; i++){
+                    //         let p = bottomArtCandidates[i];
+                    //         if(i===0){
+                    //             log(`Kandidat ke ${i+1}`);
+                    //             await delay(800);
+                    //             log(
+                    //                 `${i+1}. ${p} — ${(reputation[p] || 0).toFixed(2)}%`
+                    //             );
+                    //         } 
+                    //         else                            
+                    //         {
+                    //             await delay(DEBUG_DELAY);
+                    //             log(`Kandidat ke ${i+1}`);
+                    //             await delay(800);
+                    //             log(
+                    //                 `${i+1}. ${p} — ${(reputation[p] || 0).toFixed(2)}%`
+                    //             );
+                    //         }
+                    //     }
 
-                        // roles.art = artRank[0].name;
-                        // let artBottom3 =
-                        // artRank.slice(0,3);
+                    //     await delay(DEBUG_DELAY);
+                    //     log("🎮🧹 Games pemilihan Housekeeper sedang berlangsung... ");
+                    //     await delay(750);
 
-                        // roles.art =
-                        // artBottom3[
-                        //     Math.floor(Math.random()*artBottom3.length)
-                        // ].name;
-                        // let artBottom3 =
-                        // artRank.slice(0,3);
-                        // let artBottom3 =
-                        // artRank.slice(0,3).map(x=>({
-                        //     name:x.name,
-                        //     // score:100 - (reputation[x.name] || 0)
-                        //     score:(Math.random() * 30)+((100 - reputation[x.name]) * 0.4)
-                        // }));
-                        let artBottom3 =artRank.slice(0,3);
+                    //     // roles.art = artRank[0].name;
+                    //     // let artBottom3 =
+                    //     // artRank.slice(0,3);
+
+                    //     // roles.art =
+                    //     // artBottom3[
+                    //     //     Math.floor(Math.random()*artBottom3.length)
+                    //     // ].name;
+                    //     // let artBottom3 =
+                    //     // artRank.slice(0,3);
+                    //     // let artBottom3 =
+                    //     // artRank.slice(0,3).map(x=>({
+                    //     //     name:x.name,
+                    //     //     // score:100 - (reputation[x.name] || 0)
+                    //     //     score:(Math.random() * 30)+((100 - reputation[x.name]) * 0.4)
+                    //     // }));
+                    //     let artBottom3 =artRank.slice(0,3);
 
 
-                        // roles.art =
-                        // pickWeighted(artBottom3);
-                        // roles.art =
-                        // artBottom3[
-                        //     Math.floor(Math.random()*artBottom3.length)
-                        // ].name;
-                        // roles.art =pickRealityWinner(artBottom3);
-                        if(bottomArtCandidates.includes(playerName)){
+                    //     // roles.art =
+                    //     // pickWeighted(artBottom3);
+                    //     // roles.art =
+                    //     // artBottom3[
+                    //     //     Math.floor(Math.random()*artBottom3.length)
+                    //     // ].name;
+                    //     // roles.art =pickRealityWinner(artBottom3);
+                    //     if(bottomArtCandidates.includes(playerName)){
+                    //         setProcessingState("ASSIGN_ART");
 
-                            roles.art =
-                            await runRoleMiniGame(
-                                "art",
-                                bottomArtCandidates,
-                                true
-                            );
+                    //         roles.art =
+                    //         await runRoleMiniGame(
+                    //             "art",
+                    //             bottomArtCandidates,
+                    //             true
+                    //         );
+                            
 
-                        }else{
+                    //     }else{
 
-                            roles.art =pickRealityWinner(artBottom3);
-                        }
-                        // console.log(
-                        //     "ART  =",
-                        //     roles.art
-                        // );
+                    //         roles.art =pickRealityWinner(artBottom3);
+                    //     }
+                    //     // console.log(
+                    //     //     "ART  =",
+                    //     //     roles.art
+                    //     // );
 
-                        stats[roles.art].art++;
+                    //     stats[roles.art].art++;
 
-                        activeRoles.art = roles.art;
+                    //     activeRoles.art = roles.art;
 
-                        log("🧹 Housekeeper Minggu Ini: "+roles.art);
-                        addReputation(roles.art, -5);
-                        addPublicImage(roles.art, -3);
-                    }
+                    //     log("🧹 Housekeeper Minggu Ini: "+roles.art);
+                    //     addReputation(roles.art, -5);
+                    //     addPublicImage(roles.art, -3);
+                    // }
                 }
 
                 // else if(weekDay===3){
@@ -15420,97 +16563,107 @@
                 // }
                 else if(!endgameMode && weekDay===3){
 
-                    if(freezePkAfterAmnesty){
+                    //pindahkan semua proses ke function ini
+                    await processAssignPK();
 
-                        // roles.kunci = activeRoles.kunci;
-                        roles.kunci = amnestyFrozenRoles.kunci;
-                        activeRoles.kunci = amnestyFrozenRoles.kunci;
+                    // if(freezePkAfterAmnesty){
 
-                        log(
-                            "♻️ 🔑 Key Holder tetap setelah amnesti: " +
-                            roles.kunci
-                        );
+                    //     // roles.kunci = activeRoles.kunci;
+                    //     roles.kunci = amnestyFrozenRoles.kunci;
+                    //     activeRoles.kunci = amnestyFrozenRoles.kunci;
 
-                        freezePkAfterAmnesty = false;
-                        saveGame()
+                    //     log(
+                    //         "♻️ 🔑 Key Holder tetap setelah amnesti: " +
+                    //         roles.kunci
+                    //     );
 
-                    }else if(getAlive().length <= 4){
+                    //     freezePkAfterAmnesty = false;
+                    //     saveGame()
 
-                        roles.kunci = null;
-                        activeRoles.kunci = null;
+                    // }
+                    // else if(getAlive().length <= 4){
 
-                        log("🔑 Tidak ada Key Holder di tahap ini.");
+                    //     roles.kunci = null;
+                    //     activeRoles.kunci = null;
 
-                    }else{
+                    //     log("🔑 Tidak ada Key Holder di tahap ini.");
 
-                        let kandidat = alive.filter(p =>
+                    // }
+                    // else
+                    // {
 
-                            p !== lastWeekRoles.kunci 
+                    //     let kandidat = alive.filter(p =>
+
+                    //         p !== lastWeekRoles.kunci 
                             
-                            &&
+                    //         &&
 
-                            activeRoles.bos !== p 
-                            //alex delete dulu
-                            // &&
-                            // activeRoles.imun !== p
-                        );
+                    //         activeRoles.bos !== p 
+                    //         //alex delete dulu
+                    //         // &&
+                    //         // activeRoles.imun !== p
+                    //     );
 
-                        log("🎮🔑 Games pemilihan Key Holder berlangsung...");
+                    //     log("🎮🔑 Games pemilihan Key Holder berlangsung...");
 
-                        await delay(900);
+                    //     await delay(900);
 
                         
 
-                        // roles.kunci =
-                        // kandidat[Math.floor(Math.random()*kandidat.length)];
-                        // console.log("PK CANDIDATES", kandidat);
-                        // console.log("PLAYER", playerName);
-                        if(kandidat.includes(playerName)){
+                    //     // roles.kunci =
+                    //     // kandidat[Math.floor(Math.random()*kandidat.length)];
+                    //     // console.log("PK CANDIDATES", kandidat);
+                    //     // console.log("PLAYER", playerName);
+                    //     if(kandidat.includes(playerName)){
+                    //         setProcessingState("ASSIGN_PK");
 
-                            roles.kunci =
-                            await runRoleMiniGame(
-                                "pk",
-                                kandidat
-                            );
+                    //         roles.kunci =
+                    //         await runRoleMiniGame(
+                    //             "pk",
+                    //             kandidat
+                    //         );
+                    //         clearProcessingState();
 
-                        }else{
+                    //     }
+                    //     else
+                    //     {
 
-                            // roles.bos =
-                            // pickRealityWinner(bosTop3);
-                            roles.kunci =
-                            kandidat[Math.floor(Math.random()*kandidat.length)];
-                        }
-                        // console.log("PK RESULT =", roles.kunci);
-                        // console.log("TYPE =", typeof roles.kunci);
+                    //         // roles.bos =
+                    //         // pickRealityWinner(bosTop3);
+                    //         roles.kunci =
+                    //         kandidat[Math.floor(Math.random()*kandidat.length)];
+                    //     }
+                    //     // console.log("PK RESULT =", roles.kunci);
+                    //     // console.log("TYPE =", typeof roles.kunci);
                         
 
-                        stats[roles.kunci].pk++;
-                        // 🔑 legacy reputation PK
-                        legacyReputation[roles.kunci] =
-                        (legacyReputation[roles.kunci] || 0) + 2;
+                    //     stats[roles.kunci].pk++;
+                    //     // 🔑 legacy reputation PK
+                    //     legacyReputation[roles.kunci] =
+                    //     (legacyReputation[roles.kunci] || 0) + 2;
 
-                        // 🔑 boost publik mingguan
-                        addReputation(roles.kunci, 4);
-                        addPublicImage(roles.kunci, 1);
+                    //     // 🔑 boost publik mingguan
+                    //     addReputation(roles.kunci, 4);
+                    //     addPublicImage(roles.kunci, 1);
                         
                         
 
-                        activeRoles.kunci = roles.kunci;
+                    //     activeRoles.kunci = roles.kunci;
 
-                        log("🔑 Key Holder Minggu Ini: "+roles.kunci);
-                        // 🔑 PK veteran mulai dikenal publik
-                        if(stats[roles.kunci].pk >= 2){
+                    //     log("🔑 Key Holder Minggu Ini: "+roles.kunci);
+                    //     // 🔑 PK veteran mulai dikenal publik
+                    //     if(stats[roles.kunci].pk >= 2){
 
-                            addReputation(
-                                roles.kunci,
-                                stats[roles.kunci].pk
-                            );
+                    //         addReputation(
+                    //             roles.kunci,
+                    //             stats[roles.kunci].pk
+                    //         );
 
-                            log(
-                            `🔑 ${roles.kunci} mulai dikenal publik sebagai Key Holder sebanyak ${stats[roles.kunci].pk} kali`
-                            );
-                        }
-                    }
+                    //         log(
+                    //         `🔑 ${roles.kunci} mulai dikenal publik sebagai Key Holder sebanyak ${stats[roles.kunci].pk} kali`
+                    //         );
+                    //     }
+                    // }
                 }
 
                 // else if(weekDay===4){
@@ -15601,316 +16754,327 @@
                 //     }
                 // }
                 else if(!endgameMode && weekDay===4){
+                    //pindahkan semua proses ke function ini
+                    await processAssignImun();
 
-                    if(freezeImunAfterAmnesty){
+                    // if(freezeImunAfterAmnesty){
 
-                        //roles.imun = activeRoles.imun;
-                        roles.imun = amnestyFrozenRoles.imun;
-                        activeRoles.imun = amnestyFrozenRoles.imun;
+                    //     //roles.imun = activeRoles.imun;
+                    //     roles.imun = amnestyFrozenRoles.imun;
+                    //     activeRoles.imun = amnestyFrozenRoles.imun;
 
-                        log(
-                            "♻️ 🛡️ Immune tetap setelah amnesti: " +
-                            roles.imun
-                        );
+                    //     log(
+                    //         "♻️ 🛡️ Immune tetap setelah amnesti: " +
+                    //         roles.imun
+                    //     );
 
-                        freezeImunAfterAmnesty = false;
+                    //     freezeImunAfterAmnesty = false;
                         
 
-                        preserveRolesAfterAmnesty = false;
-                        saveGame()
+                    //     preserveRolesAfterAmnesty = false;
+                    //     saveGame()
 
-                    }
-                    else if(getAlive().length <= 6){
+                    // }
+                    // else if(getAlive().length <= 6){
 
-                        roles.imun = null;
-                        activeRoles.imun = null;
+                    //     roles.imun = null;
+                    //     activeRoles.imun = null;
 
-                        log("🛡️ Tidak ada immune lagi di tahap ini.");
+                    //     log("🛡️ Tidak ada immune lagi di tahap ini.");
 
-                    }else{
+                    // }else{
 
-                        let kandidat = alive.filter(p =>
+                    //     let kandidat = alive.filter(p =>
 
-                            p !== lastWeekRoles.imun &&
+                    //         p !== lastWeekRoles.imun &&
 
-                            activeRoles.bos !== p &&
-                            activeRoles.kunci !== p
-                        );
+                    //         activeRoles.bos !== p &&
+                    //         activeRoles.kunci !== p
+                    //     );
 
-                        if(kandidat.length === 0){
+                    //     if(kandidat.length === 0){
 
-                            kandidat = [...alive];
-                        }
+                    //         kandidat = [...alive];
+                    //     }
 
-                        // let bottomImunCandidates =
-                        // getTopCandidates(kandidat,3,true);
+                    //     // let bottomImunCandidates =
+                    //     // getTopCandidates(kandidat,3,true);
 
-                        // log(
-                        //     "🛡️ Kandidat game IMUN: " +
-                        //     bottomImunCandidates.join(", ")
-                        // );
+                    //     // log(
+                    //     //     "🛡️ Kandidat game IMUN: " +
+                    //     //     bottomImunCandidates.join(", ")
+                    //     // );
 
-                        // await delay(DEBUG_DELAY);
+                    //     // await delay(DEBUG_DELAY);
 
-                        // roles.imun = pickTop(kandidat, true);
-                        let imunRank =
-                        rankCandidates(kandidat,true);
+                    //     // roles.imun = pickTop(kandidat, true);
+                    //     let imunRank =
+                    //     rankCandidates(kandidat,true);
 
-                        let bottomImunCandidates =
-                        imunRank.slice(0,3).map(x=>x.name);
+                    //     let bottomImunCandidates =
+                    //     imunRank.slice(0,3).map(x=>x.name);
                         
-                        //ALEX DEBUG KANDIDAT IMUN
-                        // let bottomImunCandidates = [
+                    //     //ALEX DEBUG KANDIDAT IMUN
+                    //     // let bottomImunCandidates = [
 
-                        //     playerName,
-                        //     imunRank[0].name,
-                        //     imunRank[1].name
-                        // ];
+                    //     //     playerName,
+                    //     //     imunRank[0].name,
+                    //     //     imunRank[1].name
+                    //     // ];
 
-                        // log(
-                        //     "🛡️ Kandidat game IMUN: " +
-                        //     bottomImunCandidates.join(", ")
-                        // );
-                        log("🛡️ Kandidat immune:");
+                    //     // log(
+                    //     //     "🛡️ Kandidat game IMUN: " +
+                    //     //     bottomImunCandidates.join(", ")
+                    //     // );
+                    //     log("🛡️ Kandidat immune:");
 
-                        // bottomImunCandidates.forEach((p,i)=>{
+                    //     // bottomImunCandidates.forEach((p,i)=>{
 
-                        //     log(
-                        //         `${i+1}. ${p} — ${(reputation[p] || 0).toFixed(2)}%`
-                        //     );
-                        // });
-                        for(let i=0; i<bottomImunCandidates.length; i++){
-                            let p = bottomImunCandidates[i];
-                            if(i===0){
-                                log(`Kandidat ke ${i+1}`);
-                                await delay(800);
-                                log(
-                                    `${i+1}. ${p} — ${(reputation[p] || 0).toFixed(2)}%`
-                                );
-                            } 
-                            else                            
-                            {
-                                await delay(DEBUG_DELAY);
-                                log(`Kandidat ke ${i+1}`);
-                                await delay(800);
-                                log(
-                                    `${i+1}. ${p} — ${(reputation[p] || 0).toFixed(2)}%`
-                                );
-                            }
-                        }
+                    //     //     log(
+                    //     //         `${i+1}. ${p} — ${(reputation[p] || 0).toFixed(2)}%`
+                    //     //     );
+                    //     // });
+                    //     for(let i=0; i<bottomImunCandidates.length; i++){
+                    //         let p = bottomImunCandidates[i];
+                    //         if(i===0){
+                    //             log(`Kandidat ke ${i+1}`);
+                    //             await delay(800);
+                    //             log(
+                    //                 `${i+1}. ${p} — ${(reputation[p] || 0).toFixed(2)}%`
+                    //             );
+                    //         } 
+                    //         else                            
+                    //         {
+                    //             await delay(DEBUG_DELAY);
+                    //             log(`Kandidat ke ${i+1}`);
+                    //             await delay(800);
+                    //             log(
+                    //                 `${i+1}. ${p} — ${(reputation[p] || 0).toFixed(2)}%`
+                    //             );
+                    //         }
+                    //     }
 
-                        await delay(DEBUG_DELAY);
-                        log("🎮🛡️ Games pemilihan immune sedang berlangsung... ");
-                        await delay(750);
+                    //     await delay(DEBUG_DELAY);
+                    //     log("🎮🛡️ Games pemilihan immune sedang berlangsung... ");
+                    //     await delay(750);
 
-                        // roles.imun = imunRank[0].name;
-                        // let imunBottom3 =
-                        // imunRank.slice(0,3);
+                    //     // roles.imun = imunRank[0].name;
+                    //     // let imunBottom3 =
+                    //     // imunRank.slice(0,3);
 
-                        // roles.imun =
-                        // imunBottom3[
-                        //     Math.floor(Math.random()*imunBottom3.length)
-                        // ].name;
-                        // let imunBottom3 =
-                        // imunRank.slice(0,3);
-                        // let imunBottom3 =
-                        // imunRank.slice(0,3).map(x=>({
-                        //     name:x.name,
-                        //     // score:100 - (reputation[x.name] || 0)
-                        //     score:(Math.random() * 30)+((100 - reputation[x.name]) * 0.4)
-                        // }));
-                        let imunBottom3 =imunRank.slice(0,3);
+                    //     // roles.imun =
+                    //     // imunBottom3[
+                    //     //     Math.floor(Math.random()*imunBottom3.length)
+                    //     // ].name;
+                    //     // let imunBottom3 =
+                    //     // imunRank.slice(0,3);
+                    //     // let imunBottom3 =
+                    //     // imunRank.slice(0,3).map(x=>({
+                    //     //     name:x.name,
+                    //     //     // score:100 - (reputation[x.name] || 0)
+                    //     //     score:(Math.random() * 30)+((100 - reputation[x.name]) * 0.4)
+                    //     // }));
+                    //     let imunBottom3 =imunRank.slice(0,3);
 
-                        // roles.imun =
-                        // pickWeighted(imunBottom3);
-                        // roles.imun =
-                        // imunBottom3[
-                        //     Math.floor(Math.random()*imunBottom3.length)
-                        // ].name;
-                        // roles.imun =pickRealityWinner(imunBottom3);
-                        if(bottomImunCandidates.includes(playerName)){
+                    //     // roles.imun =
+                    //     // pickWeighted(imunBottom3);
+                    //     // roles.imun =
+                    //     // imunBottom3[
+                    //     //     Math.floor(Math.random()*imunBottom3.length)
+                    //     // ].name;
+                    //     // roles.imun =pickRealityWinner(imunBottom3);
+                    //     if(bottomImunCandidates.includes(playerName)){
+                    //         setProcessingState("ASSIGN_IMUN");
 
-                            roles.imun =
-                            await runRoleMiniGame(
-                                "imun",
-                                bottomImunCandidates
-                            );
+                    //         roles.imun =
+                    //         await runRoleMiniGame(
+                    //             "imun",
+                    //             bottomImunCandidates
+                    //         );
+                    //         clearProcessingState();
 
-                        }else{
-                            roles.imun =pickRealityWinner(imunBottom3);
-                        }
+                    //     }else{
+                    //         roles.imun =pickRealityWinner(imunBottom3);
+                    //     }
 
-                        stats[roles.imun].imun++;
+                    //     stats[roles.imun].imun++;
 
-                        activeRoles.imun = roles.imun;
+                    //     activeRoles.imun = roles.imun;
 
-                        log("🛡️ Immune Minggu ini: "+roles.imun);
-                    }
+                    //     log("🛡️ Immune Minggu ini: "+roles.imun);
+                    // }
                 }
 
                 else if(!endgameMode && weekDay===5){
 
-                    let peserta =
-                    getAlive().filter(
-                        p => p !== roles.bos
-                    );
 
-                    // hanya sampai 7 besar
-                    if(getAlive().length >= 7){
+                    //semua proses pindah ke function baru
+                    await processTeamGame();
 
-                        log("🎮 Hari Game Kelompok!");
-                        await delay(DEBUG_DELAY);
+                    // let peserta =
+                    // getAlive().filter(
+                    //     p => p !== roles.bos
+                    // );
 
-                        // shuffle random
-                        peserta =
-                        [...peserta]
-                        .sort(()=>0.5-Math.random());
+                    // // hanya sampai 7 besar
+                    // if(getAlive().length >= 7){
 
-                        let timBiru = [];
-                        let timMerah = [];
+                    //     log("🎮 Hari Game Kelompok!");
+                    //     await delay(DEBUG_DELAY);
 
-                        peserta.forEach((p,index)=>{
+                    //     // shuffle random
+                    //     peserta =
+                    //     [...peserta]
+                    //     .sort(()=>0.5-Math.random());
 
-                            if(index % 2 === 0){
+                    //     let timBiru = [];
+                    //     let timMerah = [];
 
-                                timBiru.push(p);
+                    //     peserta.forEach((p,index)=>{
 
-                            }else{
+                    //         if(index % 2 === 0){
 
-                                timMerah.push(p);
-                            }
-                        });
+                    //             timBiru.push(p);
 
-                        log("👥 Pembagian Tim...");
-                        await delay(DEBUG_DELAY);
+                    //         }else{
 
-                        log("🔵 Tim Biru:");
-                        log(timBiru.join(", "));
+                    //             timMerah.push(p);
+                    //         }
+                    //     });
 
-                        log("🔴 Tim Merah:");
-                        log(timMerah.join(", "));
+                    //     log("👥 Pembagian Tim...");
+                    //     await delay(DEBUG_DELAY);
 
-                        await delay(DEBUG_DELAY);
+                    //     log("🔵 Tim Biru:");
+                    //     log(timBiru.join(", "));
 
-                        log("🎯 Permainan dimulai...");
-                        await delay(1500);
+                    //     log("🔴 Tim Merah:");
+                    //     log(timMerah.join(", "));
 
-                        // random winner
-                        // let winner =
-                        // Math.random() < 0.5
-                        // ? "biru"
-                        // : "merah";
+                    //     await delay(DEBUG_DELAY);
 
-                        // let winningTeam =
-                        // winner === "biru"
-                        // ? timBiru
-                        // : timMerah;
-                        // let result =
-                        // await runTeamMiniGame(
-                        //     timBiru,
-                        //     timMerah
-                        // );
+                    //     log("🎯 Permainan dimulai...");
+                    //     await delay(1500);
 
-                        let winningTeam;
-                        let result;
+                    //     // random winner
+                    //     // let winner =
+                    //     // Math.random() < 0.5
+                    //     // ? "biru"
+                    //     // : "merah";
 
-                        if(peserta.includes(playerName)){
+                    //     // let winningTeam =
+                    //     // winner === "biru"
+                    //     // ? timBiru
+                    //     // : timMerah;
+                    //     // let result =
+                    //     // await runTeamMiniGame(
+                    //     //     timBiru,
+                    //     //     timMerah
+                    //     // );
+
+                    //     let winningTeam;
+                    //     let result;
+
+                    //     if(peserta.includes(playerName)){
                             
-                            result =
-                            await runTeamMiniGame(
-                                timBiru,
-                                timMerah
-                            );
+                    //         result =
+                    //         await runTeamMiniGame(
+                    //             timBiru,
+                    //             timMerah
+                    //         );
 
-                            winningTeam =
-                            result.winner.includes("Biru")
-                            ? timBiru
-                            : timMerah;
+                    //         winningTeam =
+                    //         result.winner.includes("Biru")
+                    //         ? timBiru
+                    //         : timMerah;
 
                             
-                        }else{
-                            let winner =
-                            Math.random() < 0.5
-                            ? "Biru"
-                            : "Merah";
+                    //     }else{
+                    //         let winner =
+                    //         Math.random() < 0.5
+                    //         ? "Biru"
+                    //         : "Merah";
 
-                            winningTeam =
-                            winner === "Biru"
-                            ? timBiru
-                            : timMerah;
+                    //         winningTeam =
+                    //         winner === "Biru"
+                    //         ? timBiru
+                    //         : timMerah;
 
-                            log(
-                                "🏆 " + 
-                                (winningTeam === "biru"
-                                ? "🔵 "
-                                : "🔴 ") + 
-                                "Tim " + 
-                                (winningTeam === "biru"
-                                ? "Biru"
-                                : "Merah") + " memenangkan game kelompok!"
+                    //         log(
+                    //             "🏆 " + 
+                    //             (winningTeam === "biru"
+                    //             ? "🔵 "
+                    //             : "🔴 ") + 
+                    //             "Tim " + 
+                    //             (winningTeam === "biru"
+                    //             ? "Biru"
+                    //             : "Merah") + " memenangkan game kelompok!"
 
-                            );
+                    //         );
 
-                        }
-
-                        
+                    //     }
 
                         
 
-                        await delay(DEBUG_DELAY);
-
-                        // boost relation antar member
-                        for(let i=0;i<winningTeam.length;i++){
-
-                            for(let j=i+1;j<winningTeam.length;j++){
-
-                                let a = winningTeam[i];
-                                let b = winningTeam[j];
-
-                                let buff =Math.random() < 0.5 ? 1 : 2;
-
-                                relation[a][b] += buff;
-                                relation[b][a] += buff;
-                            }
-                        }
-                        if(roles.bos){
-
-                           winningTeam.forEach(p=>{
-
-                                let buff =
-                                Math.floor(Math.random()*2)+1; // 1-2
-
-                                relation[roles.bos][p] += buff;
-                                relation[p][roles.bos] += 1;
-                            });
-
-                        }
-                        // bonus penonton untuk tim pemenang
-                        winningTeam.forEach(p=>{
-
-                            addPublicImage(p,1);
-
-                        });
-                        updateSpecialRelations();
                         
-                        // updatePlayers();
 
-                        log(
-                            "❤️ Relasi sesama anggota tim pemenang meningkat!"
-                        );
+                    //     await delay(DEBUG_DELAY);
 
-                    }else{
+                    //     // boost relation antar member
+                    //     for(let i=0;i<winningTeam.length;i++){
 
-                        log(
-                            "🤝 Hari bebas, tidak ada game kelompok lagi"
-                        );
-                    }
+                    //         for(let j=i+1;j<winningTeam.length;j++){
+
+                    //             let a = winningTeam[i];
+                    //             let b = winningTeam[j];
+
+                    //             let buff =Math.random() < 0.5 ? 1 : 2;
+
+                    //             relation[a][b] += buff;
+                    //             relation[b][a] += buff;
+                    //         }
+                    //     }
+                    //     if(roles.bos){
+
+                    //        winningTeam.forEach(p=>{
+
+                    //             let buff =
+                    //             Math.floor(Math.random()*2)+1; // 1-2
+
+                    //             relation[roles.bos][p] += buff;
+                    //             relation[p][roles.bos] += 1;
+                    //         });
+
+                    //     }
+                    //     // bonus penonton untuk tim pemenang
+                    //     winningTeam.forEach(p=>{
+
+                    //         addPublicImage(p,1);
+
+                    //     });
+                    //     updateSpecialRelations();
+                        
+                    //     // updatePlayers();
+
+                    //     log(
+                    //         "❤️ Relasi sesama anggota tim pemenang meningkat!"
+                    //     );
+
+                    // }else{
+
+                    //     log(
+                    //         "🤝 Hari bebas, tidak ada game kelompok lagi"
+                    //     );
+                    // }
                 }
 
                 // else if(weekDay===6){
                 //     ekstradisi();
                 // }
                 else if(!endgameMode && weekDay===6){
+
+                    //pindahkan semua proses ke function ini
+                    await processExecution();
 
                     // // reset reputasi perlahan tiap minggu
                     // players.forEach(p=>{
@@ -15922,102 +17086,102 @@
                     // recalculateReputation();
                     // log("📊 Polling reputasi rumah telah direset.");
 
-                    if(getAlive().length === 8 && !comebackDone){
+                    // if(getAlive().length === 8 && !comebackDone){
 
-                        //comebackNight();
-                        await comebackNight();
+                    //     //comebackNight();
+                    //     await comebackNight();
 
-                        comebackDone = true;
-                        localStorage.setItem("comebackDone", "true");
+                    //     comebackDone = true;
+                    //     localStorage.setItem("comebackDone", "true");
 
-                        // updatePlayers();
+                    //     // updatePlayers();
 
-                        // dayCount++;
+                    //     // dayCount++;
 
-                        // weekDay++;
-                        if(weekDay>7) weekDay=1;
+                    //     // weekDay++;
+                    //     if(weekDay>7) weekDay=1;
 
-                        // renderDay();
+                    //     // renderDay();
 
-                        saveGame();
+                    //     saveGame();
 
-                        // ✅ aktifkan lagi tombol
-                        isDayProcessing = false;
-                        updatePlayers();
-                        setGameButtonsDisabled(false);
+                    //     // ✅ aktifkan lagi tombol
+                    //     isDayProcessing = false;
+                    //     updatePlayers();
+                    //     setGameButtonsDisabled(false);
 
-                        return;
-                    }
+                    //     return;
+                    // }
 
-                    let week =
-                    Math.ceil(dayCount / 7);
+                    // let week =
+                    // Math.ceil(dayCount / 7);
 
-                    log(`
-                    <hr>
-                    <b>
+                    // log(`
+                    // <hr>
+                    // <b>
                     
-                    🌙 Hari ke-${dayCount}
-                    (Malam eliminasi Minggu ke-${week})
-                    </b>
-                    `);
+                    // 🌙 Hari ke-${dayCount}
+                    // (Malam eliminasi Minggu ke-${week})
+                    // </b>
+                    // `);
 
-                    //ekstradisi();
-                    await ekstradisi();
-                    // return;
-                    updatePlayers();
+                    // //ekstradisi();
+                    // await ekstradisi();
+                    // // return;
+                    // updatePlayers();
+                    // // if(getAlive().length <= 4){
+
+                    // //     endgameMode = true;
+
+                    // //     weekDay = 0;
+                    // // }
                     // if(getAlive().length <= 4){
 
                     //     endgameMode = true;
 
+                    //     // hapus semua role aktif
+                    //     activeRoles.bos = null;
+                    //     activeRoles.art = null;
+                    //     activeRoles.imun = null;
+                    //     activeRoles.kunci = null;
+
+                    //     roles.bos = null;
+                    //     roles.art = null;
+                    //     roles.imun = null;
+                    //     roles.kunci = null;
+
+                    //     // weekDay = 0;
+
+                    //     // updatePlayers();
                     //     weekDay = 0;
+
+                    //     // updatePlayers();
+
+                    //     saveGame();
+
+                    //     isDayProcessing = false;
+                    //     updatePlayers();
+
+                    //     setGameButtonsDisabled(false);
+
+                    //     return;
                     // }
-                    if(getAlive().length <= 4){
 
-                        endgameMode = true;
+                    // // dayCount++;
 
-                        // hapus semua role aktif
-                        activeRoles.bos = null;
-                        activeRoles.art = null;
-                        activeRoles.imun = null;
-                        activeRoles.kunci = null;
+                    // // weekDay++;
+                    // if(weekDay > 7) weekDay = 1;
 
-                        roles.bos = null;
-                        roles.art = null;
-                        roles.imun = null;
-                        roles.kunci = null;
-
-                        // weekDay = 0;
-
-                        // updatePlayers();
-                        weekDay = 0;
-
-                        // updatePlayers();
-
-                        saveGame();
-
-                        isDayProcessing = false;
-                        updatePlayers();
-
-                        setGameButtonsDisabled(false);
-
-                        return;
-                    }
-
-                    // dayCount++;
-
-                    // weekDay++;
-                    if(weekDay > 7) weekDay = 1;
-
-                    // renderDay();
+                    // // renderDay();
 
 
-                    simulateHouseRelations();
+                    // simulateHouseRelations();
 
-                    dailySocialCount = 0;
+                    // dailySocialCount = 0;
 
-                    saveGame();
+                    // saveGame();
 
-                    return;
+                    // return;
                 }
 
                 else if(!endgameMode && weekDay===7){
@@ -16137,13 +17301,7 @@
                     //     await randomDramaEvent();
                     // }
                 }
-                if(
-                    gangs.length > 0
-                ){
-                    await processGangDirection();
-                    // socialChaosToday = true;
-                    saveGame();
-                }
+                
                 // if(
                 //     gangs.length >= 2 &&
                 //     Math.random() < 0.20
@@ -16197,13 +17355,27 @@
                 
                 // renderDay();
                 npcDailyBonding();
-                processRevengeSystem();
+                // processRevengeSystem();
+                if(
+                    weekDay !== 6 &&
+                    !endgameMode
+                ){
+                    if(
+                    gangs.length > 0
+                    ){
+                        await processGangDirection();
+                        // socialChaosToday = true;
+                        saveGame();
+                    }
+                    processRevengeSystem();
+                    updateGangs();
+                }
 
                 
                 
 
                 simulateHouseRelations();
-                updateGangs();
+                // updateGangs();
                 // updatePlayers();
                 dailySocialCount = 0;
                 // saveGame();
@@ -16281,6 +17453,805 @@
 
             //     saveGame();
             // }
+
+            async function processAssignBoss(){
+                let alive = getAlive();
+                // isDayProcessing = true;
+                // updatePlayers();
+                // setGameButtonsDisabled(true);
+                setProcessingState("ASSIGN_BOSS");
+
+                if(freezeBosAfterAmnesty){
+
+                    roles.bos = amnestyFrozenRoles.bos;
+                    activeRoles.bos = amnestyFrozenRoles.bos;
+
+                    log(
+                        "♻️ 👑 BOSS tetap setelah amnesti: " +
+                        roles.bos
+                    );
+
+                    freezeBosAfterAmnesty = false;
+                    saveGame();
+
+                    setGameButtonsDisabled(false);
+                    return;
+                }
+
+                if(getAlive().length <= 4){
+
+                    roles.bos = null;
+                    activeRoles.bos = null;
+
+                    log("👑 Tidak ada BOSS lagi di tahap ini.");
+
+                    setGameButtonsDisabled(false);
+                    return;
+                }
+
+                // rollWeeklyMiniGames();
+
+                
+
+                let kandidat = alive.filter(p=>
+
+                    p !== lastWeekRoles.bos
+                );
+
+                if(kandidat.length===0){
+
+                    kandidat=[...alive];
+                }
+
+                let bosRank =
+                rankCandidates(kandidat);
+
+                let topBosCandidates =
+                bosRank.slice(0,3).map(x=>x.name);
+
+                //     let topBosCandidates =
+                //     bosRank.slice(0,3).map(x=>x.name);
+                //     //ALEX DEBUG KANDIDAT bos BWT MINIGAME BOS
+                //     // let topBosCandidates = [
+                //     //     playerName,
+                //     //     "Kanya",
+                //     //     "Indra"
+                //     // ];
+
+                log("🎮 Kandidat BOSS Minggu Ini:");
+                // if(isResettingGame){return}
+
+                for(let i=0;i<topBosCandidates.length;i++){
+                    if(isResettingGame){return}
+
+                    let p=topBosCandidates[i];
+
+                    if(i===0){
+
+                        log(`Kandidat ke ${i+1}`);
+                        if(isResettingGame){return}
+                        await delay(800);
+
+                        if(isResettingGame){return}
+
+                    }else{
+
+                        await delay(DEBUG_DELAY);
+
+                        if(isResettingGame){return}
+                        log(`Kandidat ke ${i+1}`);
+                        if(isResettingGame){return}
+                        await delay(800);
+                        if(isResettingGame){return}
+                    }
+
+                    log(
+                        `${i+1}. ${p} — ${(reputation[p]||0).toFixed(2)}%`
+                    );
+                    if(isResettingGame){return}
+                }
+
+                await delay(DEBUG_DELAY);
+
+                log("🎮👑 Games pemilihan BOSS sedang berlangsung...");
+                if(isResettingGame){return}
+
+                await delay(750);
+
+                let bosTop3 =
+                bosRank.slice(0,3);
+
+                if(topBosCandidates.includes(playerName)){
+
+                    roles.bos =
+                    await runRoleMiniGame(
+                        "bos",
+                        topBosCandidates
+                    );
+
+                    // clearProcessingState();
+
+                }else{
+
+                    roles.bos =
+                    pickRealityWinner(bosTop3);
+
+                    // clearProcessingState();
+                }
+
+                stats[roles.bos].bos++;
+
+                legacyReputation[roles.bos]=
+                (legacyReputation[roles.bos]||0)+4;
+
+                addReputation(roles.bos,8);
+
+                addPublicImage(roles.bos,3);
+
+                activeRoles.bos=roles.bos;
+
+                log(
+                    "👑 BOSS Minggu Ini: "+
+                    roles.bos
+                );
+                if(isResettingGame){return}
+
+                if(stats[roles.bos].bos>=2){
+
+                    addReputation(
+                        roles.bos,
+                        stats[roles.bos].bos*2
+                    );
+
+                    log(
+                        `👑 ${roles.bos} makin dikenal publik sebagai BOSS ${stats[roles.bos].bos} kali`
+                    );
+                }
+                if(isResettingGame){return}
+                clearProcessingState();
+                // isDayProcessing = false;
+                // updatePlayers();
+                // setGameButtonsDisabled(false);
+            }
+
+            async function processAssignArt(){
+
+                let alive = getAlive();
+                setProcessingState("ASSIGN_ART");
+
+                if(getAlive().length <= 4){
+
+                    roles.art = null;
+                    activeRoles.art = null;
+
+                    log("🧹 Tidak ada Housekeeper di tahap ini.");
+
+                    return;
+                }
+
+                
+
+                let kandidat = alive.filter(p=>
+
+                    p !== lastWeekRoles.art &&
+                    activeRoles.bos !== p
+
+                );
+
+                if(kandidat.length===0){
+
+                    kandidat = [...alive];
+                }
+
+                let artRank =
+                rankCandidates(kandidat,true);
+
+                let bottomArtCandidates =
+                artRank.slice(0,3).map(x=>x.name);
+
+                log("🧹 Kandidat Housekeeper:");
+                if(isResettingGame){return}
+
+                for(let i=0;i<bottomArtCandidates.length;i++){
+                    if(isResettingGame){return}
+
+                    let p = bottomArtCandidates[i];
+
+                    if(i===0){
+
+                        log(`Kandidat ke ${i+1}`);
+                        if(isResettingGame){return}
+
+                        await delay(800);
+                        if(isResettingGame){return}
+
+                    }else{
+
+                        await delay(DEBUG_DELAY);
+                        if(isResettingGame){return}
+
+                        log(`Kandidat ke ${i+1}`);
+                        if(isResettingGame){return}
+
+                        await delay(800);
+                        if(isResettingGame){return}
+                    }
+
+                    log(
+                        `${i+1}. ${p} — ${(reputation[p]||0).toFixed(2)}%`
+                    );
+                    if(isResettingGame){return}
+                }
+
+                await delay(DEBUG_DELAY);
+
+                log("🎮🧹 Games pemilihan Housekeeper sedang berlangsung...");
+
+                await delay(750);
+
+                let artBottom3 =
+                artRank.slice(0,3);
+
+                if(bottomArtCandidates.includes(playerName)){
+
+                    roles.art =
+                    await runRoleMiniGame(
+
+                        "art",
+
+                        bottomArtCandidates,
+
+                        true
+
+                    );
+
+                }else{
+
+                    roles.art =
+                    pickRealityWinner(artBottom3);
+                }
+
+                stats[roles.art].art++;
+
+                activeRoles.art = roles.art;
+
+                log("🧹 Housekeeper Minggu Ini: " + roles.art);
+
+                addReputation(roles.art,-5);
+
+                addPublicImage(roles.art,-3);
+
+                clearProcessingState();
+            }
+
+            async function processAssignPK(){
+                let alive = getAlive();
+                setProcessingState("ASSIGN_PK");
+                if(isResettingGame){return}
+                if(freezePkAfterAmnesty){
+
+                    // roles.kunci = activeRoles.kunci;
+                    roles.kunci = amnestyFrozenRoles.kunci;
+                    activeRoles.kunci = amnestyFrozenRoles.kunci;
+
+                    log(
+                        "♻️ 🔑 Key Holder tetap setelah amnesti: " +
+                        roles.kunci
+                    );
+
+                    freezePkAfterAmnesty = false;
+                    saveGame()
+
+                }
+                else if(getAlive().length <= 4){
+
+                    roles.kunci = null;
+                    activeRoles.kunci = null;
+
+                    log("🔑 Tidak ada Key Holder di tahap ini.");
+
+                }
+                else
+                {
+
+                    let kandidat = alive.filter(p =>
+
+                        p !== lastWeekRoles.kunci 
+                        
+                        &&
+
+                        activeRoles.bos !== p 
+                        //alex delete dulu
+                        // &&
+                        // activeRoles.imun !== p
+                    );
+                    if(isResettingGame){return}
+
+                    log("🎮🔑 Games pemilihan Key Holder berlangsung...");
+                    if(isResettingGame){return}
+                    await delay(900);
+                    if(isResettingGame){return}
+
+                    
+
+                    // roles.kunci =
+                    // kandidat[Math.floor(Math.random()*kandidat.length)];
+                    // console.log("PK CANDIDATES", kandidat);
+                    // console.log("PLAYER", playerName);
+                    if(kandidat.includes(playerName)){
+
+                        roles.kunci =
+                        await runRoleMiniGame(
+                            "pk",
+                            kandidat
+                        );
+
+                    }
+                    else
+                    {
+
+                        // roles.bos =
+                        // pickRealityWinner(bosTop3);
+                        roles.kunci =
+                        kandidat[Math.floor(Math.random()*kandidat.length)];
+                    }
+                    // console.log("PK RESULT =", roles.kunci);
+                    // console.log("TYPE =", typeof roles.kunci);
+                    if(isResettingGame){return}
+                    
+
+                    stats[roles.kunci].pk++;
+                    // 🔑 legacy reputation PK
+                    legacyReputation[roles.kunci] =
+                    (legacyReputation[roles.kunci] || 0) + 2;
+
+                    // 🔑 boost publik mingguan
+                    addReputation(roles.kunci, 4);
+                    addPublicImage(roles.kunci, 1);
+                    
+                    
+
+                    activeRoles.kunci = roles.kunci;
+
+                    log("🔑 Key Holder Minggu Ini: "+roles.kunci);
+                    // 🔑 PK veteran mulai dikenal publik
+                    if(stats[roles.kunci].pk >= 2){
+
+                        addReputation(
+                            roles.kunci,
+                            stats[roles.kunci].pk
+                        );
+
+                        log(
+                        `🔑 ${roles.kunci} mulai dikenal publik sebagai Key Holder sebanyak ${stats[roles.kunci].pk} kali`
+                        );
+                    }
+                }
+
+
+                clearProcessingState();
+
+            }
+
+            async function processAssignImun(){
+                let alive = getAlive();
+                setProcessingState("ASSIGN_IMUN");
+                if(freezeImunAfterAmnesty){
+
+                    //roles.imun = activeRoles.imun;
+                    roles.imun = amnestyFrozenRoles.imun;
+                    activeRoles.imun = amnestyFrozenRoles.imun;
+
+                    log(
+                        "♻️ 🛡️ Immune tetap setelah amnesti: " +
+                        roles.imun
+                    );
+
+                    freezeImunAfterAmnesty = false;
+                    
+
+                    preserveRolesAfterAmnesty = false;
+                    saveGame()
+
+                }
+                else if(getAlive().length <= 6){
+
+                    roles.imun = null;
+                    activeRoles.imun = null;
+
+                    log("🛡️ Tidak ada immune lagi di tahap ini.");
+
+                }else{
+
+                    let kandidat = alive.filter(p =>
+
+                        p !== lastWeekRoles.imun &&
+
+                        activeRoles.bos !== p &&
+                        activeRoles.kunci !== p
+                    );
+
+                    if(kandidat.length === 0){
+
+                        kandidat = [...alive];
+                    }
+
+                    // let bottomImunCandidates =
+                    // getTopCandidates(kandidat,3,true);
+
+                    // log(
+                    //     "🛡️ Kandidat game IMUN: " +
+                    //     bottomImunCandidates.join(", ")
+                    // );
+
+                    // await delay(DEBUG_DELAY);
+
+                    // roles.imun = pickTop(kandidat, true);
+                    let imunRank =
+                    rankCandidates(kandidat,true);
+
+                    let bottomImunCandidates =
+                    imunRank.slice(0,3).map(x=>x.name);
+                    
+                    //ALEX DEBUG KANDIDAT IMUN
+                    // let bottomImunCandidates = [
+
+                    //     playerName,
+                    //     imunRank[0].name,
+                    //     imunRank[1].name
+                    // ];
+
+                    // log(
+                    //     "🛡️ Kandidat game IMUN: " +
+                    //     bottomImunCandidates.join(", ")
+                    // );
+                    log("🛡️ Kandidat immune:");
+                    if(isResettingGame){return}
+
+                    // bottomImunCandidates.forEach((p,i)=>{
+
+                    //     log(
+                    //         `${i+1}. ${p} — ${(reputation[p] || 0).toFixed(2)}%`
+                    //     );
+                    // });
+                    for(let i=0; i<bottomImunCandidates.length; i++){
+                        let p = bottomImunCandidates[i];
+                        if(i===0){
+                            log(`Kandidat ke ${i+1}`);
+                            if(isResettingGame){return}
+                            await delay(800);
+                            log(
+                                `${i+1}. ${p} — ${(reputation[p] || 0).toFixed(2)}%`
+                            );
+                            if(isResettingGame){return}
+                        } 
+                        else                            
+                        {
+                            await delay(DEBUG_DELAY);
+                            if(isResettingGame){return}
+                            log(`Kandidat ke ${i+1}`);
+                            if(isResettingGame){return}
+                            await delay(800);
+                            log(
+                                `${i+1}. ${p} — ${(reputation[p] || 0).toFixed(2)}%`
+                            );
+                            if(isResettingGame){return}
+                        }
+                    }
+
+                    await delay(DEBUG_DELAY);
+                    if(isResettingGame){return}
+                    log("🎮🛡️ Games pemilihan immune sedang berlangsung... ");
+                    if(isResettingGame){return}
+                    await delay(750);
+
+                    // roles.imun = imunRank[0].name;
+                    // let imunBottom3 =
+                    // imunRank.slice(0,3);
+
+                    // roles.imun =
+                    // imunBottom3[
+                    //     Math.floor(Math.random()*imunBottom3.length)
+                    // ].name;
+                    // let imunBottom3 =
+                    // imunRank.slice(0,3);
+                    // let imunBottom3 =
+                    // imunRank.slice(0,3).map(x=>({
+                    //     name:x.name,
+                    //     // score:100 - (reputation[x.name] || 0)
+                    //     score:(Math.random() * 30)+((100 - reputation[x.name]) * 0.4)
+                    // }));
+                    let imunBottom3 =imunRank.slice(0,3);
+
+                    // roles.imun =
+                    // pickWeighted(imunBottom3);
+                    // roles.imun =
+                    // imunBottom3[
+                    //     Math.floor(Math.random()*imunBottom3.length)
+                    // ].name;
+                    // roles.imun =pickRealityWinner(imunBottom3);
+                    if(bottomImunCandidates.includes(playerName)){
+
+                        roles.imun =
+                        await runRoleMiniGame(
+                            "imun",
+                            bottomImunCandidates
+                        );
+
+                    }else{
+                        roles.imun =pickRealityWinner(imunBottom3);
+                    }
+
+                    stats[roles.imun].imun++;
+
+                    activeRoles.imun = roles.imun;
+
+                    log("🛡️ Immune Minggu ini: "+roles.imun);
+                }
+
+
+
+                clearProcessingState();
+
+            }
+
+            async function processTeamGame(){
+                setProcessingState("TEAM_GAME");
+
+                let peserta =
+                getAlive().filter(
+                    p => p !== roles.bos
+                );
+
+                // hanya sampai 7 besar
+                if(getAlive().length >= 7){
+
+                    log("🎮 Hari Game Kelompok!");
+                    await delay(DEBUG_DELAY);
+
+                    // shuffle random
+                    peserta =
+                    [...peserta]
+                    .sort(()=>0.5-Math.random());
+
+                    let timBiru = [];
+                    let timMerah = [];
+
+                    peserta.forEach((p,index)=>{
+
+                        if(index % 2 === 0){
+
+                            timBiru.push(p);
+
+                        }else{
+
+                            timMerah.push(p);
+                        }
+                    });
+
+                    log("👥 Pembagian Tim...");
+                    await delay(DEBUG_DELAY);
+
+                    log("🔵 Tim Biru:");
+                    log(timBiru.join(", "));
+
+                    log("🔴 Tim Merah:");
+                    log(timMerah.join(", "));
+
+                    await delay(DEBUG_DELAY);
+
+                    log("🎯 Permainan dimulai...");
+                    await delay(1500);
+
+                    // random winner
+                    // let winner =
+                    // Math.random() < 0.5
+                    // ? "biru"
+                    // : "merah";
+
+                    // let winningTeam =
+                    // winner === "biru"
+                    // ? timBiru
+                    // : timMerah;
+                    // let result =
+                    // await runTeamMiniGame(
+                    //     timBiru,
+                    //     timMerah
+                    // );
+
+                    let winningTeam;
+                    let result;
+
+                    if(peserta.includes(playerName)){
+                        
+                        result =
+                        await runTeamMiniGame(
+                            timBiru,
+                            timMerah
+                        );
+
+                        winningTeam =
+                        result.winner.includes("Biru")
+                        ? timBiru
+                        : timMerah;
+
+                        
+                    }else{
+                        let winner =
+                        Math.random() < 0.5
+                        ? "Biru"
+                        : "Merah";
+
+                        winningTeam =
+                        winner === "Biru"
+                        ? timBiru
+                        : timMerah;
+
+                        log(
+                            "🏆 " + 
+                            (winningTeam === "biru"
+                            ? "🔵 "
+                            : "🔴 ") + 
+                            "Tim " + 
+                            (winningTeam === "biru"
+                            ? "Biru"
+                            : "Merah") + " memenangkan game kelompok!"
+
+                        );
+
+                    }
+
+                    
+
+                    
+
+                    await delay(DEBUG_DELAY);
+
+                    // boost relation antar member
+                    for(let i=0;i<winningTeam.length;i++){
+
+                        for(let j=i+1;j<winningTeam.length;j++){
+
+                            let a = winningTeam[i];
+                            let b = winningTeam[j];
+
+                            let buff =Math.random() < 0.5 ? 1 : 2;
+
+                            relation[a][b] += buff;
+                            relation[b][a] += buff;
+                        }
+                    }
+                    if(roles.bos){
+
+                        winningTeam.forEach(p=>{
+
+                            let buff =
+                            Math.floor(Math.random()*2)+1; // 1-2
+
+                            relation[roles.bos][p] += buff;
+                            relation[p][roles.bos] += 1;
+                        });
+
+                    }
+                    // bonus penonton untuk tim pemenang
+                    winningTeam.forEach(p=>{
+
+                        addPublicImage(p,1);
+
+                    });
+                    updateSpecialRelations();
+                    
+                    // updatePlayers();
+
+                    log(
+                        "❤️ Relasi sesama anggota tim pemenang meningkat!"
+                    );
+
+                }else{
+
+                    log(
+                        "🤝 Hari bebas, tidak ada game kelompok lagi"
+                    );
+                }
+
+
+
+                clearProcessingState();
+
+            }
+
+            async function processExecution(){
+
+                setProcessingState("PROCESS_EXECUTION");
+
+                if(getAlive().length === 8 && !comebackDone){
+
+                    await comebackNight();
+
+                    comebackDone = true;
+
+                    localStorage.setItem(
+                        "comebackDone",
+                        "true"
+                    );
+
+                    if(weekDay > 7){
+
+                        weekDay = 1;
+                    }
+
+                    saveGame();
+
+                    clearProcessingState();
+
+                    isDayProcessing = false;
+
+                    updatePlayers();
+
+                    setGameButtonsDisabled(false);
+
+                    return;
+                }
+
+                let week =
+                Math.ceil(dayCount / 7);
+
+                log(`
+                <hr>
+                <b>
+
+                🌙 Hari ke-${dayCount}
+                (Malam eliminasi Minggu ke-${week})
+
+                </b>
+                `);
+
+                await ekstradisi();
+
+                updatePlayers();
+
+                if(getAlive().length <= 4){
+
+                    endgameMode = true;
+
+                    activeRoles.bos = null;
+                    activeRoles.art = null;
+                    activeRoles.imun = null;
+                    activeRoles.kunci = null;
+
+                    roles.bos = null;
+                    roles.art = null;
+                    roles.imun = null;
+                    roles.kunci = null;
+
+                    weekDay = 0;
+
+                    saveGame();
+
+                    clearProcessingState();
+
+                    isDayProcessing = false;
+
+                    updatePlayers();
+
+                    setGameButtonsDisabled(false);
+
+                    return;
+                }
+
+                if(weekDay > 7){
+
+                    weekDay = 1;
+                }
+
+                simulateHouseRelations();
+
+                dailySocialCount = 0;
+
+                saveGame();
+
+                clearProcessingState();
+            }
 
             async function socializeWithTarget(target){
 
@@ -16895,6 +18866,217 @@
 
                 return relation[a][b];
             }
+            function getDecisionRelationLabel(player,target){
+
+                let rel = getRelationSafe(player,target);
+
+                if(rel >= 50){
+                    return "🧑‍🤝‍🧑 Bestie";
+                }
+
+                if(rel >= 30){
+                    return "🤝 Close Friend";
+                }
+
+                if(rel >= 18){
+                    return "👥 Friend";
+                }
+
+                if(rel <= -30){
+                    return "⚔️ Rival";
+                }
+
+                if(rel <= -15){
+                    return "💢 Enemy";
+                }
+
+                return "😐 Netral";
+            }
+            function buildDecisionCard(
+                target,
+                action,
+                label,
+                color="boss"
+            ){
+
+                let gang =
+                gangs.find(g=>g.members.includes(target));
+
+                let partner = dating[target];
+
+                let genderIcon =
+                genderMap[target] === "wanita"
+                ? "🙎🏻‍♀️"
+                : "🙎🏻‍♂️";
+
+                return `
+                <div class="decision-card">
+
+                    <div class="decision-header">
+
+                        <div class="decision-name">
+                            ${genderIcon} ${target}
+                        </div>
+
+                        <div class="decision-city">
+                            📍 ${cityMap[target]}
+                        </div>
+
+                    </div>
+                    <div class="decision-divider"></div>
+
+                    <div class="decision-info">
+
+                        ❤️ Kamu ➜ ${target} :
+
+                        <b>${getRelationSafe(playerName,target)}</b>
+
+                        <br>
+
+                        ❤️ ${target} ➜ Kamu :
+
+                        <b>${getRelationSafe(target,playerName)}</b>
+
+                        <br>
+
+                        🎂 ${ageMap[target]} Tahun
+
+                        <br>
+
+                        💼 ${jobMap[target]}
+
+                        <br>
+
+                        👥 ${
+                            gang
+                            ? gang.name
+                            : "Belum ada geng"
+                        }
+
+                        <br>
+                        
+
+                        💕 ${
+                            partner
+                            ? "Pacar " + partner
+                            : "Single"
+                        }
+
+                        <br>
+
+                        ${getDecisionRelationLabel(playerName,target)}
+                        <br>
+
+                        ${getTraitIcon(traitsMap[target])} ${traitsMap[target]}
+                        <br>
+
+                        ${subTraitMap[target]}
+
+                    </div>
+
+                    <button
+                    class="decision-action ${color}"
+                    onclick="${action}"
+                    >
+                        ${label}
+                    </button>
+
+                </div>
+                `;
+            }
+
+            function buildDecisionToggleCard(target){
+
+                let gang =
+                gangs.find(g=>g.members.includes(target));
+
+                let partner = dating[target];
+
+                let checked =
+                extraditionState.imunChoices.includes(target);
+
+                let genderIcon =
+                genderMap[target] === "wanita"
+                ? "🙎‍♀️"
+                : "🙎‍♂️";
+
+                return `
+
+                <div
+                    class="decision-card selectable
+                    ${checked ? "selected" : ""}"
+
+                    onclick="toggleImunChoice('${target}')"
+
+                    id="imunBtn-${target}"
+
+                >
+
+                    <div class="decision-name">
+
+                        ${checked ? "✅ " : ""} ${genderIcon} ${target}
+
+                    </div>
+                    <div class="decision-divider"></div>
+
+
+
+                    <div class="decision-info">
+
+                        ❤️ Kamu → ${target} :
+
+                        <b>${getRelationSafe(playerName,target)}</b>
+
+                        <br>
+
+                        ❤️ ${target} → Kamu :
+
+                        <b>${getRelationSafe(target,playerName)}</b>
+
+                        <br>
+
+                        📍 ${cityMap[target]}
+
+                        <br>
+
+                        🎂 ${ageMap[target]} Tahun
+
+                        <br>
+
+                        💼 ${jobMap[target]}
+
+                        <br>
+
+                        👥 ${
+                            gang
+                            ? gang.name
+                            : "Belum ada geng"
+                        }
+
+                        <br>
+
+                        💕 ${
+                            partner
+                            ? "Pacar " + partner
+                            : "Single"
+                        }
+
+                        <br>
+
+                        ${getDecisionRelationLabel(playerName,target)}
+                        <br>
+
+                        ${getTraitIcon(traitsMap[target])} ${traitsMap[target]}
+                        <br>
+                        
+                        ${subTraitMap[target]}
+
+                    </div>
+
+                </div>
+
+                `;
+            }
 
             function openDecisionModal(title, html){
 
@@ -17205,17 +19387,31 @@
 
                 let html = "";
 
+                // pendingDecision.options.forEach(p=>{
+
+                //     html += `
+                //     <button onclick="voteAmnesty('${p}')">
+                //         Pilih ${p}
+
+                //         (❤️ ${
+                //             getRelationSafe(playerName,p)
+                //         })
+                //     </button><br>
+                //     `;
+                // });
+
                 pendingDecision.options.forEach(p=>{
 
-                    html += `
-                    <button onclick="voteAmnesty('${p}')">
-                        Pilih ${p}
+                    html += buildDecisionCard(
 
-                        (❤️ ${
-                            getRelationSafe(playerName,p)
-                        })
-                    </button><br>
-                    `;
+                        p,
+
+                        `voteAmnesty('${p}')`,
+
+                        "🗳️ Vote"
+
+                    );
+
                 });
 
                 // openDecisionModal(
@@ -17844,21 +20040,26 @@
 
                         let html = "";
 
+                        // kandidatTukar.forEach(p=>{
+
+                        //     html += `
+                        //     <button
+                        //     onclick="toggleImunChoice('${p}')"
+
+                        //     id="imunBtn-${p}"
+
+                        //     data-label="${p} (❤️ ${getRelationSafe(playerName,p)})"
+                        //     >
+
+                        //         ${p} (❤️ ${getRelationSafe(playerName,p)}) 
+
+                        //     </button><br>
+                        //     `;
+                        // });
                         kandidatTukar.forEach(p=>{
 
-                            html += `
-                            <button
-                            onclick="toggleImunChoice('${p}')"
+                            html += buildDecisionToggleCard(p);
 
-                            id="imunBtn-${p}"
-
-                            data-label="${p} (❤️ ${getRelationSafe(playerName,p)})"
-                            >
-
-                                ${p} (❤️ ${getRelationSafe(playerName,p)}) 
-
-                            </button><br>
-                            `;
                         });
 
                         html += `
@@ -18027,19 +20228,29 @@
 
                     let html = "";
 
+                    // bottom3.forEach(p=>{
+
+                    //     html += `
+                    //     <button onclick="playerSaveByBoss('${p}')">
+
+                    //         ${p}
+
+                    //         (❤️ ${
+                    //             getRelationSafe(playerName,p)
+                    //         })
+
+                    //     </button>
+                    //     `;
+                    // });
                     bottom3.forEach(p=>{
 
-                        html += `
-                        <button onclick="playerSaveByBoss('${p}')">
+                        html += buildDecisionCard(
+                            p,
+                            `playerSaveByBoss('${p}')`,
+                            "👑 Selamatkan",
+                            "boss"
+                        );
 
-                            ${p}
-
-                            (❤️ ${
-                                getRelationSafe(playerName,p)
-                            })
-
-                        </button>
-                        `;
                     });
 
                     // openDecisionModal(
@@ -18154,19 +20365,29 @@
 
                     let html = "";
 
+                    // sisa.forEach(p=>{
+
+                    //     html += `
+                    //     <button onclick="playerEliminateByKey('${p}')">
+
+                    //         ${p}
+
+                    //         (❤️ ${
+                    //             getRelationSafe(playerName,p)
+                    //     })
+
+                    //     </button>
+                    //     `;
+                    // });
+
                     sisa.forEach(p=>{
 
-                        html += `
-                        <button onclick="playerEliminateByKey('${p}')">
-
-                            ${p}
-
-                            (❤️ ${
-                                getRelationSafe(playerName,p)
-                        })
-
-                        </button>
-                        `;
+                        html += buildDecisionCard(
+                            p,
+                            `playerEliminateByKey('${p}')`,
+                            "🔑 Eliminasi",
+                            "pk"
+                        );
                     });
 
                     // openDecisionModal(
@@ -18280,7 +20501,7 @@
                 }
                 eliminatedOrder.unshift(eliminated);
                 updateSpecialRelations();
-                updateGangs();
+                // updateGangs();
                 updatePlayers();
 
 
@@ -18940,6 +21161,109 @@
             //     console.log(ranking);
                 
             // }
+            async function debugExecution(){
+
+                // resetAllRoles();
+
+                //buat debug saja, nanti dihapus
+                // roles.bos =playerName;
+                // roles.kunci = "Astrid";
+                // roles.imun = "Cencen";
+
+                // roles.bos ="Astrid";
+                // roles.kunci = playerName;
+                // roles.imun = "Cencen";
+
+                roles.bos ="Astrid";
+                roles.kunci = "Cencen";
+                roles.imun = playerName;
+
+
+                activeRoles.bos = roles.bos;
+                activeRoles.kunci = roles.kunci;
+                activeRoles.imun = roles.imun;
+
+                // hardcode kandidat bawah
+                // debugBottom3 = [
+                //     "Kanya",
+                //     "James",
+                //     "Silvy"
+                // ];
+
+                await processExecution();
+            }
+            async function debugAmnesty(){
+
+                amnestyMode = true;
+
+                let eliminated = [
+                    "Bayu",
+                    "Fanny",
+                    "Rio",
+                    "Kanya",
+                    "David",
+                    "Zahra",
+                    "Astrid",
+                    "Glenn",
+                    "James",
+                    "Silvy",
+                    "Dimas",
+                    "Clara"
+                ];
+
+                players.forEach(p=>{
+
+                    status[p] = "AMAN";
+
+                });
+
+                eliminated.forEach(p=>{
+
+                    status[p] = "KELUAR";
+
+                });
+
+                eliminatedOrder = [...eliminated];
+
+                roles.bos = playerName;
+                roles.kunci = "Kenny";
+
+                updatePlayers();
+                saveGame();
+
+                await comebackNight();
+
+            }
+            async function debugrandomHouseEvent(){
+
+                await randomHouseEvent();
+
+
+                // await processAutoGossip();
+
+                // await processAutoAduDomba();
+
+            }
+            async function debugprocessAutoGossip(){
+
+                // await randomHouseEvent();
+
+                await processAutoGossip();
+
+
+                // await processAutoAduDomba();
+
+            }
+            async function debugprocessAutoAduDomba(){
+
+                // await randomHouseEvent();
+
+                // await processAutoGossip();
+
+                await processAutoAduDomba();
+
+
+            }
             async function debugSemifinalFinal(){
 
                 endgameMode = true;
@@ -19849,19 +22173,29 @@
 
                     let html = "";
 
+                    // sisa.forEach(p=>{
+
+                    //     html += `
+                    //     <button onclick="playerEliminateByKey('${p}')">
+
+                    //         ${p}
+
+                    //         (❤️ ${
+                    //             getRelationSafe(playerName,p)
+                    //         })
+
+                    //     </button><br>
+                    //     `;
+                    // });
+
                     sisa.forEach(p=>{
 
-                        html += `
-                        <button onclick="playerEliminateByKey('${p}')">
-
-                            ${p}
-
-                            (❤️ ${
-                                getRelationSafe(playerName,p)
-                            })
-
-                        </button><br>
-                        `;
+                        html += buildDecisionCard(
+                            p,
+                            `playerEliminateByKey('${p}')`,
+                            "🔑 Eliminasi",
+                            "pk"
+                        );
                     });
 
                     // openDecisionModal(
@@ -20027,19 +22361,29 @@
 
                 let html = "";
 
+                // sisa.forEach(p=>{
+
+                //     html += `
+                //     <button onclick="playerEliminateByKey('${p}')">
+
+                //         ${p}
+
+                //         (❤️ ${
+                //             getRelationSafe(playerName,p)
+                //         })
+
+                //     </button><br>
+                //     `;
+                // });
+
                 sisa.forEach(p=>{
 
-                    html += `
-                    <button onclick="playerEliminateByKey('${p}')">
-
-                        ${p}
-
-                        (❤️ ${
-                            getRelationSafe(playerName,p)
-                        })
-
-                    </button><br>
-                    `;
+                    html += buildDecisionCard(
+                        p,
+                        `playerEliminateByKey('${p}')`,
+                        "🔑 Eliminasi",
+                        "pk"
+                    );
                 });
 
                 // openDecisionModal(
@@ -20210,25 +22554,30 @@
 
                 let html = "";
 
+                // kandidatTukar.forEach(p=>{
+
+                //     let checked =
+                //     extraditionState.imunChoices.includes(p);
+
+                //     html += `
+                //     <button
+                //     onclick="toggleImunChoice('${p}')"
+                //     id="imunBtn-${p}"
+                //     data-label="${p} (❤️ ${getRelationSafe(playerName,p)})"
+                //     style="
+                //         background:
+                //         ${checked ? '#10b981' : '#f59e0b'}
+                //     "
+                //     >
+                //         ${checked ? '✅ ' : ''}
+                //         ${p} (❤️ ${getRelationSafe(playerName,p)})         
+                //     </button><br>
+                //     `;
+                // });
                 kandidatTukar.forEach(p=>{
 
-                    let checked =
-                    extraditionState.imunChoices.includes(p);
+                    html += buildDecisionToggleCard(p);
 
-                    html += `
-                    <button
-                    onclick="toggleImunChoice('${p}')"
-                    id="imunBtn-${p}"
-                    data-label="${p} (❤️ ${getRelationSafe(playerName,p)})"
-                    style="
-                        background:
-                        ${checked ? '#10b981' : '#f59e0b'}
-                    "
-                    >
-                        ${checked ? '✅ ' : ''}
-                        ${p} (❤️ ${getRelationSafe(playerName,p)})         
-                    </button><br>
-                    `;
                 });
 
                 html += `
@@ -20342,6 +22691,8 @@
                 let btn =
                 document.getElementById("imunBtn-"+name);
 
+                let card = btn;
+
                 // SUDAH DIPILIH
                 if(extraditionState.imunChoices.includes(name)){
 
@@ -20349,9 +22700,13 @@
                     extraditionState.imunChoices
                     .filter(x=>x!==name);
 
-                    btn.innerHTML = btn.dataset.label;
+                    // btn.innerHTML = btn.dataset.label;
 
-                    btn.style.background = "#f59e0b";
+                    // btn.style.background = "#f59e0b";
+                    card.classList.remove("selected");
+
+                    // card.querySelector(".decision-check").innerHTML = "";
+                    card.outerHTML = buildDecisionToggleCard(name);
                     saveGame();
 
                     return;
@@ -20372,11 +22727,15 @@
                 saveGame();
 
                 //btn.innerHTML = "✅ " + name;
-                btn.innerHTML ="✅ " + btn.dataset.label;
-                //btn.innerHTML = btn.dataset.label;
+                // btn.innerHTML ="✅ " + btn.dataset.label;
+                // //btn.innerHTML = btn.dataset.label;
                 
 
-                btn.style.background = "#10b981";
+                // btn.style.background = "#10b981";
+                card.classList.add("selected");
+
+                // card.querySelector(".decision-check").innerHTML="✅";
+                card.outerHTML = buildDecisionToggleCard(name);
             }
 
             function confirmImunChoices(){
@@ -20660,19 +23019,29 @@
 
                     let html = "";
 
+                    // bottom3.forEach(p=>{
+
+                    //     html += `
+                    //     <button onclick="playerSaveByBoss('${p}')">
+
+                    //         ${p}
+
+                    //         (❤️ ${
+                    //             getRelationSafe(playerName,p)
+                    //         })
+
+                    //     </button><br>
+                    //     `;
+                    // });
                     bottom3.forEach(p=>{
 
-                        html += `
-                        <button onclick="playerSaveByBoss('${p}')">
+                        html += buildDecisionCard(
+                            p,
+                            `playerSaveByBoss('${p}')`,
+                            "👑 Selamatkan",
+                            "boss"
+                        );
 
-                            ${p}
-
-                            (❤️ ${
-                                getRelationSafe(playerName,p)
-                            })
-
-                        </button><br>
-                        `;
                     });
 
                     // openDecisionModal(
@@ -20795,19 +23164,31 @@
 
                     let html = "";
 
+                    // sisa.forEach(p=>{
+
+                    //     html += `
+                    //     <button onclick="playerEliminateByKey('${p}')">
+
+                    //         ${p}
+
+                    //         (❤️ ${
+                    //             getRelationSafe(playerName,p)
+                    //         })
+
+                    //     </button><br>
+                    //     `;
+                    // });
+
                     sisa.forEach(p=>{
 
-                        html += `
-                        <button onclick="playerEliminateByKey('${p}')">
+                        html += buildDecisionCard(
 
-                            ${p}
+                            p,
+                            `playerEliminateByKey('${p}')`,
+                            "🔑 Eliminasi",
+                            "pk"
 
-                            (❤️ ${
-                                getRelationSafe(playerName,p)
-                            })
-
-                        </button><br>
-                        `;
+                        );
                     });
 
                     // openDecisionModal(
@@ -21008,6 +23389,147 @@
 
                 console.groupEnd();
             }
+            function setProcessingState(state){
+
+                dayProcessingState = state;
+
+                console.log("STATE =", state);
+
+                saveGame();
+            }
+
+            function clearProcessingState(){
+
+                console.log("STATE CLEAR");
+
+                dayProcessingState = null;
+
+                saveGame();
+            }
+            // async function resumeDayProcessing(){
+            //     let alive = getAlive();
+
+            //     if(!dayProcessingState) return;
+
+            //     switch(dayProcessingState){
+
+            //         case "ASSIGN_BOSS":
+
+            //             await processAssignBoss();
+
+            //             isDayProcessing = false;
+            //             updatePlayers();
+            //             setGameButtonsDisabled(false);
+
+                    
+            //             break;
+
+            //         case "ASSIGN_ART":
+
+            //             await nextDay();
+
+            //             break;
+
+            //         case "ASSIGN_PK":
+
+            //             await nextDay();
+
+            //             break;
+
+            //         case "ASSIGN_IMUN":
+
+            //             await nextDay();
+
+            //             break;
+            //     }
+
+            // }
+            async function resumeDayProcessing(){
+
+                if(!dayProcessingState) return;
+
+                try{
+
+                    switch(dayProcessingState){
+
+                        case "ASSIGN_BOSS":
+
+                            await processAssignBoss();
+                            break;
+
+                        case "ASSIGN_ART":
+
+                            await processAssignArt();
+                            break;
+
+                        case "ASSIGN_PK":
+
+                            await processAssignPK();
+                            break;
+
+                        case "ASSIGN_IMUN":
+
+                            await processAssignImun();
+                            break;
+
+                        case "TEAM_GAME":
+
+                            await processTeamGame();
+                            break;
+
+                        case "PROCESS_EXECUTION":
+
+                            await processExecution();
+                            break;
+                        case "RANDOM_EVENT":
+
+                            await randomHouseEvent();
+                            break;
+
+                        case "PLAYER_CONFLICT":
+
+                            await playerConflict(
+                                pendingConflictTarget
+                            );
+
+                            break;
+
+                        case "NPC_GOSSIP":
+
+                            await processGossip(
+
+                                pendingGossip.provoker,
+
+                                pendingGossip.target
+
+                            );
+
+                            break;
+
+                        case "NPC_ADU_DOMBA":
+
+                            await processAduDomba(
+
+                                pendingAduDomba.provoker,
+
+                                pendingAduDomba.targetA,
+
+                                pendingAduDomba.targetB
+
+                            );
+
+                            break;
+                    }
+
+                }finally{
+
+                    isDayProcessing = false;
+                    updatePlayers();
+                    setGameButtonsDisabled(false);
+
+                }
+
+            }
 
             function loadGame(){
                 
@@ -21052,7 +23574,8 @@
                     // console.log(
                     //     "AFTER SET socialChaosToday =",
                     //     socialChaosToday
-                    // );                
+                    // );           
+                    socialChaosToday = parsed.socialChaosToday || false;     
                     
                     traitsMap = parsed.traitsMap;
                     cityMap = parsed.cityMap || {};
@@ -21122,6 +23645,26 @@
                     // parsed.currentMiniGameCandidates || [];
                     currentMiniGameCandidates = [];
                     socialMemory = parsed.socialMemory || {};
+                    dayProcessingState = parsed.dayProcessingState || null;
+                    pendingConflictTarget =
+                    parsed.pendingConflictTarget || {};
+
+                    pendingGossip =
+                    parsed.pendingGossip || {};
+
+                    pendingAduDomba =
+                    parsed.pendingAduDomba || {};
+
+                    pendingRandomEvent =
+                    parsed.pendingRandomEvent || {};
+
+                    ageMap =
+                    parsed.ageMap || {};
+
+                    jobMap =
+                    parsed.jobMap || {};
+                    subTraitMap=
+                    parsed.subTraitMap || {};
                     //document.getElementById("log").innerHTML = parsed.logHTML || "";
                     document.getElementById("log").innerHTML =
                     (parsed.logHTML || "")
@@ -21145,7 +23688,7 @@
 
                     updateSpecialRelations();
 
-                    updateGangs();
+                    // updateGangs();
                     // RESET BUGGED TRANSIENT STATE
                     // chaosEventToday = false;
                     // playerSpecialActionUsed = false;
@@ -21153,6 +23696,28 @@
                     // pendingDecision = null;
 
                     updatePlayers();
+                    if(dayProcessingState){
+                        isDayProcessing = true;
+                        updatePlayers();
+                        setGameButtonsDisabled(true);
+
+                        
+
+                        console.log(
+                            "GAME LOADED AT STATE:",
+                            dayProcessingState
+                        );
+
+                        log(
+                            "🛠️ Debug: State = " +
+                            dayProcessingState
+                        );
+                    }
+                    setTimeout(()=>{
+
+                        resumeDayProcessing();
+
+                    },300);
 
 
                     // renderDay();
@@ -21257,11 +23822,20 @@
             }
             function resetGame(){
                 if(confirm("Yakin mau reset game?")){
+                    isResettingGame = true;
                     localStorage.removeItem(SAVE_KEY);
                     localStorage.removeItem("playerName");
                     localStorage.removeItem("playerGender");
                     localStorage.removeItem("comebackDone");
                     location.reload();
+                }
+            }
+            function checkAbort(){
+
+                if(isResettingGame){
+
+                    throw new Error("GAME_RESET");
+
                 }
             }
             // function saveGame(){
@@ -21331,6 +23905,14 @@
                     // currentMiniGameCandidates,
                     socialMemory,
                     publicImage,
+                    dayProcessingState,
+                    pendingConflictTarget,
+                    pendingGossip,
+                    pendingAduDomba,
+                    pendingRandomEvent,
+                    ageMap,
+                    jobMap,
+                    subTraitMap,
 
                                         
                     logHTML: document.getElementById("log").innerHTML
@@ -21363,17 +23945,28 @@
 
                         let html = "";
 
+                        // extraditionState.bottom3.forEach(p=>{
+
+                        //     html += `
+                        //     <button onclick="playerSaveByBoss('${p}')">
+
+                        //         ${p}
+
+                        //         (❤️ ${getRelationSafe(playerName,p)})  
+
+                        //     </button><br>
+                        //     `;
+                        // });
+
                         extraditionState.bottom3.forEach(p=>{
 
-                            html += `
-                            <button onclick="playerSaveByBoss('${p}')">
+                            html += buildDecisionCard(
+                                p,
+                                `playerSaveByBoss('${p}')`,
+                                "👑 Selamatkan",
+                                "boss"
+                            );
 
-                                ${p}
-
-                                (❤️ ${getRelationSafe(playerName,p)})  
-
-                            </button><br>
-                            `;
                         });
 
                         // openDecisionModal(
@@ -21419,17 +24012,31 @@
 
                         let html = "";
 
+                        // amnestyState.final2.forEach(p=>{
+
+                        //     html += `
+                        //     <button onclick="voteAmnesty('${p}')">
+
+                        //         Pilih ${p}
+
+                        //         (❤️ ${getRelationSafe(playerName,p)})
+
+                        //     </button><br>
+                        //     `;
+                        // });
+
                         amnestyState.final2.forEach(p=>{
 
-                            html += `
-                            <button onclick="voteAmnesty('${p}')">
+                            html += buildDecisionCard(
 
-                                Pilih ${p}
+                                p,
 
-                                (❤️ ${getRelationSafe(playerName,p)})
+                                `voteAmnesty('${p}')`,
 
-                            </button><br>
-                            `;
+                                "🗳️ Vote"
+
+                            );
+
                         });
 
                         // openDecisionModal(
@@ -21471,6 +24078,30 @@
                 "Selamat Datang di Rumah Karantina";
 
             }
+            const jobSelect = document.getElementById("playerJob");
+
+            jobs.forEach(job=>{
+
+                jobSelect.innerHTML += `
+                    <option value="${job}">
+                        ${job}
+                    </option>
+                `;
+
+            });
+
+            const subTraitSelect =
+            document.getElementById("playerSubTrait");
+
+            subTraits.forEach(st=>{
+
+                subTraitSelect.innerHTML +=
+
+                `<option value="${st}">
+                    ${st}
+                </option>`;
+
+            });
             
         </script>
         <!-- <div id="modalRelasi" class="modal" onclick="clickOutside(event)">
