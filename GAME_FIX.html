@@ -2871,6 +2871,123 @@
 
             let players = [];
             let names = [];
+            const maleNamePool = [
+
+                "Bayu",
+                "Carlos",
+                "Cencen",
+                "David",
+                "Dimas",
+                "Fajar",
+                "Glenn",
+                "Indra",
+                "James",
+                "Kevin",
+
+                "Kenny",
+                "Martin",
+                "Raka",
+                "Rio",
+                "Rizky",
+                "Rian",
+                "Reza",
+                "Arga",
+                "Bima",
+                "Dion",
+
+                "Fikri",
+                "Galih",
+                "Hendri",
+                "Iqbal",
+                "Jordan",
+                "Lukman",
+                "Nanda",
+                "Rendy",
+                "Tegar",
+                "Yoga",
+
+                "Aditya",
+                "Aldo",
+                "Bagas",
+                "Daffa",
+                "Dicky",
+                "Evan",
+                "Farhan",
+                "Gilang",
+                "Ilham",
+                "Krisna",
+
+                "Rafli",
+                "Samuel",
+                "Tommy",
+                "Wahyu",
+                "Yusuf",
+                "Zidan",
+                "Andre",
+                "Brian",
+                "Chandra",
+                "Tommy"
+
+            ];
+
+            const femaleNamePool = [
+
+                "Astrid",
+                "Clara",
+                "Cindy",
+                "Fanny",
+                "Kanya",
+                "Manda",
+                "Meylan",
+                "Nadya",
+                "Silvy",
+                "Zahra",
+
+                "Alya",
+                "Amelia",
+                "Anisa",
+                "Bella",
+                "Caca",
+                "Chelsea",
+                "Dinda",
+                "Elsa",
+                "Fitri",
+                "Gina",
+
+                "Intan",
+                "Jessica",
+                "Karen",
+                "Livia",
+                "Melisa",
+                "Nabila",
+                "Olivia",
+                "Putri",
+                "Rani",
+                "Salsa",
+
+                "Sinta",
+                "Tiara",
+                "Vania",
+                "Wulan",
+                "Yohana",
+                "Aurel",
+                "Bunga",
+                "Carla",
+                "Dea",
+                "Evelyn",
+
+                "Felicia",
+                "Gracia",
+                "Hana",
+                "Ivana",
+                "Kezia",
+                "Luna",
+                "Marsha",
+                "Naomi",
+                "Shania",
+                "Vivian"
+
+            ];
             let status = {};
             let relation = {};
             let specialRelations = {};
@@ -3208,6 +3325,82 @@
                 }
             };
 
+            function shuffle(arr){
+
+                let a = [...arr];
+
+                for(let i=a.length-1;i>0;i--){
+
+                    let j=Math.floor(Math.random()*(i+1));
+
+                    [a[i],a[j]]=[a[j],a[i]];
+                }
+
+                return a;
+            }
+
+            function generateSeasonNames(){
+
+                names = [];
+
+                // reset mapping gender season ini
+                genderMap = {};
+
+                names.push(playerName);
+
+                genderMap[playerName] = playerGender;
+
+                let maleCount;
+                let femaleCount;
+
+                // STANDARD MODE (20 pemain)
+                if(playerGender === "pria"){
+
+                    maleCount = 9;
+                    femaleCount = 10;
+
+                }else{
+
+                    maleCount = 10;
+                    femaleCount = 9;
+
+                }
+
+                // pilih NPC
+                let selectedMaleNPC =
+                    shuffle([...maleNamePool]).slice(0,maleCount);
+
+                let selectedFemaleNPC =
+                    shuffle([...femaleNamePool]).slice(0,femaleCount);
+
+                // isi gender map
+                selectedMaleNPC.forEach(n=>{
+
+                    genderMap[n] = "pria";
+
+                });
+
+                selectedFemaleNPC.forEach(n=>{
+
+                    genderMap[n] = "wanita";
+
+                });
+
+                // gabungkan semua NPC
+                let npc = [
+
+                    ...selectedMaleNPC,
+
+                    ...selectedFemaleNPC
+
+                ];
+
+                // urut alfabet
+                npc.sort((a,b)=>a.localeCompare(b));
+
+                names.push(...npc);
+
+            }
             function generateRandomAge(){
 
                 let r = Math.random();
@@ -7683,52 +7876,59 @@
             // ];
 
             function getReservedNames(){
+                return [
 
-                if(playerGender === "pria"){
+                    ...maleNamePool,
 
-                    // return [
-                    //     "Adel",
-                    //     "Amel",
-                    //     "Astri",
-                    //     "Ayu",
-                    //     "Boy",
-                    //     "Dinda",
-                    //     "Egi",
-                    //     "Gezod",
-                    //     "Hendra",
-                    //     "Ican",
-                    //     "Iid",
-                    //     "Kiki",
-                    //     "Panca",
-                    //     "Putri",
-                    //     "Richard",
-                    //     "Shandy",
-                    //     "Shinta",
-                    //     "Venny",
-                    //     "Yuni"
-                    // ];
-                     return [
-                        "Astrid",
-                        "Bayu",
-                        "Clara",
-                        "Cencen",
-                        "Cindy",
-                        "Dimas",
-                        "Fanny",
-                        "Glenn",
-                        "Indra",
-                        "James",
-                        "Kanya",
-                        "Kenny",
-                        "Manda",
-                        "Martin",
-                        "Meylan",
-                        "Nadya",
-                        "Rio",
-                        "Silvy",
-                        "Zahra"
-                    ];
-                }
+                    ...femaleNamePool
+
+                ];
+
+                // // if(playerGender === "pria"){
+
+                // //     // return [
+                // //     //     "Adel",
+                // //     //     "Amel",
+                // //     //     "Astri",
+                // //     //     "Ayu",
+                // //     //     "Boy",
+                // //     //     "Dinda",
+                // //     //     "Egi",
+                // //     //     "Gezod",
+                // //     //     "Hendra",
+                // //     //     "Ican",
+                // //     //     "Iid",
+                // //     //     "Kiki",
+                // //     //     "Panca",
+                // //     //     "Putri",
+                // //     //     "Richard",
+                // //     //     "Shandy",
+                // //     //     "Shinta",
+                // //     //     "Venny",
+                // //     //     "Yuni"
+                // //     // ];
+                // //      return [
+                // //         "Astrid",
+                // //         "Bayu",
+                // //         "Clara",
+                // //         "Cencen",
+                // //         "Cindy",
+                // //         "Dimas",
+                // //         "Fanny",
+                // //         "Glenn",
+                // //         "Indra",
+                // //         "James",
+                // //         "Kanya",
+                // //         "Kenny",
+                // //         "Manda",
+                // //         "Martin",
+                // //         "Meylan",
+                // //         "Nadya",
+                // //         "Rio",
+                // //         "Silvy",
+                // //         "Zahra"
+                // //     ];
+                // }
 
                 // return [
                 //     "Adel",
@@ -7751,27 +7951,27 @@
                 //     "Venny",
                 //     "Yuni"
                 // ];
-                return [
-                    "Astrid",
-                    "Bayu",
-                    "Clara",
-                    "Cencen",
-                    "Cindy",
-                    "David",
-                    "Dimas",
-                    "Fanny",
-                    "Glenn",
-                    "Indra",
-                    "James",
-                    "Kanya",
-                    "Kenny",
-                    "Manda",
-                    "Martin",
-                    "Meylan",
-                    "Nadya",
-                    "Rio",
-                    "Silvy"
-                ];
+                // return [
+                //     "Astrid",
+                //     "Bayu",
+                //     "Clara",
+                //     "Cencen",
+                //     "Cindy",
+                //     "David",
+                //     "Dimas",
+                //     "Fanny",
+                //     "Glenn",
+                //     "Indra",
+                //     "James",
+                //     "Kanya",
+                //     "Kenny",
+                //     "Manda",
+                //     "Martin",
+                //     "Meylan",
+                //     "Nadya",
+                //     "Rio",
+                //     "Silvy"
+                // ];
             }
 
             function savePlayerName(){
@@ -7806,15 +8006,15 @@
                 }
 
                 // cek nama sama
-                if(
-                    //reservedNames
-                    getReservedNames()
-                    .map(n=>n.toLowerCase())
-                    .includes(value.toLowerCase())
-                ){
-                    alert("Nama sudah dipakai peserta lain!");
-                    return;
-                }
+                // if(
+                //     //reservedNames
+                //     getReservedNames()
+                //     .map(n=>n.toLowerCase())
+                //     .includes(value.toLowerCase())
+                // ){
+                //     alert("Nama sudah dipakai peserta lain!");
+                //     return;
+                // }
 
                 let selectedTrait =
                 document.getElementById("playerTrait").value;
@@ -7899,6 +8099,9 @@
 
                 document.querySelector(".container").style.display = "flex";
 
+                generateSeasonNames();
+
+
                 
 
                 initGame();
@@ -7953,102 +8156,102 @@
                 //     "Venny",
                 //     "Yuni"
                 // ];
-                if(playerGender === "wanita"){
+                // if(playerGender === "wanita"){
 
-                    // names = [
-                    //     playerName,
-                    //     "Adel",
-                    //     "Amel",
-                    //     "Astri",
-                    //     "Ayu",
-                    //     "Boy",
-                    //     "Egi",
-                    //     "Gezod",
-                    //     "Hendra",
-                    //     "Ican",
-                    //     "Iid",
-                    //     "Kiki",
-                    //     "Lazu",
-                    //     "Panca",
-                    //     "Putri",
-                    //     "Richard",
-                    //     "Shandy",
-                    //     "Shinta",
-                    //     "Venny",
-                    //     "Yuni"
-                    // ];
-                    names = [
-                        playerName,
-                        "Astrid",
-                        "Bayu",
-                        "Clara",
-                        "Cencen",
-                        "Cindy",
-                        "David",
-                        "Dimas",
-                        "Fanny",
-                        "Glenn",
-                        "Indra",
-                        "James",
-                        "Kanya",
-                        "Kenny",
-                        "Manda",
-                        "Martin",
-                        "Meylan",
-                        "Nadya",
-                        "Rio",
-                        "Silvy"
-                    ];
+                //     // names = [
+                //     //     playerName,
+                //     //     "Adel",
+                //     //     "Amel",
+                //     //     "Astri",
+                //     //     "Ayu",
+                //     //     "Boy",
+                //     //     "Egi",
+                //     //     "Gezod",
+                //     //     "Hendra",
+                //     //     "Ican",
+                //     //     "Iid",
+                //     //     "Kiki",
+                //     //     "Lazu",
+                //     //     "Panca",
+                //     //     "Putri",
+                //     //     "Richard",
+                //     //     "Shandy",
+                //     //     "Shinta",
+                //     //     "Venny",
+                //     //     "Yuni"
+                //     // ];
+                //     names = [
+                //         playerName,
+                //         "Astrid",
+                //         "Bayu",
+                //         "Clara",
+                //         "Cencen",
+                //         "Cindy",
+                //         "David",
+                //         "Dimas",
+                //         "Fanny",
+                //         "Glenn",
+                //         "Indra",
+                //         "James",
+                //         "Kanya",
+                //         "Kenny",
+                //         "Manda",
+                //         "Martin",
+                //         "Meylan",
+                //         "Nadya",
+                //         "Rio",
+                //         "Silvy"
+                //     ];
 
 
 
-                }else{
+                // }else{
 
-                    // names = [
-                    //     playerName,
-                    //     "Adel",
-                    //     "Amel",
-                    //     "Astri",
-                    //     "Ayu",
-                    //     "Boy",
-                    //     "Dinda",
-                    //     "Egi",
-                    //     "Gezod",
-                    //     "Hendra",
-                    //     "Ican",
-                    //     "Iid",
-                    //     "Kiki",
-                    //     "Panca",
-                    //     "Putri",
-                    //     "Richard",
-                    //     "Shandy",
-                    //     "Shinta",
-                    //     "Venny",
-                    //     "Yuni"
-                    // ];
-                    names = [
-                        playerName,
-                        "Astrid",
-                        "Bayu",
-                        "Clara",
-                        "Cencen",
-                        "Cindy",
-                        "Dimas",
-                        "Fanny",
-                        "Glenn",
-                        "Indra",
-                        "James",
-                        "Kanya",
-                        "Kenny",
-                        "Manda",
-                        "Martin",
-                        "Meylan",
-                        "Nadya",
-                        "Rio",
-                        "Silvy",
-                        "Zahra"
-                    ];
-                }
+                //     // names = [
+                //     //     playerName,
+                //     //     "Adel",
+                //     //     "Amel",
+                //     //     "Astri",
+                //     //     "Ayu",
+                //     //     "Boy",
+                //     //     "Dinda",
+                //     //     "Egi",
+                //     //     "Gezod",
+                //     //     "Hendra",
+                //     //     "Ican",
+                //     //     "Iid",
+                //     //     "Kiki",
+                //     //     "Panca",
+                //     //     "Putri",
+                //     //     "Richard",
+                //     //     "Shandy",
+                //     //     "Shinta",
+                //     //     "Venny",
+                //     //     "Yuni"
+                //     // ];
+                //     names = [
+                //         playerName,
+                //         "Astrid",
+                //         "Bayu",
+                //         "Clara",
+                //         "Cencen",
+                //         "Cindy",
+                //         "Dimas",
+                //         "Fanny",
+                //         "Glenn",
+                //         "Indra",
+                //         "James",
+                //         "Kanya",
+                //         "Kenny",
+                //         "Manda",
+                //         "Martin",
+                //         "Meylan",
+                //         "Nadya",
+                //         "Rio",
+                //         "Silvy",
+                //         "Zahra"
+                //     ];
+                // }
                 // TAMBAH INI
                 genderMap[playerName] = playerGender;
                 // ⬇️ TAMBAHKAN INI
@@ -23580,6 +23783,8 @@
                     traitsMap = parsed.traitsMap;
                     cityMap = parsed.cityMap || {};
                     playerGender = parsed.playerGender || "";
+                    names = parsed.names || [];
+                    genderMap = parsed.genderMap || {};
                     playerEverEliminated = parsed.playerEverEliminated || false;
                     eliminatedOrder = parsed.eliminatedOrder || [];
                     amnesters = parsed.amnesters || [];
@@ -23599,7 +23804,7 @@
                     activeRoles = parsed.activeRoles || activeRoles;
                     freezeBosAfterAmnesty =
                     parsed.freezeBosAfterAmnesty || false;
-                    genderMap[playerName] = playerGender;
+                    // genderMap[playerName] = playerGender;
 
                     freezePkAfterAmnesty =
                     parsed.freezePkAfterAmnesty || false;
@@ -23895,6 +24100,8 @@
                     amnestyPopularity,
                     topAmnesters,
                     playerName,
+                    names,
+                    genderMap,
                     playerGender,
                     pendingDecision,
                     extraditionState,
