@@ -2901,12 +2901,12 @@
                 "Iqbal",
                 "Jordan",
                 "Lukman",
-                "Nanda",
+                "Nando",
                 "Rendy",
                 "Tegar",
                 "Yoga",
 
-                "Aditya",
+                "Adit",
                 "Aldo",
                 "Bagas",
                 "Daffa",
@@ -2957,12 +2957,12 @@
                 "Intan",
                 "Jessica",
                 "Karen",
-                "Livia",
-                "Melisa",
+                "Livya",
+                "Melissa",
                 "Nabila",
                 "Olivia",
                 "Putri",
-                "Rani",
+                "Rania",
                 "Salsa",
 
                 "Sinta",
@@ -3099,6 +3099,7 @@
             };
             let eliminatedOrder = [];
             let stats = {};
+            let savedCount = {};
             let bossStreak = {};
             let amnesters = [];
             let amnestyMode = false;
@@ -3432,6 +3433,101 @@
                 return Math.floor(
                     Math.random()*(max-min+1)
                 )+min;
+
+            }
+            function getTopPlayers(map){
+
+                let max = Math.max(...Object.values(map));
+
+                return Object.keys(map)
+                    .filter(p=>map[p]===max);
+
+            }
+
+            function getLowestPlayers(map){
+
+                let min = Math.min(...Object.values(map));
+
+                return Object.keys(map)
+                    .filter(p=>map[p]===min);
+
+            }
+
+            function getFaceOfSeason(){
+
+                let score={};
+
+                names.forEach(p=>{
+
+                    score[p]=
+
+                    (publicImage[p]||0)
+
+                    +((stats[p]?.boss)||0)*8
+
+                    +((stats[p]?.kunci)||0)*8
+
+                    +((stats[p]?.imun)||0)*5
+
+                    +((stats[p]?.art)||0)*4
+
+                    -((stats[p]?.bottom3)||0)*2;
+
+                });
+
+                return getTopPlayers(score);
+
+            }
+
+            function getUnderdog(){
+
+                let score={};
+
+                names.forEach(p=>{
+
+                    score[p]=
+
+                    ((stats[p]?.bottom3)||0)*2+
+
+                    ((stats[p]?.bottom2)||0)*3+
+
+                    ((stats[p]?.legacy)||0);
+
+                });
+
+                return getTopPlayers(score);
+
+            }
+
+            function getFavoriteCouple(){
+
+                let result=[];
+
+                Object.keys(dating).forEach(p=>{
+
+                    let partner=dating[p];
+
+                    if(
+                        partner &&
+                        status[p]!=="KELUAR" &&
+                        status[partner]!=="KELUAR"
+                    ){
+
+                        if(
+                            p < partner
+                        ){
+
+                            result.push(
+                                `${p} ❤️ ${partner}`
+                            );
+
+                        }
+
+                    }
+
+                });
+
+                return result;
 
             }
             // async function openMiniGame(type){
@@ -8323,8 +8419,10 @@
                             art: 0,
                             bottom3: 0,
                             bottom2: 0
+                            
                         };
                     }
+                    savedCount[n]=0;
                     // traitsMap[n] = traits[Math.floor(Math.random()*traits.length)];
                     if(!traitsMap[n]){
 
@@ -8722,44 +8820,7 @@
 
                         💼 ${jobMap[p]}
 
-                        ${
-                        status[p] === "KELUAR" &&
-                        eliminatedMeta[p]?.placement
-                        ? `
-                        <div style="
-                            font-size:12px;
-                            color:#ffd166;
-                            font-weight:bold;
-                            margin-top:2px;
-                        ">
-                        ${
-                            eliminatedMeta[p].placement === "runnerup"
-                            ? "🥈 Runner Up"
-                            : eliminatedMeta[p].placement === "final"
-                            ? "🥉 Final"
-                            : eliminatedMeta[p].placement === "semifinal"
-                            ? "☠️ Semifinal"
-                            : ""
-                        }
-                        </div>
-                        `
-                        : ""
-                        }
-
-                        ${
-                        eliminatedMeta[p]?.history?.length
-                        ? eliminatedMeta[p].history.map(h => `
-                            <div style="
-                                font-size:12px;
-                                color:#fca5a5;
-                                margin-top:2px;
-                            ">
-                                ☠️ ${h.eliminatedBy}
-                                (Minggu ke-${h.week})
-                            </div>
-                        `).join("")
-                        : ""
-                        }
+                        
                         
 
                         ${
@@ -8857,6 +8918,45 @@
                             return "";
 
                         })()
+                        }
+                        
+                        ${
+                        status[p] === "KELUAR" &&
+                        eliminatedMeta[p]?.placement
+                        ? `
+                        <div style="
+                            font-size:12px;
+                            color:#ffd166;
+                            font-weight:bold;
+                            margin-top:2px;
+                        ">
+                        ${
+                            eliminatedMeta[p].placement === "runnerup"
+                            ? "🥈 Runner Up"
+                            : eliminatedMeta[p].placement === "final"
+                            ? "🥉 Final"
+                            : eliminatedMeta[p].placement === "semifinal"
+                            ? "☠️ Semifinal"
+                            : ""
+                        }
+                        </div>
+                        `
+                        : ""
+                        }
+
+                        ${
+                        eliminatedMeta[p]?.history?.length
+                        ? eliminatedMeta[p].history.map(h => `
+                            <div style="
+                                font-size:12px;
+                                color:#fca5a5;
+                                margin-top:2px;
+                            ">
+                                ☠️ ${h.eliminatedBy}
+                                (Minggu ke-${h.week})
+                            </div>
+                        `).join("")
+                        : ""
                         }
 
                         
@@ -20514,6 +20614,7 @@
                     roles.bos,
                     20
                 );
+                savedCount[savedByBos]++;
                 let audienceStatus =
                 getAudienceStatus(savedByBos);
 
@@ -20640,6 +20741,7 @@
                 await delay(1000);
 
                 log("🔑 Key Holder " +roles.kunci +" menyelamatkan: " + savedByKey);
+                savedCount[savedByKey]++;
 
                 // ❌ yang tersisa dieliminasi
                 let eliminated =
@@ -22294,6 +22396,9 @@
                     log(
                         "🎉 Ceremonial kemenangan dimulai!"
                     );
+                    await delay(1200);
+
+                    await showSeasonAwards();
 
                     pendingDecision = true;
 
@@ -22303,6 +22408,83 @@
 
                     return;
                 }
+
+            }
+            async function showSeasonAwards(){
+
+                log("<br>");
+                log("🏆 ===== SEASON AWARDS =====");
+                log("<br>");
+
+                await delay(1000);
+
+                log(
+                    "⭐ Favorit Pemirsa : "
+                    +getTopPlayers(publicImage).join(", ")
+                );
+
+                // log(
+                //     "🚫 Musuh Pemirsa : "
+                //     +getLowestPlayers(publicImage).join(", ")
+                // );
+
+                log(
+                    "👑 Raja Boss : "
+                    +getTopPlayers(
+                        Object.fromEntries(
+                            names.map(n=>[n,stats[n].bos])
+                        )
+                    ).join(", ")
+                );
+
+                log(
+                    "🔑 Raja Key Holder : "
+                    +getTopPlayers(
+                        Object.fromEntries(
+                            names.map(n=>[n,stats[n].pk])
+                        )
+                    ).join(", ")
+                );
+
+                log(
+                    "🛡️ Raja Immune : "
+                    +getTopPlayers(
+                        Object.fromEntries(
+                            names.map(n=>[n,stats[n].imun])
+                        )
+                    ).join(", ")
+                );
+
+                log(
+                    "🧹 Raja Housekeeper : "
+                    +getTopPlayers(
+                        Object.fromEntries(
+                            names.map(n=>[n,stats[n].art])
+                        )
+                    ).join(", ")
+                );
+
+                let couple=getFavoriteCouple();
+
+                log(
+                    "💘 Couple Terfavorit : "
+                    +(couple.length?couple.join(", "):"Tidak ada")
+                );
+
+                log(
+                    "🛟 Most Saved : "
+                    +getTopPlayers(savedCount).join(", ")
+                );
+
+                log(
+                    "📈 Underdog : "
+                    +getUnderdog().join(", ")
+                );
+
+                log(
+                    "🌟 Face of The Season : "
+                    +getFaceOfSeason().join(", ")
+                );
 
             }
 
@@ -22317,6 +22499,7 @@
 
                 log("👑 Kamu menyelamatkan: " + name);
                 let boost2 = Math.floor(Math.random()*3)+4;
+                savedCount[name]++;
 
                 relation[playerName][name] += boost2;
                 relation[name][playerName] += boost2;
@@ -22447,6 +22630,7 @@
                 log("⏳ 🔑 Key Holder " +roles.kunci +" sedang memutuskan siapa yang diselamatkan...");
                 await delay(1000);
                 log("🔑 Key Holder " +roles.kunci +" menyelamatkan: " + savedByKey);
+                savedCount[savedByKey]++;
 
                 let eliminated =
                 sisa.find(p=>p!==savedByKey);
@@ -23296,6 +23480,7 @@
 
                 log("👑 Bos " + roles.bos + " menyelamatkan: " + savedByBos);
                 let boost = Math.floor(Math.random()*3)+4;
+                savedCount[savedByBos]++;
 
                 relation[roles.bos][savedByBos] += boost;
                 relation[savedByBos][roles.bos] += boost;
@@ -23440,6 +23625,7 @@
                 log("⏳ 🔑 Key Holder " +roles.kunci +" sedang memutuskan siapa yang diselamatkan...");
                 await delay(1000);
                 log("🔑 Key Holder " + roles.kunci + " menyelamatkan: " + savedByKey);
+                savedCount[savedByKey]++;
 
                 // relation[roles.kunci][savedByKey] += 4;
                 // relation[savedByKey][roles.kunci] += 4;
