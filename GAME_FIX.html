@@ -2707,6 +2707,7 @@
                 "Admin Kantor",
                 "Freelancer",
                 "Make Up Artist",
+                "Model",
                 "Pramugari",
                 "Kasir",
                 "Streamer",
@@ -3084,6 +3085,7 @@
             let ageMap = {};
             let jobMap = {};
             let subTraitMap = {};
+            let coupleHistory = {};
 
             let roles = {
                 bos:null,
@@ -3402,6 +3404,72 @@
                 names.push(...npc);
 
             }
+
+            function getCoupleKey(a,b){
+
+                return [a,b].sort().join("|");
+
+            }
+
+            function updateCoupleHistory(){
+
+                let checked = new Set();
+
+                Object.keys(dating).forEach(a=>{
+
+                    let b = dating[a];
+
+                    if(!b) return;
+
+                    let key = getCoupleKey(a,b);
+
+                    if(checked.has(key)) return;
+
+                    checked.add(key);
+
+                    if(!coupleHistory[key]){
+
+                        coupleHistory[key]=0;
+
+                    }
+
+                    coupleHistory[key]++;
+
+                });
+
+            }
+            function getFavoriteCouple(){
+
+                let bestKey = null;
+                let bestDays = 0;
+
+                Object.entries(coupleHistory).forEach(([key,days])=>{
+
+                    if(days > bestDays){
+
+                        bestDays = days;
+                        bestKey = key;
+
+                    }
+
+                });
+
+                if(!bestKey) return null;
+
+                let [a,b] = bestKey.split("|");
+
+                return {
+
+                    a,
+                    b,
+                    days
+
+                    : bestDays
+
+                };
+
+            }
+
             function generateRandomAge(){
 
                 let r = Math.random();
@@ -3453,31 +3521,31 @@
 
             }
 
-            function getFaceOfSeason(){
+            // function getFaceOfSeason(){
 
-                let score={};
+            //     let score={};
 
-                names.forEach(p=>{
+            //     names.forEach(p=>{
 
-                    score[p]=
+            //         score[p]=
 
-                    (publicImage[p]||0)
+            //         (publicImage[p]||0)
 
-                    +((stats[p]?.boss)||0)*8
+            //         +((stats[p]?.boss)||0)*8
 
-                    +((stats[p]?.kunci)||0)*8
+            //         +((stats[p]?.kunci)||0)*8
 
-                    +((stats[p]?.imun)||0)*5
+            //         +((stats[p]?.imun)||0)*5
 
-                    +((stats[p]?.art)||0)*4
+            //         +((stats[p]?.art)||0)*4
 
-                    -((stats[p]?.bottom3)||0)*2;
+            //         -((stats[p]?.bottom3)||0)*2;
 
-                });
+            //     });
 
-                return getTopPlayers(score);
+            //     return getTopPlayers(score);
 
-            }
+            // }
 
             function getUnderdog(){
 
@@ -3485,51 +3553,85 @@
 
                 names.forEach(p=>{
 
+                    let bottom3 = stats[p]?.bottom3 || 0;
+                    let bottom2 = stats[p]?.bottom2 || 0;
+                    let saved   = savedCount[p] || 0;
+                    let placement = stats[p]?.placement || 99;
+
+                    // Harus pernah berada dalam bahaya
+                    if(
+                        saved===0 &&
+                        bottom2===0 &&
+                        bottom3<2
+                    ){
+
+                        score[p]=-9999;
+                        return;
+
+                    }
+
+                    let placementBonus=0;
+
+                    if(placement<=2){
+
+                        placementBonus=18;
+
+                    }else if(placement<=4){
+
+                        placementBonus=12;
+
+                    }else if(placement<=6){
+
+                        placementBonus=8;
+
+                    }else if(placement<=8){
+
+                        placementBonus=5;
+
+                    }
+
                     score[p]=
-
-                    ((stats[p]?.bottom3)||0)*2+
-
-                    ((stats[p]?.bottom2)||0)*3+
-
-                    ((stats[p]?.legacy)||0);
+                        bottom3*2+
+                        bottom2*3+
+                        saved*4+
+                        placementBonus;
 
                 });
 
                 return getTopPlayers(score);
 
             }
+            // function getFavoriteCouple(){
 
-            function getFavoriteCouple(){
+            //     let result=[];
 
-                let result=[];
+            //     Object.keys(dating).forEach(p=>{
 
-                Object.keys(dating).forEach(p=>{
+            //         let partner=dating[p];
 
-                    let partner=dating[p];
+            //         if(
+            //             partner &&
+            //             status[p]!=="KELUAR" &&
+            //             status[partner]!=="KELUAR"
+            //         ){
 
-                    if(
-                        partner &&
-                        status[p]!=="KELUAR" &&
-                        status[partner]!=="KELUAR"
-                    ){
+            //             if(
+            //                 p < partner
+            //             ){
 
-                        if(
-                            p < partner
-                        ){
+            //                 result.push(
+            //                     `${p} ❤️ ${partner}`
+            //                 );
 
-                            result.push(
-                                `${p} ❤️ ${partner}`
-                            );
+            //             }
 
-                        }
+            //         }
 
-                    }
+            //     });
 
-                });
+            //     return result;
 
-                return result;
-
-            }
+            // }
             // async function openMiniGame(type){
 
             //     return new Promise(resolve=>{
@@ -15816,6 +15918,8 @@
 
                 weekDay++;
 
+                updateCoupleHistory();
+
 
                 if(endgameMode){
 
@@ -20569,7 +20673,7 @@
                                 font-weight:bold;
                                 margin-bottom:6px;
                             ">
-                                👑 Kamu adalah BOS
+                                👑 Kamu adalah BOSS
                             </div>
 
                             <div style="
@@ -20590,7 +20694,7 @@
 
                 // NPC BOS
                 log("⏳ 👑 Bos " + roles.bos + " sedang memutuskan siapa yang diselamatkan...");
-                await delay(1000);
+                await delay(2500);
 
                 // savedByBos =
                 // bottom3.sort((a,b)=>
@@ -20738,7 +20842,7 @@
                 )[0];
 
                 log("⏳ 🔑 Key Holder " +roles.kunci +" sedang memutuskan siapa yang diselamatkan...");
-                await delay(1000);
+                await delay(2500);
 
                 log("🔑 Key Holder " +roles.kunci +" menyelamatkan: " + savedByKey);
                 savedCount[savedByKey]++;
@@ -20790,6 +20894,7 @@
                 // );
 
                 // removePlayerFromGang(eliminated);
+                stats[eliminated].placement =getAlive().length;
 
                 status[eliminated] = "KELUAR";
                 addMemory(
@@ -21724,6 +21829,7 @@
 
                     let eliminated =
                     ranking2[ranking2.length-1][0];
+                    stats[eliminated].placement =getAlive().length;
 
                     status[eliminated] = "KELUAR";
                     eliminatedOrder.unshift(eliminated);
@@ -21933,6 +22039,7 @@
                     log(
                         `❌ ${eliminated} tereliminasi di FINAL!`
                     );
+                    stats[eliminated].placement =getAlive().length;
 
                     status[eliminated] = "KELUAR";
 
@@ -22419,7 +22526,7 @@
                 await delay(1000);
 
                 log(
-                    "⭐ Favorit Pemirsa : "
+                    "⭐ Favorite Housemates : "
                     +getTopPlayers(publicImage).join(", ")
                 );
 
@@ -22429,7 +22536,7 @@
                 // );
 
                 log(
-                    "👑 Raja Boss : "
+                    "👑 Boss  terbanyak : "
                     +getTopPlayers(
                         Object.fromEntries(
                             names.map(n=>[n,stats[n].bos])
@@ -22438,7 +22545,7 @@
                 );
 
                 log(
-                    "🔑 Raja Key Holder : "
+                    "🔑 Key Holder Terbanyak : "
                     +getTopPlayers(
                         Object.fromEntries(
                             names.map(n=>[n,stats[n].pk])
@@ -22447,7 +22554,7 @@
                 );
 
                 log(
-                    "🛡️ Raja Immune : "
+                    "🛡️ Immune Terbanyak : "
                     +getTopPlayers(
                         Object.fromEntries(
                             names.map(n=>[n,stats[n].imun])
@@ -22456,7 +22563,7 @@
                 );
 
                 log(
-                    "🧹 Raja Housekeeper : "
+                    "🧹 Housekeeper Terbanyak : "
                     +getTopPlayers(
                         Object.fromEntries(
                             names.map(n=>[n,stats[n].art])
@@ -22464,27 +22571,31 @@
                     ).join(", ")
                 );
 
-                let couple=getFavoriteCouple();
+                let favoriteCouple=getFavoriteCouple();                
+                if(favoriteCouple){
 
-                log(
-                    "💘 Couple Terfavorit : "
-                    +(couple.length?couple.join(", "):"Tidak ada")
-                );
+                    log(
+                        `💖 Couple Terfavorit:
+                        ${favoriteCouple.a} ❤️ ${favoriteCouple.b}
+                        (${favoriteCouple.days} hari bersama)`
+                    );
 
-                log(
-                    "🛟 Most Saved : "
-                    +getTopPlayers(savedCount).join(", ")
-                );
+                }
+
+                // log(
+                //     "🛟 Most Saved : "
+                //     +getTopPlayers(savedCount).join(", ")
+                // );
 
                 log(
                     "📈 Underdog : "
                     +getUnderdog().join(", ")
                 );
 
-                log(
-                    "🌟 Face of The Season : "
-                    +getFaceOfSeason().join(", ")
-                );
+                // log(
+                //     "🌟 Face of The Season : "
+                //     +getFaceOfSeason().join(", ")
+                // );
 
             }
 
@@ -22628,7 +22739,7 @@
                 )[0];
 
                 log("⏳ 🔑 Key Holder " +roles.kunci +" sedang memutuskan siapa yang diselamatkan...");
-                await delay(1000);
+                await delay(2500);
                 log("🔑 Key Holder " +roles.kunci +" menyelamatkan: " + savedByKey);
                 savedCount[savedByKey]++;
 
@@ -22679,6 +22790,7 @@
                 // );
 
                 // removePlayerFromGang(eliminated);
+                stats[eliminated].placement =getAlive().length;
 
                 status[eliminated] = "KELUAR";
                 addMemory(
@@ -23265,6 +23377,7 @@
                         targetGangName
                     );
                     removePlayerFromGang(eliminated);
+                    stats[eliminated].placement =getAlive().length;
 
                     status[eliminated] = "KELUAR";
                     addMemory(
@@ -23444,7 +23557,7 @@
                                 font-weight:bold;
                                 margin-bottom:6px;
                             ">
-                                👑 Kamu adalah BOS
+                                👑 Kamu adalah BOSS
                             </div>
 
                             <div style="
@@ -23476,7 +23589,7 @@
                 )[0];
 
                 log("⏳ 👑 Bos " + roles.bos + " sedang memutuskan siapa yang diselamatkan...");
-                await delay(1000);
+                await delay(2500);
 
                 log("👑 Bos " + roles.bos + " menyelamatkan: " + savedByBos);
                 let boost = Math.floor(Math.random()*3)+4;
@@ -23623,7 +23736,7 @@
                 )[0];
 
                 log("⏳ 🔑 Key Holder " +roles.kunci +" sedang memutuskan siapa yang diselamatkan...");
-                await delay(1000);
+                await delay(2500);
                 log("🔑 Key Holder " + roles.kunci + " menyelamatkan: " + savedByKey);
                 savedCount[savedByKey]++;
 
@@ -23691,6 +23804,7 @@
                 // );
                 
                 // removePlayerFromGang(eliminated);
+                stats[eliminated].placement =getAlive().length;
 
                 status[eliminated] = "KELUAR";
                 addMemory(
@@ -24056,6 +24170,7 @@
                     parsed.jobMap || {};
                     subTraitMap=
                     parsed.subTraitMap || {};
+                    coupleHistory = parsed.coupleHistory || {};
                     //document.getElementById("log").innerHTML = parsed.logHTML || "";
                     document.getElementById("log").innerHTML =
                     (parsed.logHTML || "")
@@ -24306,6 +24421,7 @@
                     ageMap,
                     jobMap,
                     subTraitMap,
+                    coupleHistory,
 
                                         
                     logHTML: document.getElementById("log").innerHTML
@@ -24375,7 +24491,7 @@
                                     font-weight:bold;
                                     margin-bottom:6px;
                                 ">
-                                    👑 Kamu adalah BOS
+                                    👑 Kamu adalah BOSS
                                 </div>
 
                                 <div style="
