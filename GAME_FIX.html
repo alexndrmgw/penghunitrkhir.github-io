@@ -3116,6 +3116,36 @@
                 savedByBoss: null,
                 savedByKey: null
             };
+            let pleaData = {};
+
+            const PLEA_OPTIONS = [
+
+                {
+                    id:"save_me",
+                    text:"Selamatkan saya. Saya masih layak berada di rumah ini.",
+                    score:8
+                },
+
+                {
+                    id:"save_other",
+                    text:"Selamatkan peserta lain saja. Saya ikhlas.",
+                    score:4
+                },
+
+                {
+                    id:"heart",
+                    text:"Gunakan kata hati. Saya percaya keputusanmu.",
+                    score:2
+                },
+
+                {
+                    id:"no_plea",
+                    text:"Saya tidak akan memohon.",
+                    score:-5
+                }
+
+            ];
+            
             let pendingDecision = null;
             let npcRequest = null;
             
@@ -3237,6 +3267,20 @@
                     "memory"
                 ]
             };
+            const WILL_GAMES=[
+
+                "memory",
+
+                "reaction",
+
+                "timing",
+
+                "tap",
+
+                "freeze"
+
+
+            ];
             const miniGameConfig = {
 
                 memory:{
@@ -8670,6 +8714,12 @@
 
                     });
                 });
+                // ==========================
+                // INIT PLEA SYSTEM
+                // ==========================
+                pleaData = {};
+
+                players.forEach(initPlea);
 
                 // document.getElementById("log").innerHTML =
                 // `
@@ -9604,6 +9654,265 @@
                         // );
                     });
                 });
+            }
+
+            function initPlea(player){
+
+                pleaData[player]={
+
+                    boss:null,
+
+                    key:null,
+
+                    will:null
+
+                };
+
+            }
+            async function generateNpcBossPlea(player){
+
+                let choice =
+                PLEA_OPTIONS[
+                    Math.floor(Math.random()*PLEA_OPTIONS.length)
+                ];
+
+                pleaData[player].boss=choice;
+
+                // log(
+                //     `🙏 ${player} memohon kepada Boss.<br><i>"${choice.text}"</i>`
+                // );
+                log(`🙏 ${player} memohon kepada Boss.`);
+                await delay(700);
+
+                log(`<i>"${choice.text}"</i>`);
+                await delay(900);
+
+            }
+
+            async function generateNpcKeyPlea(player){
+
+                let choice =
+                PLEA_OPTIONS[
+                    Math.floor(Math.random()*PLEA_OPTIONS.length)
+                ];
+
+                pleaData[player].key=choice;
+
+                // log(
+                //     `🙏 ${player} memohon kepada Boss.<br><i>"${choice.text}"</i>`
+                // );
+                log(`🙏 ${player} memohon kepada Key Holder.`);
+                await delay(700);
+
+                log(`<i>"${choice.text}"</i>`);
+                await delay(900);
+
+            }
+
+            async function playerBossPlea(){
+
+
+                log("🙏 Kamu memohon kepada Boss.");
+                await delay(1000);
+
+                return new Promise(resolve=>{
+
+                    let html = "";
+
+                    PLEA_OPTIONS.forEach(opt=>{
+
+                        html += `
+                        <button
+                        onclick="selectBossPlea('${opt.id}')"
+                        style="display:block;width:100%;margin:8px 0;">
+                            ${opt.text}
+                        </button>
+                        `;
+
+                    });
+
+                    pendingDecision = resolve;
+
+                    openDecisionModal(
+
+                        `
+                        <h2>🙏 Permohonan kepada Boss</h2>
+
+                        <p>
+                        Pilih apa yang ingin kamu katakan kepada Boss.
+                        </p>
+                        `,
+
+                        html
+
+                    );
+
+                });
+
+            }
+
+            function selectBossPlea(id){
+
+                let choice = PLEA_OPTIONS.find(x => x.id === id);
+
+                pleaData[playerName].boss = choice;
+
+                log(`<i>"${choice.text}"</i>`);
+
+                closeDecisionModal();
+
+                if(pendingDecision){
+
+                    pendingDecision();
+
+                    pendingDecision = null;
+
+                }
+
+            }
+
+            async function playerKeyPlea(){
+
+
+                log("🙏 Kamu memohon kepada Key Holder.");
+                await delay(1000);
+
+                return new Promise(resolve=>{
+
+                    let html = "";
+
+                    PLEA_OPTIONS.forEach(opt=>{
+
+                        html += `
+                        <button
+                        onclick="selectKeyPlea('${opt.id}')"
+                        style="display:block;width:100%;margin:8px 0;">
+                            ${opt.text}
+                        </button>
+                        `;
+
+                    });
+
+                    pendingDecision = resolve;
+
+                    openDecisionModal(
+
+                        `
+                        <h2>🙏 Permohonan kepada Key Holder</h2>
+
+                        <p>
+                        Pilih apa yang ingin kamu katakan kepada Key Holder.
+                        </p>
+                        `,
+
+                        html
+
+                    );
+
+                });
+
+            }
+
+            function selectKeyPlea(id){
+
+                let choice = PLEA_OPTIONS.find(x => x.id === id);
+
+                pleaData[playerName].key = choice;
+
+                log(`<i>"${choice.text}"</i>`);
+
+                closeDecisionModal();
+
+                if(pendingDecision){
+
+                    pendingDecision();
+
+                    pendingDecision = null;
+
+                }
+
+            }
+
+            function getPleaBonus(target,type){
+
+                let data = pleaData[target];
+
+                if(!data) return 0;
+
+                if(type==="boss"){
+
+                    return data.boss?.score || 0;
+
+                }
+
+                if(type==="key"){
+
+                    return data.key?.score || 0;
+
+                }
+
+                return 0;
+
+            }
+
+            function generateWillGame(player){
+
+                let game =
+                WILL_GAMES[
+                    Math.floor(
+                        Math.random()*WILL_GAMES.length
+                    )
+                ];
+
+                pleaData[player].will = game;
+
+                return game;
+
+            }
+
+            async function playerChooseWill(){
+
+                let html = "";
+
+                WILL_GAMES.forEach(game=>{
+
+                    html += `
+                    <button onclick="selectPlayerWill('${game}')">
+                        ${miniGameConfig[game].label}
+                    </button>
+                    `;
+
+                });
+
+                openDecisionModal(
+
+                    `
+                    <div style="
+                        font-size:26px;
+                        font-weight:bold;
+                    ">
+                    📝 Tulis Wasiat
+                    </div>
+
+                    <div style="
+                        margin-top:8px;
+                    ">
+                    Pilih mini game yang akan dimainkan jika wasiatmu dijalankan.
+                    </div>
+                    `,
+
+                    html
+
+                );
+
+            }
+
+            function selectPlayerWill(game){
+
+                pleaData[playerName].will = game;
+
+                closeDecisionModal();
+
             }
 
             function getRandomGangName(){
@@ -11355,6 +11664,8 @@
                     target
                 );
 
+                // score += getPleaBonus(target,"bos");
+
                 // score +=
                 // getPublicImageBonus(
                 //     actor,
@@ -12436,6 +12747,7 @@
                 // log("📺 Reputasi publik minggu baru telah direset!");
             }
             async function applyRoleConsequences(role,target,type,targetGangName = null){
+                setProcessingState("EXECUTION_ROLE_CONSEQUENCE");
 
                 let alive = getAlive();
                 let totalReaction = 0;
@@ -19507,6 +19819,7 @@
             
             //malam amnesti/comeback
             async function comebackNight(){
+                setProcessingState("EXECUTION_COMEBACK_START");
 
                 setGameButtonsDisabled(true);
 
@@ -19618,6 +19931,8 @@
                 selectedAmnesters.push(
                     amnestyState.autoComeback
                 );
+
+                setProcessingState("EXECUTION_AMNESTY_VOTE");
 
                 log("🗳️ Voting amnesti dimulai:");
                 log(final2.join(" vs "));
@@ -19963,6 +20278,8 @@
 
                 // log("🗳️ Vote kamu berhasil masuk");
                 // await delay(DEBUG_DELAY);
+
+                setProcessingState("EXECUTION_AMNESTY_RESULT");
                 
 
                 log("📦 Menghitung hasil voting...");
@@ -20272,6 +20589,8 @@
             // function ekstradisi(){
             async function ekstradisi(){
                 log("🌙 Malam eliminasi berlangsung...");
+                // setProcessingState("EXECUTION_BOSS_DECISION");
+                setProcessingState("EXECUTION_BOTTOM3");
                 await delay(DEBUG_DELAY);
                 let alive = getAlive();
 
@@ -20628,6 +20947,29 @@
                 // let sisa = bottom3.filter(p=>p !== savedByBos);
                 let savedByBos;
 
+                // ==========================
+                // PLEA TO BOSS
+                // ==========================
+                log("⏳ Saatnya penghuni Bottom 3 membuat permohonan kepada Boss...");
+                await delay(1500);
+
+                for(let p of bottom3){
+
+                    if(p === playerName){
+                        await delay(800);      // <-- tambahkan ini
+
+                        await playerBossPlea();
+
+                    }else{
+
+                        generateNpcBossPlea(p);
+
+                        await delay(700);
+
+                    }
+
+                }
+
                 // PLAYER = BOS
                 if(roles.bos === playerName){
 
@@ -20700,10 +21042,24 @@
                 // bottom3.sort((a,b)=>
                 // relation[roles.bos][b] - relation[roles.bos][a]
                 // )[0];
+                // savedByBos =
+                // bottom3.sort((a,b)=>
+                // getDecisionScore(roles.bos,b) - getDecisionScore(roles.bos,a)
+                // )[0];
                 savedByBos =
-                bottom3.sort((a,b)=>
-                getDecisionScore(roles.bos,b) - getDecisionScore(roles.bos,a)
-                )[0];
+                bottom3.sort((a,b)=>{
+
+                    let scoreA =
+                        getDecisionScore(roles.bos,a)
+                        + getPleaBonus(a,"boss");
+
+                    let scoreB =
+                        getDecisionScore(roles.bos,b)
+                        + getPleaBonus(b,"boss");
+
+                    return scoreB - scoreA;
+
+                })[0];
 
                 log("👑 Bos " + roles.bos + " menyelamatkan: " + savedByBos);
                 // relation[roles.bos][savedByBos] += 6;
@@ -20767,6 +21123,28 @@
 
                 // log("❌ Terekstradisi: " + eliminated);
                 // 🔑 PLAYER = PEMEGANG KUNCI
+                setProcessingState("EXECUTION_KEY");
+                // ==========================
+                // PLEA TO KEY HOLDER
+                // ==========================
+                log("⏳ Saatnya penghuni Bottom 2 membuat permohonan kepada Key Holder...");
+                await delay(1500);
+
+                for(let p of sisa){
+
+                    if(p === playerName){
+
+                        await delay(800);
+
+                        await playerKeyPlea();
+
+                    }else{
+
+                        await generateNpcKeyPlea(p);
+
+                    }
+
+                }
                 if(roles.kunci === playerName){
 
                     extraditionState.bottom2 = [...sisa];
@@ -20835,11 +21213,25 @@
                 // relation[roles.kunci][b] -
                 // relation[roles.kunci][a]
                 // )[0];
+                // let savedByKey =
+                // sisa.sort((a,b)=>
+                // getDecisionScore(roles.kunci,b) -
+                // getDecisionScore(roles.kunci,a)
+                // )[0];
                 let savedByKey =
-                sisa.sort((a,b)=>
-                getDecisionScore(roles.kunci,b) -
-                getDecisionScore(roles.kunci,a)
-                )[0];
+                sisa.sort((a,b)=>{
+
+                    let scoreA =
+                        getDecisionScore(roles.kunci,a)
+                        + getPleaBonus(a,"key");
+
+                    let scoreB =
+                        getDecisionScore(roles.kunci,b)
+                        + getPleaBonus(b,"key");
+
+                    return scoreB - scoreA;
+
+                })[0];
 
                 log("⏳ 🔑 Key Holder " +roles.kunci +" sedang memutuskan siapa yang diselamatkan...");
                 await delay(2500);
@@ -20850,6 +21242,7 @@
                 // ❌ yang tersisa dieliminasi
                 let eliminated =
                 sisa.find(p=>p !== savedByKey);
+                setProcessingState("EXECUTION_ELIMINATE");
                 // eliminatedMeta[eliminated] = {
 
                 //     dating: dating[eliminated] || null,
@@ -20897,6 +21290,7 @@
                 stats[eliminated].placement =getAlive().length;
 
                 status[eliminated] = "KELUAR";
+                setProcessingState("EXECUTION_AFTER");
                 addMemory(
                         eliminated,
                         "betrayed",
@@ -20953,6 +21347,7 @@
                 saveGame();
                 isDayProcessing = false;
                 setGameButtonsDisabled(false);
+                clearProcessingState();
             }
             // function saveGame(){
             //     const data = {
@@ -21571,21 +21966,26 @@
             //     console.log(ranking);
                 
             // }
+            function getDebugPlayer(index){
+
+                return getAlive().filter(p=>p!==playerName)[index];
+
+            }
             async function debugExecution(){
 
                 // resetAllRoles();
 
                 //buat debug saja, nanti dihapus
                 // roles.bos =playerName;
-                // roles.kunci = "Astrid";
-                // roles.imun = "Cencen";
+                // roles.kunci = getDebugPlayer(0);
+                // roles.imun = getDebugPlayer(1);
 
-                // roles.bos ="Astrid";
+                // roles.bos =getDebugPlayer(0);
                 // roles.kunci = playerName;
-                // roles.imun = "Cencen";
+                // roles.imun = getDebugPlayer(1);
 
-                roles.bos ="Astrid";
-                roles.kunci = "Cencen";
+                roles.bos =getDebugPlayer(0);
+                roles.kunci = getDebugPlayer(1);
                 roles.imun = playerName;
 
 
@@ -22633,6 +23033,7 @@
                     addPublicImage(playerName, -5);
 
                 }
+                setProcessingState("EXECUTION_KEY_DECISION");
                 updateSpecialRelations();
 
                 // relation[playerName][name] += 6;
@@ -22660,6 +23061,28 @@
                 sisa.forEach(p=>{
                     stats[p].bottom2++;
                 });
+
+                // ==========================
+                // PLEA TO KEY HOLDER
+                // ==========================
+                log("⏳ Saatnya penghuni Bottom 2 membuat permohonan kepada Key Holder...");
+                await delay(1500);
+
+                for(let p of sisa){
+
+                    if(p === playerName){
+
+                        await delay(800);
+
+                        await playerKeyPlea();
+
+                    }else{
+
+                        await generateNpcKeyPlea(p);
+
+                    }
+
+                }
 
                 extraditionState.bottom2 = [...sisa];
 
@@ -22732,11 +23155,25 @@
                 // relation[roles.kunci][b] -
                 // relation[roles.kunci][a]
                 // )[0];
+                // let savedByKey =
+                // sisa.sort((a,b)=>
+                // getDecisionScore(roles.kunci,b) -
+                // getDecisionScore(roles.kunci,a)
+                // )[0];
                 let savedByKey =
-                sisa.sort((a,b)=>
-                getDecisionScore(roles.kunci,b) -
-                getDecisionScore(roles.kunci,a)
-                )[0];
+                sisa.sort((a,b)=>{
+
+                    let scoreA =
+                        getDecisionScore(roles.kunci,a)
+                        + getPleaBonus(a,"key");
+
+                    let scoreB =
+                        getDecisionScore(roles.kunci,b)
+                        + getPleaBonus(b,"key");
+
+                    return scoreB - scoreA;
+
+                })[0];
 
                 log("⏳ 🔑 Key Holder " +roles.kunci +" sedang memutuskan siapa yang diselamatkan...");
                 await delay(2500);
@@ -22914,6 +23351,7 @@
                 );
             }
             async function playerEliminateByKey(name){
+                setProcessingState("EXECUTION_ELIMINATE");
 
                 pendingDecision = null;
 
@@ -22968,6 +23406,7 @@
                 // removePlayerFromGang(name);
 
                 status[name] = "KELUAR";
+                setProcessingState("EXECUTION_AFTER");
                 addMemory(
                     name,
                     "betrayed",
@@ -23007,12 +23446,14 @@
 
                 // relation[playerName][savedPerson] += 4;
                 // relation[savedPerson][playerName] += 4;
+                setProcessingState("EXECUTION_REACTION");
 
                 log(
                     "❤️ Relasi kamu dan " +
                     savedPerson +
                     " meningkat!"
                 );
+
                 log("👀 Penghuni mulai bereaksi atas eliminasi malam hari ini...");
 
                 await delay(700);
@@ -23033,6 +23474,7 @@
                     endgameMode = true;
 
                 }
+
                 
 
 
@@ -23041,6 +23483,7 @@
                 saveGame();
                 isDayProcessing = false;
                 updatePlayers();
+                clearProcessingState();
                 setGameButtonsDisabled(false);
             }
             function reopenImunPopup(){
@@ -23325,6 +23768,7 @@
             }
 
             async function lanjutBossPhase(){
+
                 if(getAlive().length <= 4){
 
                     let eliminated =
@@ -23469,6 +23913,7 @@
                     // return;
                 }
 
+                setProcessingState("EXECUTION_BOSS");
                 let bottom3 =
                 extraditionState.bottom3;
 
@@ -23482,6 +23927,29 @@
                 });
 
                 let savedByBos;
+
+                // ==========================
+                // PLEA TO BOSS
+                // ==========================
+                log("⏳ Saatnya penghuni Bottom 3 membuat permohonan kepada Boss...");
+                await delay(1500);
+
+                for(let p of bottom3){
+
+                    if(p === playerName){
+                        await delay(800);      // <-- tambahkan ini
+
+                        await playerBossPlea();
+
+                    }else{
+
+                        await generateNpcBossPlea(p);
+
+                        await delay(700);
+
+                    }
+
+                }
 
                 // PLAYER BOS
                 // if(roles.bos === playerName){
@@ -23582,11 +24050,25 @@
                 // relation[roles.bos][b] -
                 // relation[roles.bos][a]
                 // )[0];
+                // savedByBos =
+                // bottom3.sort((a,b)=>
+                // getDecisionScore(roles.bos,b) -
+                // getDecisionScore(roles.bos,a)
+                // )[0];
                 savedByBos =
-                bottom3.sort((a,b)=>
-                getDecisionScore(roles.bos,b) -
-                getDecisionScore(roles.bos,a)
-                )[0];
+                bottom3.sort((a,b)=>{
+
+                    let scoreA =
+                        getDecisionScore(roles.bos,a)
+                        + getPleaBonus(a,"boss");
+
+                    let scoreB =
+                        getDecisionScore(roles.bos,b)
+                        + getPleaBonus(b,"boss");
+
+                    return scoreB - scoreA;
+
+                })[0];
 
                 log("⏳ 👑 Bos " + roles.bos + " sedang memutuskan siapa yang diselamatkan...");
                 await delay(2500);
@@ -23650,6 +24132,27 @@
                         stats[p].bottom2++;
                     }
                 });
+                // ==========================
+                // PLEA TO KEY HOLDER
+                // ==========================
+                log("⏳ Saatnya penghuni Bottom 2 membuat permohonan kepada Key Holder...");
+                await delay(1500);
+
+                for(let p of sisa){
+
+                    if(p === playerName){
+
+                        await delay(800);
+
+                        await playerKeyPlea();
+
+                    }else{
+
+                        await generateNpcKeyPlea(p);
+
+                    }
+
+                }
 
                 // PLAYER PK
                 if(roles.kunci === playerName){
@@ -23729,11 +24232,25 @@
                 // relation[roles.kunci][b] -
                 // relation[roles.kunci][a]
                 // )[0];
+                // let savedByKey =
+                // sisa.sort((a,b)=>
+                // getDecisionScore(roles.kunci,b) -
+                // getDecisionScore(roles.kunci,a)
+                // )[0];
                 let savedByKey =
-                sisa.sort((a,b)=>
-                getDecisionScore(roles.kunci,b) -
-                getDecisionScore(roles.kunci,a)
-                )[0];
+                sisa.sort((a,b)=>{
+
+                    let scoreA =
+                        getDecisionScore(roles.kunci,a)
+                        + getPleaBonus(a,"key");
+
+                    let scoreB =
+                        getDecisionScore(roles.kunci,b)
+                        + getPleaBonus(b,"key");
+
+                    return scoreB - scoreA;
+
+                })[0];
 
                 log("⏳ 🔑 Key Holder " +roles.kunci +" sedang memutuskan siapa yang diselamatkan...");
                 await delay(2500);
@@ -23981,9 +24498,20 @@
                             break;
 
                         case "PROCESS_EXECUTION":
+                        case "EXECUTION_COMEBACK":
+                        case "EXECUTION_AMNESTY_VOTE":
+                        case "EXECUTION_AMNESTY_RESULT":
+                        case "EXECUTION_BOTTOM3":
+                        case "EXECUTION_BOSS":
+                        case "EXECUTION_KEY":
+                        case "EXECUTION_ELIMINATE":
+                        case "EXECUTION_AFTER":
+                        case "EXECUTION_ROLE_CONSEQUENCE":
+                            
 
                             await processExecution();
                             break;
+
                         case "RANDOM_EVENT":
 
                             await randomHouseEvent();
