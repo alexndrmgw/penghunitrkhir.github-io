@@ -3145,8 +3145,43 @@
                 }
 
             ];
+
+            const AMNESTY_PLEA_OPTIONS=[
+
+                {
+                    id:"redeem",
+                    text:"Berikan aku kesempatan kedua. Aku ingin membuktikan jika aku masih layak.",
+                    score:8
+                },
+
+                {
+                    id:"unfinished",
+                    text:"Perjalananku belum selesai di rumah ini.",
+                    score:7
+                },
+
+                {
+                    id:"support",
+                    text:"Aku akan menjadi teman yang lebih baik jika kembali.",
+                    score:5
+                },
+
+                {
+                    id:"respect",
+                    text:"Apapun hasilnya, aku menghormati keputusan kalian, do the best.",
+                    score:3
+                },
+
+                {
+                    id:"silent",
+                    text:"Aku tidak akan memohon apapun ke kalian.",
+                    score:-3
+                }
+
+                ];
             
             let pendingDecision = null;
+            let pendingWillResolve = null;
             let npcRequest = null;
             
             //amnesti comeback random
@@ -3176,7 +3211,8 @@
 
                 semifinal:null,
                 final:null,
-                grandfinal:null
+                grandfinal:null,
+                will:null
             };
             let currentMiniGameCandidates = [];
             const miniGamePool = {
@@ -3269,16 +3305,12 @@
             };
             const WILL_GAMES=[
 
-                "memory",
-
-                "reaction",
-
-                "timing",
-
-                "tap",
-
-                "freeze"
-
+                "numberOrder",
+                "alphabetOrder",
+                "arrowMemory",
+                "colorMatch",
+                "quickMath",
+                "lampMemory"
 
             ];
             const miniGameConfig = {
@@ -3369,7 +3401,83 @@
                     label:"🎁 Role Box",
                     playerBase:50,
                     npcBase:50
+                },
+
+                numberOrder:{
+                    label:"🔢 Number Order",
+                    playerBase:70,
+                    npcBase:60
+                },
+
+                alphabetOrder:{
+                    label:"🔠 Alphabet Order",
+                    playerBase:70,
+                    npcBase:60
+                },
+
+                arrowMemory:{
+                    label:"🔀 Arrow Memory",
+                    playerBase:68,
+                    npcBase:58
+                },
+
+                colorMatch:{
+                    label:"🎨 Color Match",
+                    playerBase:65,
+                    npcBase:55
+                },
+
+                quickMath:{
+                    label:"🧮 Quick Math",
+                    playerBase:72,
+                    npcBase:60
+                },
+
+                lampMemory:{
+                    label:"💡 Lamp Memory",
+                    playerBase:68,
+                    npcBase:58
+                },
+            };
+
+            const willGameConfig = {
+
+                numberOrder:{
+                    label:"🔢 Number Order",
+                    playerBase:70,
+                    npcBase:65
+                },
+
+                alphabetOrder:{
+                    label:"🔠 Alphabet Order",
+                    playerBase:70,
+                    npcBase:65
+                },
+
+                arrowMemory:{
+                    label:"🔀 Arrow Memory",
+                    playerBase:68,
+                    npcBase:63
+                },
+
+                colorMatch:{
+                    label:"🎨 Color Match",
+                    playerBase:66,
+                    npcBase:60
+                },
+
+                quickMath:{
+                    label:"🧮 Quick Math",
+                    playerBase:72,
+                    npcBase:65
+                },
+
+                lampMemory:{
+                    label:"💡 Lamp Memory",
+                    playerBase:68,
+                    npcBase:62
                 }
+
             };
 
             function shuffle(arr){
@@ -3808,6 +3916,11 @@
                         case "grandfinal":
                             roleName = "Grand Final";
                             roleEmoji = "🏆";
+                            break;
+
+                        case "will":
+                            roleName = "Wasiat";
+                            roleEmoji = "📜";
                             break;
                     }
 
@@ -7647,6 +7760,1717 @@
                     Math.floor(score)
                 );
             }
+
+            function simulateNpcWillGame(player, game){
+
+                let score = 0;
+
+                switch(game){
+
+                    case "numberOrder":
+
+                        score = 45 + Math.floor(Math.random()*51);
+                        break;
+
+                    case "alphabetOrder":
+
+                        score = 45 + Math.floor(Math.random()*51);
+                        break;
+
+                    case "arrowMemory":
+
+                        score = 40 + Math.floor(Math.random()*56);
+                        break;
+
+                    case "colorMatch":
+
+                        score = 40 + Math.floor(Math.random()*56);
+                        break;
+
+                    case "quickMath":
+
+                        score = 35 + Math.floor(Math.random()*66);
+                        break;
+
+                    case "lampMemory":
+
+                        score = 40 + Math.floor(Math.random()*56);
+                        break;
+
+                    default:
+
+                        score = 50;
+
+                }
+
+                // Trait Bonus
+                switch(traitsMap[player]){
+
+                    case "Strategis":
+
+                        if(
+                            game==="numberOrder" ||
+                            game==="alphabetOrder" ||
+                            game==="quickMath"
+                        ){
+                            score += 8;
+                        }
+
+                        break;
+
+                    case "Licik":
+
+                        // Licik tidak terlalu berpengaruh di game wasiat
+                        score += 2;
+
+                        break;
+
+                    case "Santai":
+
+                        if(
+                            game==="colorMatch" ||
+                            game==="lampMemory"
+                        ){
+                            score += 5;
+                        }
+
+                        break;
+
+                    case "Emosional":
+
+                        score += Math.floor(Math.random()*21)-10;
+
+                        break;
+
+                }
+
+                score += Math.floor((reputation[player]||50)*0.08);
+
+                return Math.max(
+                    0,
+                    Math.min(
+                        100,
+                        Math.floor(score)
+                    )
+                );
+
+            }
+            //number order game variables
+            let willNumberResolve = null;
+
+            let willNumberScore = 0;
+
+            let willNumberRound = 0;
+
+            let willNumberMaxRound = 10;
+
+            let willNumberTimer = null;
+            let willNumberTimeLeft = 7;
+
+            //alphabet order variables
+
+            let willAlphabetResolve = null;
+
+            let willAlphabetScore = 0;
+
+            let willAlphabetRound = 0;
+
+            let willAlphabetMaxRound = 10;
+
+            let willAlphabetTimer = null;
+
+            let willAlphabetTimeLeft = 7;
+
+            //game Lamp  variables
+            let willLampResolve = null;
+
+            let willLampScore = 0;
+
+            let willLampRound = 0;
+
+            let willLampMaxRound = 10;
+
+            let willLampPattern = [];
+
+            let willLampClicked = [];
+
+            let willLampTimer = null;
+
+            let willLampTimeLeft = 8;
+
+            //arrow memory game variables
+            let willArrowResolve = null;
+
+            let willArrowScore = 0;
+
+            let willArrowRound = 0;
+
+            let willArrowMaxRound = 10;
+
+            let willArrowPattern = [];
+
+            let willArrowInput = [];
+
+            let willArrowShowing = false;
+
+            let willArrowTimer=null;
+
+            let willArrowTimeLeft=0;
+
+            //color match game variables
+            let willColorResolve = null;
+
+            let willColorScore = 0;
+
+            let willColorRound = 0;
+
+            let willColorMaxRound = 10;
+
+            let willColorTimer = null;
+
+            let willColorTimeLeft = 8;
+
+            let currentColorAnswer = "";
+
+            //quick math game variables
+            let willMathResolve = null;
+
+            let willMathScore = 0;
+
+            let willMathRound = 0;
+
+            let willMathMaxRound = 10;
+
+            let willMathTimer = null;
+
+            let willMathTimeLeft = 8;
+
+            let currentMathAnswer = 0;
+
+            async function openWillGame(){
+
+                switch(currentMiniGames.will){
+
+                    case "numberOrder":
+
+                        return await playWillNumberOrder();
+
+                    case "alphabetOrder":
+
+                        return await playWillAlphabetOrder();
+
+                    case "arrowMemory":
+
+                        return await playWillArrowMemory();
+
+                    case "colorMatch":
+
+                        return await playWillColorMatch();
+
+                    case "quickMath":
+
+                        return await playWillQuickMath();
+
+                    case "lampMemory":
+
+                        return await playWillLampMemory();
+
+                }
+
+                return 0;
+
+            }
+
+            async function playWillNumberOrder(){
+
+                // alert("Number Order belum dibuat");
+
+                // return 0;
+                return new Promise(resolve=>{
+
+                    willNumberResolve = resolve;
+
+                    willNumberScore = 0;
+
+                    willNumberRound = 0;
+
+                    nextWillNumberRound();
+
+                });
+
+            }
+            function nextWillNumberRound(){
+                willNumberTimeLeft = 7;
+
+                if(willNumberRound>=willNumberMaxRound){
+
+                    closeDecisionModal();
+                    clearInterval(
+                        willNumberTimer
+                    );
+
+                    willNumberResolve(willNumberScore);
+
+                    return;
+
+                }
+
+                willNumberRound++;
+
+                let nums=[];
+
+                while(nums.length<5){
+
+                    let n=Math.floor(Math.random()*90)+10;
+
+                    if(!nums.includes(n)) nums.push(n);
+
+                }
+
+                let shuffled=[...nums].sort(()=>Math.random()-0.5);
+
+                let expected=[...nums].sort((a,b)=>a-b);
+
+                let current=0;
+
+                let html="";
+
+                shuffled.forEach(n=>{
+
+                    html+=`
+                    <button
+                    onclick="clickWillNumber(${n})"
+                    data-value="${n}"
+                    style="
+                        width:70px;
+                        height:70px;
+                        margin:6px;
+                        font-size:22px;
+                    ">
+                        ${n}
+                    </button>
+                    `;
+
+                });
+
+                let timerHtml = `
+                <div style="
+                font-size:18px;
+                margin-bottom:10px;
+                font-weight:bold;
+                ">
+                ⏱️ <span id="willNumberTimer">${willNumberTimeLeft}</span> detik
+                </div>
+                `;
+
+                openDecisionModal(
+
+                    `
+                    <h2>🔢 Number Order</h2>
+
+                    <p>
+                    Ronde ${willNumberRound}/${willNumberMaxRound}
+                    </p>
+
+                    <p>
+                    Klik angka dari kecil ke besar.
+                    </p>
+
+                    <p>
+                    ⭐ Score :
+                    <span id="willScoreLabel">
+                    ${willNumberScore}
+                    </span>
+                    </p>
+                    `,
+
+                    timerHtml + `
+                    <div id="numberContainer">
+                    ${html}
+                    </div>
+                    `
+
+                );
+
+                window.currentWillExpected=expected;
+
+                window.currentWillIndex=0;
+                clearInterval(willNumberTimer);
+
+                willNumberTimer = setInterval(()=>{
+
+                    willNumberTimeLeft--;
+
+                    let el =
+                    document.getElementById(
+                        "willNumberTimer"
+                    );
+
+                    if(el){
+
+                        el.innerText =
+                        willNumberTimeLeft;
+
+                    }
+
+                    if(willNumberTimeLeft<=0){
+
+                        clearInterval(
+                            willNumberTimer
+                        );
+
+                        nextWillNumberRound();
+
+                    }
+
+                },1000);
+
+            }
+            function clickWillNumber(value){
+                let btn =
+                document.querySelector(
+                `[data-value="${value}"]`
+                );
+
+                if(btn.disabled) return;
+
+                let expected=
+                window.currentWillExpected[
+                    window.currentWillIndex
+                ];
+
+                if(value===expected){
+
+                    willNumberScore+=25;
+                    let s =
+                    document.getElementById(
+                        "willScoreLabel"
+                    );
+
+                    if(s){
+
+                        s.innerText =
+                        willNumberScore;
+
+                    }
+
+                    window.currentWillIndex++;
+
+                    document
+                    .querySelector(
+                        `[data-value="${value}"]`
+                    )
+                    .disabled=true;
+
+                    if(
+                        window.currentWillIndex===
+                        window.currentWillExpected.length
+                    ){
+                        clearInterval(willNumberTimer);
+
+                        setTimeout(
+                            nextWillNumberRound,
+                            300
+                        );
+
+                    }
+
+                }else{
+
+                    willNumberScore-=10;
+                    let s =
+                    document.getElementById(
+                        "willScoreLabel"
+                    );
+
+                    if(s){
+
+                        s.innerText =
+                        willNumberScore;
+
+                    }
+
+                }
+
+            }
+
+            async function playWillAlphabetOrder(){
+
+                // alert("Alphabet Order belum dibuat");
+
+                // return 0;
+                return new Promise(resolve=>{
+
+                    willAlphabetResolve = resolve;
+
+                    willAlphabetScore = 0;
+
+                    willAlphabetRound = 0;
+
+                    nextWillAlphabetRound();
+
+                });
+
+            }
+
+            function nextWillAlphabetRound(){
+
+                if(willAlphabetRound >= willAlphabetMaxRound){
+
+                    clearInterval(willAlphabetTimer);
+
+                    closeDecisionModal();
+
+                    willAlphabetResolve(willAlphabetScore);
+
+                    return;
+
+                }
+
+                willAlphabetRound++;
+
+                willAlphabetTimeLeft = 7;
+
+                let letters = [];
+
+                while(letters.length < 5){
+
+                    let c = String.fromCharCode(
+                        65 + Math.floor(Math.random()*26)
+                    );
+
+                    if(!letters.includes(c)){
+
+                        letters.push(c);
+
+                    }
+
+                }
+
+                let shuffled = [...letters].sort(()=>Math.random()-0.5);
+
+                let expected = [...letters].sort();
+
+                let html = "";
+
+                shuffled.forEach(c=>{
+
+                    html += `
+                    <button
+                    data-letter="${c}"
+                    onclick="clickWillAlphabet('${c}')"
+                    style="
+                        width:70px;
+                        height:70px;
+                        margin:6px;
+                        font-size:24px;
+                    ">
+                        ${c}
+                    </button>
+                    `;
+
+                });
+
+                openDecisionModal(
+
+                    `
+                    <h2>🔠 Alphabet Order</h2>
+
+                    <p>Ronde ${willAlphabetRound}/${willAlphabetMaxRound}</p>
+
+                    <p>
+                    Klik huruf dari A → Z
+                    </p>
+
+                    <p>
+                    ⭐ Score :
+                    <span id="willAlphabetScore">
+                        ${willAlphabetScore}
+                    </span>
+                    </p>
+
+                    <p>
+                    ⏱️
+                    <span id="willAlphabetTimer">
+                        ${willAlphabetTimeLeft}
+                    </span>
+                    </p>
+                    `,
+
+                    html
+
+                );
+
+                window.currentAlphabetExpected = expected;
+
+                window.currentAlphabetIndex = 0;
+
+                clearInterval(willAlphabetTimer);
+
+                willAlphabetTimer = setInterval(()=>{
+
+                    willAlphabetTimeLeft--;
+
+                    let t =
+                    document.getElementById(
+                        "willAlphabetTimer"
+                    );
+
+                    if(t){
+
+                        t.innerText =
+                        willAlphabetTimeLeft;
+
+                    }
+
+                    if(willAlphabetTimeLeft <= 0){
+
+                        clearInterval(
+                            willAlphabetTimer
+                        );
+
+                        nextWillAlphabetRound();
+
+                    }
+
+                },1000);
+
+            }
+
+            function clickWillAlphabet(letter){
+
+                let btn =
+                document.querySelector(
+                    `[data-letter="${letter}"]`
+                );
+
+                if(btn.disabled) return;
+
+                let expected =
+                window.currentAlphabetExpected[
+                    window.currentAlphabetIndex
+                ];
+
+                if(letter === expected){
+
+                    willAlphabetScore += 25;
+
+                    let s =
+                    document.getElementById(
+                        "willAlphabetScore"
+                    );
+
+                    if(s){
+
+                        s.innerText =
+                        willAlphabetScore;
+
+                    }
+
+                    btn.disabled = true;
+
+                    window.currentAlphabetIndex++;
+
+                    if(
+                        window.currentAlphabetIndex ===
+                        window.currentAlphabetExpected.length
+                    ){
+
+                        clearInterval(
+                            willAlphabetTimer
+                        );
+
+                        setTimeout(
+                            nextWillAlphabetRound,
+                            300
+                        );
+
+                    }
+
+                }else{
+
+                    willAlphabetScore -= 10;
+
+                    let s =
+                    document.getElementById(
+                        "willAlphabetScore"
+                    );
+
+                    if(s){
+
+                        s.innerText =
+                        willAlphabetScore;
+
+                    }
+
+                }
+
+            }
+
+            async function playWillArrowMemory(){
+
+                // alert("Arrow Memory belum dibuat");
+
+                // return 0;
+                return new Promise(resolve=>{
+
+                    willArrowResolve = resolve;
+
+                    willArrowScore = 0;
+
+                    willArrowRound = 0;
+
+                    nextWillArrowRound();
+
+                });
+
+            }
+
+            function nextWillArrowRound(){
+
+                if(willArrowRound >= willArrowMaxRound){
+
+                    clearInterval(willArrowTimer);
+
+                    closeDecisionModal();
+
+                    willArrowResolve(willArrowScore);
+
+                    return;
+
+                }
+
+                willArrowRound++;
+
+                if(willArrowRound<=3){
+
+                    willArrowTimeLeft=8;
+
+                }else if(willArrowRound<=6){
+
+                    willArrowTimeLeft=6;
+
+                }else{
+
+                    willArrowTimeLeft=4;
+
+                }
+
+                willArrowInput = [];
+
+                willArrowPattern = [];
+
+                const arrows = ["⬆️","⬇️","⬅️","➡️"];
+
+                let length = Math.min(
+                    3 + Math.floor(willArrowRound/2),
+                    8
+                );
+
+                for(let i=0;i<length;i++){
+
+                    willArrowPattern.push(
+
+                        arrows[
+                            Math.floor(Math.random()*4)
+                        ]
+
+                    );
+
+                }
+
+                willArrowShowing = true;
+
+                openDecisionModal(
+
+                    `
+                    <h2>🔀 Arrow Memory</h2>
+
+                    <p>
+                    Hafalkan urutan panah berikut.
+                    </p>
+
+                    <p>
+                    ⭐ Score :
+                    <span id="arrowScore">
+                    ${willArrowScore}
+                    </span>
+                    </p>
+
+                    <p>
+                    ⏱
+                    <span id="arrowTimer">
+                    ${willArrowTimeLeft}
+                    </span>
+                    </p>
+                    `,
+
+                    `
+                    <div
+                    id="arrowSequence"
+                    style="
+                    font-size:42px;
+                    text-align:center;
+                    margin:20px;
+                    ">
+                    ${willArrowPattern.join(" ")}
+                    </div>
+                    `
+                );
+
+                setTimeout(showArrowButtons,2000);
+
+            }
+
+            function showArrowButtons(){
+
+                willArrowShowing = false;
+
+                let html="";
+
+                ["⬆️","⬇️","⬅️","➡️"].forEach(a=>{
+
+                    html+=`
+                    <button
+                    onclick="clickArrow('${a}')"
+                    style="
+                    width:80px;
+                    height:80px;
+                    font-size:32px;
+                    margin:6px;
+                    ">
+                    ${a}
+                    </button>
+                    `;
+
+                });
+
+                document.getElementById(
+                    "decisionBody"
+                ).innerHTML =
+
+                `
+                <p>
+
+                ⭐ Score :
+                <span id="arrowScore">
+
+                ${willArrowScore}
+
+                </span>
+
+                </p>
+
+                <p>
+
+                ⏱
+                <span id="arrowTimer">
+
+                ${willArrowTimeLeft}
+
+                </span>
+
+                </p>
+
+                ${html}
+                `;
+
+                clearInterval(willArrowTimer);
+
+                willArrowTimer=setInterval(()=>{
+
+                    willArrowTimeLeft--;
+
+                    let t=document.getElementById("arrowTimer");
+
+                    if(t){
+
+                        t.innerText=willArrowTimeLeft;
+
+                    }
+
+                    if(willArrowTimeLeft<=0){
+
+                        clearInterval(willArrowTimer);
+
+                        willArrowScore-=3;
+
+                        setTimeout(nextWillArrowRound,500);
+
+                    }
+
+                },1000);
+
+            }
+
+            function clickArrow(arrow){
+
+                clearInterval(willArrowTimer);
+
+                willArrowInput.push(arrow);
+
+                let index =
+                willArrowInput.length-1;
+
+                if(
+                    arrow ===
+                    willArrowPattern[index]
+                ){
+
+                    willArrowScore += 25;
+
+                }else{
+
+                    willArrowScore -= 10;
+
+                }
+
+                let s =
+                document.getElementById(
+                    "arrowScore"
+                );
+
+                if(s){
+
+                    s.innerText =
+                    willArrowScore;
+
+                }
+
+                if(
+                    willArrowInput.length ===
+                    willArrowPattern.length
+                ){
+
+                    setTimeout(
+
+                        nextWillArrowRound,
+
+                        600
+
+                    );
+
+                }
+
+            }
+
+            async function playWillColorMatch(){
+
+                // alert("Color Match belum dibuat");
+
+                // return 0;
+                return new Promise(resolve=>{
+
+                    willColorResolve = resolve;
+
+                    willColorScore = 0;
+
+                    willColorRound = 0;
+
+                    nextWillColorRound();
+
+                });
+
+
+            }
+
+            function nextWillColorRound(){
+
+                if(willColorRound>=willColorMaxRound){
+
+                    clearInterval(willColorTimer);
+
+                    closeDecisionModal();
+
+                    willColorResolve(willColorScore);
+
+                    return;
+                }
+
+                willColorRound++;
+
+                if(willColorRound<=3){
+
+                    willColorTimeLeft=8;
+
+                }else if(willColorRound<=6){
+
+                    willColorTimeLeft=6;
+
+                }else{
+
+                    willColorTimeLeft=4;
+
+                }
+
+                const colors=[
+
+                    {
+                        id:"red",
+                        text:"MERAH",
+                        color:"#ef4444"
+                    },
+
+                    {
+                        id:"blue",
+                        text:"BIRU",
+                        color:"#3b82f6"
+                    },
+
+                    {
+                        id:"green",
+                        text:"HIJAU",
+                        color:"#22c55e"
+                    },
+
+                    {
+                        id:"yellow",
+                        text:"KUNING",
+                        color:"#facc15"
+                    }
+
+                ];
+
+                let word =
+                colors[
+                    Math.floor(Math.random()*colors.length)
+                ];
+
+                let font =
+                colors[
+                    Math.floor(Math.random()*colors.length)
+                ];
+
+                while(font.id===word.id){
+
+                    font=
+                    colors[
+                        Math.floor(Math.random()*colors.length)
+                    ];
+
+                }
+
+                let askFont =
+                Math.random()<0.5;
+
+                if(askFont){
+
+                    currentColorAnswer = font.id;
+
+                }else{
+
+                    currentColorAnswer = word.id;
+
+                }
+
+                let buttons="";
+
+                colors.forEach(c=>{
+
+                    buttons+=`
+
+                    <button
+
+                    onclick="chooseWillColor('${c.id}')"
+
+                    style="
+
+                    width:100%;
+
+                    margin:6px 0;
+
+                    ">
+
+                    ${c.text}
+
+                    </button>
+
+                    `;
+
+                });
+
+                openDecisionModal(
+
+            `
+
+            <div style="font-size:28px;font-weight:bold">
+
+            🎨 COLOR MATCH
+
+            </div>
+
+            <div style="margin-top:10px">
+
+            Round ${willColorRound}/${willColorMaxRound}
+
+            </div>
+
+            <div style="margin-top:15px">
+
+            ${askFont?
+
+            "Pilih <b>WARNA</b> tulisan"
+
+            :
+
+            "Pilih <b>ARTI</b> tulisan"
+
+            }
+
+            </div>
+
+            <div
+
+            style="
+
+            font-size:54px;
+
+            font-weight:bold;
+
+            margin:25px;
+
+            color:${font.color};
+
+            ">
+
+            ${word.text}
+
+            </div>
+
+            <div>
+
+            ⭐ Score :
+
+            <span id="colorScore">
+
+            ${willColorScore}
+
+            </span>
+
+            </div>
+
+            <div>
+
+            ⏱
+
+            <span id="colorTimer">
+
+            ${willColorTimeLeft}
+
+            </span>
+
+            </div>
+
+            `,
+
+            buttons
+
+            );
+
+                clearInterval(willColorTimer);
+
+                willColorTimer=setInterval(()=>{
+
+                    willColorTimeLeft--;
+
+                    let t=document.getElementById("colorTimer");
+
+                    if(t){
+
+                        t.innerText=willColorTimeLeft;
+
+                    }
+
+                    if(willColorTimeLeft<=0){
+
+                        clearInterval(willColorTimer);
+
+                        willColorScore-=3;
+
+                        setTimeout(
+
+                            nextWillColorRound,
+
+                            500
+
+                        );
+
+                    }
+
+                },1000);
+
+            }
+
+            function chooseWillColor(answer){
+
+                clearInterval(willColorTimer);
+
+                if(answer===currentColorAnswer){
+
+                    willColorScore+=25;
+
+                }else{
+
+                    willColorScore-=10;
+
+                }
+
+                let s=document.getElementById("colorScore");
+
+                if(s){
+
+                    s.innerText=willColorScore;
+
+                }
+
+                setTimeout(
+
+                    nextWillColorRound,
+
+                    500
+
+                );
+
+            }
+
+            async function playWillQuickMath(){
+
+                // alert("Quick Math belum dibuat");
+
+                // return 0;
+                return new Promise(resolve=>{
+
+                    willMathResolve = resolve;
+
+                    willMathScore = 0;
+
+                    willMathRound = 0;
+
+                    nextWillMathRound();
+
+                });
+
+            }
+
+            function nextWillMathRound(){
+
+                if(willMathRound >= willMathMaxRound){
+
+                    clearInterval(willMathTimer);
+
+                    closeDecisionModal();
+
+                    willMathResolve(willMathScore);
+
+                    return;
+
+                }
+
+                willMathRound++;
+
+                if(willMathRound<=3){
+
+                    willMathTimeLeft=8;
+
+                }else if(willMathRound<=6){
+
+                    willMathTimeLeft=6;
+
+                }else{
+
+                    willMathTimeLeft=5;
+
+                }
+
+                let question = generateMathQuestion();
+
+                currentMathAnswer = question.answer;
+
+                let options = [...question.options];
+
+                options.sort(()=>Math.random()-0.5);
+
+                let html="";
+
+                options.forEach(opt=>{
+
+                    html+=`
+
+                    <button
+
+                    onclick="chooseWillMath(${opt})"
+
+                    style="
+
+                    width:100%;
+
+                    margin:6px 0;
+
+                    ">
+
+                    ${opt}
+
+                    </button>
+
+                    `;
+
+                });
+
+                openDecisionModal(
+
+                    `
+
+                    <div style="font-size:30px;font-weight:bold">
+
+                    🧮 QUICK MATH
+
+                    </div>
+
+                    <div style="margin-top:10px">
+
+                    Round ${willMathRound}/${willMathMaxRound}
+
+                    </div>
+
+                    <div style="
+
+                    font-size:48px;
+
+                    font-weight:bold;
+
+                    margin:25px;
+
+                    ">
+
+                    ${question.text}
+
+                    </div>
+
+                    <div>
+
+                    ⭐ Score :
+
+                    <span id="mathScore">
+
+                    ${willMathScore}
+
+                    </span>
+
+                    </div>
+
+                    <div>
+
+                    ⏱
+
+                    <span id="mathTimer">
+
+                    ${willMathTimeLeft}
+
+                    </span>
+
+                    </div>
+
+                    `,
+
+                    html
+
+                );
+
+                clearInterval(willMathTimer);
+
+                willMathTimer=setInterval(()=>{
+
+                    willMathTimeLeft--;
+
+                    let t=document.getElementById("mathTimer");
+
+                    if(t){
+
+                        t.innerText=willMathTimeLeft;
+
+                    }
+
+                    if(willMathTimeLeft<=0){
+
+                        clearInterval(willMathTimer);
+
+                        willMathScore-=3;
+
+                        setTimeout(nextWillMathRound,500);
+
+                    }
+
+                },1000);
+
+            }
+
+            function generateMathQuestion(){
+
+                let mode = Math.floor(Math.random()*5);
+
+                let text="";
+
+                let answer=0;
+
+                switch(mode){
+
+                    case 0:{
+
+                        let a=20+Math.floor(Math.random()*70);
+
+                        let b=10+Math.floor(Math.random()*40);
+
+                        text=`${a} + ${b}`;
+
+                        answer=a+b;
+
+                        break;
+
+                    }
+
+                    case 1:{
+
+                        let a=60+Math.floor(Math.random()*80);
+
+                        let b=20+Math.floor(Math.random()*40);
+
+                        text=`${a} - ${b}`;
+
+                        answer=a-b;
+
+                        break;
+
+                    }
+
+                    case 2:{
+
+                        let a=11+Math.floor(Math.random()*19);
+
+                        let b=7+Math.floor(Math.random()*6);
+
+                        text=`${a} × ${b}`;
+
+                        answer=a*b;
+
+                        break;
+
+                    }
+
+                    case 3:{
+
+                        let b=3+Math.floor(Math.random()*8);
+
+                        let ans=10+Math.floor(Math.random()*20);
+
+                        let a=b*ans;
+
+                        text=`${a} ÷ ${b}`;
+
+                        answer=ans;
+
+                        break;
+
+                    }
+
+                    case 4:{
+
+                        let a=10+Math.floor(Math.random()*15);
+
+                        let b=5+Math.floor(Math.random()*10);
+
+                        let c=2+Math.floor(Math.random()*6);
+
+                        text=`(${a}+${b})×${c}`;
+
+                        answer=(a+b)*c;
+
+                        break;
+
+                    }
+
+                }
+
+                let options=[answer];
+
+                while(options.length<4){
+
+                    let wrong=
+
+                    answer+
+
+                    (Math.floor(Math.random()*31)-15);
+
+                    if(
+
+                        wrong!==answer &&
+
+                        !options.includes(wrong)
+
+                    ){
+
+                        options.push(wrong);
+
+                    }
+
+                }
+
+                return{
+
+                    text,
+
+                    answer,
+
+                    options
+
+                };
+
+            }
+
+            function chooseWillMath(answer){
+
+                clearInterval(willMathTimer);
+
+                if(answer===currentMathAnswer){
+
+                    willMathScore+=25;
+
+                }else{
+
+                    willMathScore-=10;
+
+                }
+
+                let s=document.getElementById("mathScore");
+
+                if(s){
+
+                    s.innerText=willMathScore;
+
+                }
+
+                setTimeout(nextWillMathRound,500);
+
+            }
+
+            async function playWillLampMemory(){
+
+                // alert("Lamp Memory belum dibuat");
+
+                // return 0;
+                return new Promise(resolve=>{
+
+                    willLampResolve = resolve;
+
+                    willLampScore = 0;
+
+                    willLampRound = 0;
+
+                    nextWillLampRound();
+
+                });
+
+            }
+
+            function nextWillLampRound(){
+
+                if(willLampRound>=willLampMaxRound){
+
+                    clearInterval(willLampTimer);
+
+                    closeDecisionModal();
+
+                    willLampResolve(willLampScore);
+
+                    return;
+
+                }
+
+                willLampRound++;
+
+                if(willLampRound<=3){
+
+                    willLampTimeLeft=8;
+
+                }else if(willLampRound<=6){
+
+                    willLampTimeLeft=6;
+
+                }else{
+
+                    willLampTimeLeft=4;
+
+                }
+
+                willLampClicked=[];
+
+                willLampPattern=[];
+
+                while(willLampPattern.length<3){
+
+                    let n=Math.floor(Math.random()*9);
+
+                    if(!willLampPattern.includes(n))
+
+                        willLampPattern.push(n);
+
+                }
+
+                let html="";
+
+                for(let i=0;i<9;i++){
+
+                    let active=
+                    willLampPattern.includes(i);
+
+                    html+=`
+                    <button
+                    id="lamp${i}"
+                    onclick="clickWillLamp(${i})"
+                    style="
+                    width:80px;
+                    height:80px;
+                    margin:4px;
+                    font-size:30px;
+                    background:${active?"gold":"#ddd"};
+                    ">
+                    💡
+                    </button>
+                    `;
+
+                }
+
+                openDecisionModal(
+
+                    `
+                    <h2>💡 Lamp Memory</h2>
+
+                    <p>
+                    Ronde ${willLampRound}/${willLampMaxRound}
+                    </p>
+
+                    <p>
+                    Ingat posisi lampu.
+                    </p>
+
+                    <p>
+⭐
+                    <span id="lampScore">
+                    ${willLampScore}
+                    </span>
+                    </p>
+
+                    <p>
+                    ⏱
+                    <span id="lampTimer">
+                    ${willLampTimeLeft}
+                    </span>
+                    </p>
+                    `,
+
+                    `<div style="
+                    display:grid;
+                    grid-template-columns:repeat(3,1fr);
+                    gap:8px;
+                    ">
+                    ${html}
+                    </div>`
+
+                );
+
+                setTimeout(hideLampPattern,1500);
+
+            }
+            function hideLampPattern(){
+
+                for(let i=0;i<9;i++){
+
+                    document
+                    .getElementById("lamp"+i)
+                    .style.background="#ddd";
+
+                }
+
+                clearInterval(willLampTimer);
+
+                willLampTimer=setInterval(()=>{
+
+                    willLampTimeLeft--;
+
+                    let t=document.getElementById("lampTimer");
+
+                    if(t){
+
+                        t.innerText=willLampTimeLeft;
+
+                    }
+
+                    if(willLampTimeLeft<=0){
+
+                        clearInterval(willLampTimer);
+
+                        willLampScore-=3;
+
+                        let s=document.getElementById("lampScore");
+
+                        if(s){
+
+                            s.innerText=willLampScore;
+
+                        }
+
+                        setTimeout(nextWillLampRound,500);
+
+                    }
+
+                },1000);
+
+            }
+
+            function clickWillLamp(index){
+
+                clearInterval(willLampTimer);
+
+                if(
+                    willLampClicked.includes(index)
+                ) return;
+
+                willLampClicked.push(index);
+
+                document
+                .getElementById("lamp"+index)
+                .style.background="orange";
+
+                if(
+                    willLampPattern.includes(index)
+                ){
+
+                    willLampScore+=25;
+
+                }else{
+
+                    willLampScore-=10;
+
+                }
+
+                document
+                .getElementById("lampScore")
+                .innerText=
+                willLampScore;
+
+                if(
+                    willLampClicked.length===
+                    willLampPattern.length
+                ){
+
+                    setTimeout(
+                        nextWillLampRound,
+                        600
+                    );
+
+                }
+
+            }
+
             async function runRoleMiniGame(
                 roleType,
                 candidates,
@@ -9664,7 +11488,22 @@
 
                     key:null,
 
-                    will:null
+                    amnesty:null,
+
+                    will:{
+
+                        game:null,
+
+
+                        score:null,
+
+                        executor:null,
+
+                        executed:false,
+
+                        success:null
+
+                    }
 
                 };
 
@@ -9707,6 +11546,25 @@
                 log(`<i>"${choice.text}"</i>`);
                 await delay(900);
 
+            }
+
+            async function generateNpcAmnestyPlea(player){
+
+                let choice =
+                AMNESTY_PLEA_OPTIONS[
+                    Math.floor(Math.random()*PLEA_OPTIONS.length)
+                ];
+
+                pleaData[player].amnesty
+
+                // log(
+                //     `🙏 ${player} memohon kepada Boss.<br><i>"${choice.text}"</i>`
+                // );
+                log(`🙏 ${player} memohon kepada Penghuni yang tersisa.`);
+                await delay(700);
+
+                log(`<i>"${choice.text}"</i>`);
+                await delay(900);
             }
 
             async function playerBossPlea(){
@@ -9833,6 +11691,68 @@
 
             }
 
+            async function playerAmnestyPlea(){
+
+
+                log("🙏 Kamu memohon kepada Seluruh Penghuni.");
+                await delay(1000);
+
+                return new Promise(resolve=>{
+
+                    let html = "";
+
+                    AMNESTY_PLEA_OPTIONS.forEach(opt=>{
+
+                        html += `
+                        <button
+                        onclick="selectAmnestyPlea('${opt.id}')"
+                        style="display:block;width:100%;margin:8px 0;">
+                            ${opt.text}
+                        </button>
+                        `;
+
+                    });
+
+                    pendingDecision = resolve;
+
+                    openDecisionModal(
+
+                        `
+                        <h2>🙏 Permohonan kepada Seluruh Penghuni</h2>
+
+                        <p>
+                        Pilih apa yang ingin kamu katakan kepada Seluruh Penghuni.
+                        </p>
+                        `,
+
+                        html
+
+                    );
+
+                });
+
+            }
+
+            function selectAmnestyPlea(id){
+
+                let choice = AMNESTY_PLEA_OPTIONS.find(x => x.id === id);
+
+                pleaData[playerName].amnesty = choice;
+
+                log(`<i>"${choice.text}"</i>`);
+
+                closeDecisionModal();
+
+                if(pendingDecision){
+
+                    pendingDecision();
+
+                    pendingDecision = null;
+
+                }
+
+            }
+
             function getPleaBonus(target,type){
 
                 let data = pleaData[target];
@@ -9854,66 +11774,430 @@
                 return 0;
 
             }
+            async function startWillWriting(bottom2){
+                await delay(600);
+                log("⌛📝 Saatnya penghuni Bottom 2 membuat wasiat kepada Key Holder...");
+                await delay(1200);
 
-            function generateWillGame(player){
+                for(let p of bottom2){
 
-                let game =
-                WILL_GAMES[
-                    Math.floor(
-                        Math.random()*WILL_GAMES.length
-                    )
+                    log("📝 " + (p===playerName
+                        ? "Kamu diberikan kesempatan untuk menyampaikan wasiat kepada Pemegang Kunci."
+                        : p + " diberikan kesempatan untuk menyampaikan wasiat kepada Pemegang Kunci.")
+                    );
+
+                    await delay(1200);
+
+                    // if(p===playerName){
+
+                    //     await playerChooseWill();
+
+                    // }else{
+
+                    //     generateWill(p);
+
+                    // }
+
+                    // let w = pleaData[p].will;
+
+                    // log(
+                    //     "📜 " +
+                    //     (p===playerName ? "Wasiatmu" : "Wasiat " + p) +
+                    //     " adalah memainkan " +
+                    //     miniGameConfig[w.game].label +
+                    //     " dengan target " +
+                    //     w.score +
+                    //     " poin."
+                    // );
+
+                    // await delay(1200);
+                    if(p === playerName){
+
+                        await playerChooseWill();
+
+                        let w = pleaData[p].will;
+
+                        log(
+                            "<i> Wasiatmu adalah memainkan " +
+                            willGameConfig[w.game].label +
+                            " dengan target " +
+                            w.score +
+                            " poin.</i>"
+                        );
+
+                        await delay(1200);
+
+                    }else{
+
+                        generateWill(p);
+
+                        let w = pleaData[p].will;
+
+                        log(
+                            "<i> Wasiat " +
+                            p +
+                            " adalah memainkan " +
+                            willGameConfig[w.game].label +
+                            " dengan target " +
+                            w.score +
+                            " poin.</i>"
+                        );
+
+                        await delay(1200);
+
+                    }
+
+                }
+
+                saveGame();
+
+                return true;
+
+            }
+
+            function generateWill(player){
+
+                //ALEX DEBUG will game
+                let game = WILL_GAMES[
+                    Math.floor(Math.random()*WILL_GAMES.length)
                 ];
 
-                pleaData[player].will = game;
+                // let game = ["numberOrder"];
+                // let cfg = miniGameConfig[game];
+                let cfg = willGameConfig[game];
 
-                return game;
+                let score = Math.floor(
+
+                    cfg.playerBase +
+
+                    Math.random()*16 - 8
+
+                );
+
+                score = Math.max(
+                    30,
+                    Math.min(95,score)
+                );
+
+                // let target = getAlive()
+                //     .filter(p=>p!==player);
+
+                // target =
+                // target[
+                //     Math.floor(
+                //         Math.random()*target.length
+                //     )
+                // ];
+
+                pleaData[player].will.game = game;
+
+                // pleaData[player].will.target = target;
+
+                pleaData[player].will.score = score;
+
+                pleaData[player].will.executor = null;
+
+                pleaData[player].will.executed = false;
+
+                pleaData[player].will.success = null;
 
             }
 
             async function playerChooseWill(){
 
-                let html = "";
+                return new Promise(resolve=>{
 
-                WILL_GAMES.forEach(game=>{
+                    pendingWillResolve = resolve;
 
-                    html += `
-                    <button onclick="selectPlayerWill('${game}')">
-                        ${miniGameConfig[game].label}
-                    </button>
-                    `;
+                    let html = "";
+
+                    WILL_GAMES.forEach(game=>{
+
+                        html += `
+                        <button onclick="selectPlayerWill('${game}')">
+
+                            ${willGameConfig[game].label}
+                        </button>
+                        `;
+
+                    });
+
+                    openDecisionModal(
+
+                        `
+                        <div style="
+                            font-size:26px;
+                            font-weight:bold;
+                        ">
+                        📝 Tulis Wasiat
+                        </div>
+
+                        <div style="
+                            margin-top:8px;
+                        ">
+                        Pilih mini game yang akan dimainkan jika wasiatmu dijalankan.
+                        </div>
+                        `,
+
+                        html
+
+                    );
 
                 });
-
-                openDecisionModal(
-
-                    `
-                    <div style="
-                        font-size:26px;
-                        font-weight:bold;
-                    ">
-                    📝 Tulis Wasiat
-                    </div>
-
-                    <div style="
-                        margin-top:8px;
-                    ">
-                    Pilih mini game yang akan dimainkan jika wasiatmu dijalankan.
-                    </div>
-                    `,
-
-                    html
-
-                );
 
             }
 
             function selectPlayerWill(game){
 
-                pleaData[playerName].will = game;
+                if(
+                    !confirm(
+                        "Anda yakin memilih mini game ini?\n\nPilihan tidak dapat diubah."
+                    )
+                ){
+                    return;
+                }
+
+                pleaData[playerName].will.game = game;
+
+                saveGame();
+
+                playerChooseWillScore();
+
+            }
+
+            function playerChooseWillScore(){
+
+                let current =
+                    pleaData[playerName].will.score ?? "";
+
+                openDecisionModal(
+
+                    `
+                    <div style="font-size:24px;font-weight:bold">
+                        🎯 Target Skor
+                    </div>
+
+                    <div style="margin-top:8px">
+                        Mini Game :
+                        <b>${willGameConfig[
+                            pleaData[playerName].will.game
+                        ].label}</b>
+                    </div>
+
+                    <div style="margin-top:15px">
+                        Masukkan target skor yang harus dicapai.
+                    </div>
+                    `,
+
+                    `
+                    <input
+                        id="willScoreInput"
+                        type="number"
+                        value="${current}"
+                        placeholder="Contoh : 80"
+                        style="
+                            width:100%;
+                            padding:12px;
+                            margin-top:15px;
+                            border-radius:10px;
+                        "
+                    >
+
+                    <br><br>
+
+                    <button
+                        onclick="submitWillScore()"
+                        style="width:100%"
+                    >
+                        ✅ Submit
+                    </button>
+                    `
+                );
+
+            }
+
+            async function submitWillScore(){
+
+                let value =
+                    document
+                    .getElementById("willScoreInput")
+                    .value
+                    .trim();
+
+                if(value===""){
+
+                    alert(
+                        "Silahkan isi target terlebih dahulu!"
+                    );
+
+                    return;
+                }
+
+                pleaData[playerName].will.score =
+                    Number(value);
+
+                pleaData[playerName].will.executed =
+                    false;
+
+                pleaData[playerName].will.success =
+                    null;
+
+
+
+                let w = pleaData[playerName].will;
+
+                // log(
+                //     "<i> Wasiatmu adalah memainkan " +
+                //     miniGameConfig[w.game].label +
+                //     " dengan target " +
+                //     w.score +
+                //     " poin.</i>"
+                // );
+
+                // await delay(1200);
+
+                saveGame();
 
                 closeDecisionModal();
 
+                // return;
+
+                if(pendingWillResolve){
+
+                    pendingWillResolve();
+
+                    pendingWillResolve = null;
+
+                }
+
             }
+
+            async function executePendingWills(){
+
+                let targets = Object.keys(eliminatedMeta).filter(p=>
+                    eliminatedMeta[p]?.will &&
+                    !eliminatedMeta[p].will.executed
+                );
+
+                if(targets.length===0) return;
+
+                for(let victim of targets){
+
+                    let will = eliminatedMeta[victim].will;
+
+                    log("📜 Wasiat milik " + victim + " dibacakan.");
+
+                    await delay(1000);
+
+                    console.log("victim =", victim);
+                    console.log("will =", will);
+                    console.log("will.game =", will.game);
+                    console.log("config =", willGameConfig[will.game]);
+
+                    log(
+                        "🎮 Game : " +
+                        (willGameConfig[will.game]?.label || "CONFIG NOT FOUND")
+                    );
+
+                    await delay(800);
+
+                    log("🎯 Target Score : " + will.score);
+
+                    await delay(1200);
+
+                    let executor = roles.kunci;
+
+                    let score;
+
+                    if(executor === playerName){
+
+                        log(`🔑 ${executor} menjalankan wasiat.`);
+
+                        currentMiniGames.will = will.game;
+
+                        score =
+                        // await openMiniGame("will");
+                        await openWillGame();
+
+                    }else{
+
+                        log(`🔑 ${executor} menjalankan wasiat.`);
+
+                        score =
+                        // simulateNpcMiniGame(
+                        //     executor,
+                        //     "will"
+                        // );
+                        simulateNpcWillGame(
+                            executor,
+                            will.game
+                        );
+
+                        await delay(1500);
+                    }
+
+                    will.executed = true;
+
+                    will.success =
+                    score >= will.score;
+
+                    if(will.success){
+
+                        if(executor === playerName){
+
+                            log(`✅ Kamu berhasil mencapai ${score}/${will.score}.`);
+
+                        }else{
+
+                            log(`✅ ${executor} berhasil mencapai ${score}/${will.score}.`);
+
+                        }
+                        addReputation(executor, 3);
+
+                        addPublicImage(executor,1);
+
+                        // log(
+                        //     "📈 Public Image " +
+                        //     (executor===playerName ? "kamu" : executor) +
+                        //     " meningkat karena menghormati wasiat."
+                        // );
+
+                    }else{
+
+                        if(executor === playerName){
+
+                            log(`❌ Kamu gagal mencapai ${score}/${will.score}.`);
+
+                        }else{
+
+                            log(`❌ ${executor} gagal mencapai ${score}/${will.score}.`);
+
+                        }
+                        addReputation(executor, -3);
+
+                        addPublicImage(executor,-1);
+
+                        // log(
+                        //     "📉 Public Image " +
+                        //     (executor===playerName ? "kamu" : executor) +
+                        //     " menurun karena gagal menjalankan wasiat."
+                        // );
+
+                    }
+
+                    await delay(1000);
+
+                    saveGame();
+
+                    // nanti disini kita panggil mini game
+                    // await startWillGame(victim);
+
+                }
+
+            }
+
+            
+
 
             function getRandomGangName(){
 
@@ -17909,13 +20193,15 @@
 
                     //     rawPopularity[p] =
                     //     100 / getAlive().length;
-                    // });
+                    // });.
+                    log("☕ Hari santai di rumah, para penghuni menghabiskan waktu setelah malam eliminasi.");
+                    await executePendingWills();
 
                     
                     resetWeeklyReputation();
                     // recalculateReputation();
                     // log("📊 Polling reputasi rumah telah direset.");
-                    log("☕ Hari santai di rumah, para penghuni menghabiskan waktu setelah malam eliminasi.");
+
                 }
 
                 // NPC sosial otomatis tiap hari
@@ -19933,6 +22219,24 @@
                 );
 
                 setProcessingState("EXECUTION_AMNESTY_VOTE");
+                log("⏳🙏 Saatnya Top 2 Calon Penghuni menyampaikan permohonan kepada seluruh penghuni...");
+                await delay(1500);
+
+                for(const p of final2){
+
+                    if(p === playerName){
+                        await delay(800);
+
+                        await playerAmnestyPlea();
+
+                    }else{
+
+                        await generateNpcAmnestyPlea(p);
+                        await delay(700);
+
+                    }
+
+                }
 
                 log("🗳️ Voting amnesti dimulai:");
                 log(final2.join(" vs "));
@@ -20373,6 +22677,7 @@
                 isDayProcessing = false;
                 updatePlayers();
                 setGameButtonsDisabled(false);
+                clearProcessingState();
 
                 
             }
@@ -20950,7 +23255,7 @@
                 // ==========================
                 // PLEA TO BOSS
                 // ==========================
-                log("⏳ Saatnya penghuni Bottom 3 membuat permohonan kepada Boss...");
+                log("⏳🙏 Saatnya penghuni Bottom 3 membuat permohonan kepada Boss...");
                 await delay(1500);
 
                 for(let p of bottom3){
@@ -21127,7 +23432,7 @@
                 // ==========================
                 // PLEA TO KEY HOLDER
                 // ==========================
-                log("⏳ Saatnya penghuni Bottom 2 membuat permohonan kepada Key Holder...");
+                log("⏳🙏 Saatnya penghuni Bottom 2 membuat permohonan kepada Key Holder...");
                 await delay(1500);
 
                 for(let p of sisa){
@@ -21142,12 +23447,25 @@
 
                         await generateNpcKeyPlea(p);
 
+                        await delay(700);
+
                     }
 
                 }
                 if(roles.kunci === playerName){
 
                     extraditionState.bottom2 = [...sisa];
+
+                    let finished =
+                    await startWillWriting(sisa);
+
+                    if(!finished){
+
+                        return;
+
+                    }
+
+                    saveGame();
 
                     let html = "";
 
@@ -21233,6 +23551,17 @@
 
                 })[0];
 
+                let finished =
+                await startWillWriting(sisa);
+
+                if(!finished){
+
+                    return;
+
+                }
+
+                saveGame();
+
                 log("⏳ 🔑 Key Holder " +roles.kunci +" sedang memutuskan siapa yang diselamatkan...");
                 await delay(2500);
 
@@ -21288,6 +23617,10 @@
 
                 // removePlayerFromGang(eliminated);
                 stats[eliminated].placement =getAlive().length;
+
+                eliminatedMeta[eliminated].will = structuredClone(
+                    pleaData[eliminated].will
+                );
 
                 status[eliminated] = "KELUAR";
                 setProcessingState("EXECUTION_AFTER");
@@ -21980,13 +24313,13 @@
                 // roles.kunci = getDebugPlayer(0);
                 // roles.imun = getDebugPlayer(1);
 
-                // roles.bos =getDebugPlayer(0);
-                // roles.kunci = playerName;
-                // roles.imun = getDebugPlayer(1);
-
                 roles.bos =getDebugPlayer(0);
-                roles.kunci = getDebugPlayer(1);
-                roles.imun = playerName;
+                roles.kunci = playerName;
+                roles.imun = getDebugPlayer(1);
+
+                // roles.bos =getDebugPlayer(0);
+                // roles.kunci = getDebugPlayer(1);
+                // roles.imun = playerName;
 
 
                 activeRoles.bos = roles.bos;
@@ -22440,6 +24773,7 @@
                         `❌ ${eliminated} tereliminasi di FINAL!`
                     );
                     stats[eliminated].placement =getAlive().length;
+                    
 
                     status[eliminated] = "KELUAR";
 
@@ -23065,7 +25399,7 @@
                 // ==========================
                 // PLEA TO KEY HOLDER
                 // ==========================
-                log("⏳ Saatnya penghuni Bottom 2 membuat permohonan kepada Key Holder...");
+                log("⏳🙏 Saatnya penghuni Bottom 2 membuat permohonan kepada Key Holder...");
                 await delay(1500);
 
                 for(let p of sisa){
@@ -23080,11 +25414,15 @@
 
                         await generateNpcKeyPlea(p);
 
+                        await delay(700);
+
                     }
 
                 }
 
                 extraditionState.bottom2 = [...sisa];
+
+                // await startWillWriting(sisa);
 
                 saveGame();
 
@@ -23175,6 +25513,17 @@
 
                 })[0];
 
+                let finished =
+                await startWillWriting(sisa);
+
+                if(!finished){
+
+                    return;
+
+                }
+
+                saveGame();
+                
                 log("⏳ 🔑 Key Holder " +roles.kunci +" sedang memutuskan siapa yang diselamatkan...");
                 await delay(2500);
                 log("🔑 Key Holder " +roles.kunci +" menyelamatkan: " + savedByKey);
@@ -23228,6 +25577,10 @@
 
                 // removePlayerFromGang(eliminated);
                 stats[eliminated].placement =getAlive().length;
+
+                eliminatedMeta[eliminated].will = structuredClone(
+                    pleaData[eliminated].will
+                );
 
                 status[eliminated] = "KELUAR";
                 addMemory(
@@ -23404,6 +25757,10 @@
                 // );
 
                 // removePlayerFromGang(name);
+
+                eliminatedMeta[name].will = structuredClone(
+                    pleaData[name].will
+                );
 
                 status[name] = "KELUAR";
                 setProcessingState("EXECUTION_AFTER");
@@ -23823,6 +26180,10 @@
                     removePlayerFromGang(eliminated);
                     stats[eliminated].placement =getAlive().length;
 
+                    eliminatedMeta[eliminated].will = structuredClone(
+                        pleaData[eliminated].will
+                    );
+
                     status[eliminated] = "KELUAR";
                     addMemory(
                         eliminated,
@@ -23913,7 +26274,7 @@
                     // return;
                 }
 
-                setProcessingState("EXECUTION_BOSS");
+
                 let bottom3 =
                 extraditionState.bottom3;
 
@@ -23931,7 +26292,8 @@
                 // ==========================
                 // PLEA TO BOSS
                 // ==========================
-                log("⏳ Saatnya penghuni Bottom 3 membuat permohonan kepada Boss...");
+                setProcessingState("EXECUTION_BOSS");
+                log("⏳🙏 Saatnya penghuni Bottom 3 membuat permohonan kepada Boss...");
                 await delay(1500);
 
                 for(let p of bottom3){
@@ -24135,7 +26497,7 @@
                 // ==========================
                 // PLEA TO KEY HOLDER
                 // ==========================
-                log("⏳ Saatnya penghuni Bottom 2 membuat permohonan kepada Key Holder...");
+                log("⏳🙏 Saatnya penghuni Bottom 2 membuat permohonan kepada Key Holder...");
                 await delay(1500);
 
                 for(let p of sisa){
@@ -24149,6 +26511,8 @@
                     }else{
 
                         await generateNpcKeyPlea(p);
+
+                        await delay(700);
 
                     }
 
@@ -24164,6 +26528,17 @@
                     saveGame();
 
                     extraditionState.bottom2 = [...sisa];
+
+                    let finished =
+                    await startWillWriting(sisa);
+
+                    if(!finished){
+
+                        return;
+
+                    }
+
+                    saveGame();
 
 
                     let html = "";
@@ -24252,6 +26627,17 @@
 
                 })[0];
 
+                let finished =
+                await startWillWriting(sisa);
+
+                if(!finished){
+
+                    return;
+
+                }
+
+                saveGame();
+
                 log("⏳ 🔑 Key Holder " +roles.kunci +" sedang memutuskan siapa yang diselamatkan...");
                 await delay(2500);
                 log("🔑 Key Holder " + roles.kunci + " menyelamatkan: " + savedByKey);
@@ -24322,6 +26708,10 @@
                 
                 // removePlayerFromGang(eliminated);
                 stats[eliminated].placement =getAlive().length;
+
+                eliminatedMeta[eliminated].will = structuredClone(
+                    pleaData[eliminated].will
+                );
 
                 status[eliminated] = "KELUAR";
                 addMemory(
@@ -24497,20 +26887,20 @@
                             await processTeamGame();
                             break;
 
-                        case "PROCESS_EXECUTION":
-                        case "EXECUTION_COMEBACK":
-                        case "EXECUTION_AMNESTY_VOTE":
-                        case "EXECUTION_AMNESTY_RESULT":
-                        case "EXECUTION_BOTTOM3":
-                        case "EXECUTION_BOSS":
-                        case "EXECUTION_KEY":
-                        case "EXECUTION_ELIMINATE":
-                        case "EXECUTION_AFTER":
-                        case "EXECUTION_ROLE_CONSEQUENCE":
+                        // case "PROCESS_EXECUTION":
+                        // case "EXECUTION_COMEBACK":
+                        // case "EXECUTION_AMNESTY_VOTE":
+                        // case "EXECUTION_AMNESTY_RESULT":
+                        // case "EXECUTION_BOTTOM3":
+                        // case "EXECUTION_BOSS":
+                        // case "EXECUTION_KEY":
+                        // case "EXECUTION_ELIMINATE":
+                        // case "EXECUTION_AFTER":
+                        // case "EXECUTION_ROLE_CONSEQUENCE":
                             
 
-                            await processExecution();
-                            break;
+                        //     await processExecution();
+                        //     break;
 
                         case "RANDOM_EVENT":
 
@@ -24588,6 +26978,7 @@
                     revengeTarget =parsed.revengeTarget || {};
                     bossStreak = parsed.bossStreak ?? 0;
                     eliminatedMeta =parsed.eliminatedMeta || {};
+                    pleaData = parsed.pleaData || {};
                     // dailySocialCount = parsed.dailySocialCount || 0;
                     dailySocialCount = parsed.dailySocialCount ?? 0;
                     specialRelations =parsed.specialRelations || {};
@@ -24658,6 +27049,7 @@
                         kunci:null
                     };
                     pendingDecision =parsed.pendingDecision || null;
+                    pendingWillResolve =parsed.pendingWillResolve || null;
                     extraditionState = parsed.extraditionState || extraditionState;
                     amnestyState =parsed.amnestyState || amnestyState;
                     stats = parsed.stats || stats;
@@ -24898,6 +27290,7 @@
                     gangs,
                     dating,
                     revengeTarget,
+                    pleaData,
                     eliminatedMeta,
                     bossStreak,
                     dailySocialCount,
@@ -24933,6 +27326,7 @@
                     genderMap,
                     playerGender,
                     pendingDecision,
+                    pendingWillResolve ,
                     extraditionState,
                     amnestyState,
                     stats,
