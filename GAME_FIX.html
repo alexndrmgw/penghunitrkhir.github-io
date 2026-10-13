@@ -2328,6 +2328,19 @@
             }
         }
 
+
+        /* Mini-game answer feedback */
+        @keyframes miniWrongBlink {
+            0%, 100% { background-color: #f59e0b; color: #111827; }
+            25%, 65% { background-color: #dc2626; color: #fff; }
+        }
+        @keyframes miniCorrectFlash {
+            0%, 100% { background-color: #f59e0b; color: #111827; }
+            40%, 75% { background-color: #16a34a; color: #fff; }
+        }
+        .mini-answer-wrong { animation: miniWrongBlink .45s ease; }
+        .mini-answer-correct { animation: miniCorrectFlash .45s ease; }
+
 </style>
     </head>
 
@@ -9745,7 +9758,9 @@
 
             let willColorTimer = null;
 
-            let willColorTimeLeft = 8;
+            let willColorTimeLeft = 5;
+
+            let willColorAnswered = false;
 
             let currentColorAnswer = "";
 
@@ -9890,7 +9905,7 @@
                     </p>
 
                     <p>
-                    Klik angka dari kecil ke besar.
+                    Klik angka dari kecil ke besar. 
                     </p>
 
                     <p>
@@ -9944,71 +9959,32 @@
 
             }
             function clickWillNumber(value){
-                let btn =
-                document.querySelector(
-                `[data-value="${value}"]`
-                );
+                const btn = document.querySelector(`[data-value="${value}"]`);
+                if(!btn || btn.disabled) return;
 
-                if(btn.disabled) return;
+                const expected = window.currentWillExpected[window.currentWillIndex];
+                if(value === expected){
+                    willNumberScore += 2;
+                    const scoreLabel = document.getElementById("willScoreLabel");
+                    if(scoreLabel) scoreLabel.innerText = willNumberScore;
 
-                let expected=
-                window.currentWillExpected[
-                    window.currentWillIndex
-                ];
-
-                if(value===expected){
-
-                    willNumberScore+=25;
-                    let s =
-                    document.getElementById(
-                        "willScoreLabel"
-                    );
-
-                    if(s){
-
-                        s.innerText =
-                        willNumberScore;
-
-                    }
-
+                    btn.classList.remove("mini-answer-wrong", "mini-answer-correct");
+                    void btn.offsetWidth;
+                    btn.classList.add("mini-answer-correct");
+                    btn.disabled = true;
                     window.currentWillIndex++;
 
-                    document
-                    .querySelector(
-                        `[data-value="${value}"]`
-                    )
-                    .disabled=true;
-
-                    if(
-                        window.currentWillIndex===
-                        window.currentWillExpected.length
-                    ){
+                    if(window.currentWillIndex === window.currentWillExpected.length){
                         clearInterval(willNumberTimer);
-
-                        setTimeout(
-                            nextWillNumberRound,
-                            300
-                        );
-
+                        setTimeout(nextWillNumberRound, 300);
                     }
-
                 }else{
-
-                    willNumberScore-=10;
-                    let s =
-                    document.getElementById(
-                        "willScoreLabel"
-                    );
-
-                    if(s){
-
-                        s.innerText =
-                        willNumberScore;
-
-                    }
-
+                    // Wrong click: brief red blink, no score penalty, then return to normal.
+                    btn.classList.remove("mini-answer-wrong", "mini-answer-correct");
+                    void btn.offsetWidth;
+                    btn.classList.add("mini-answer-wrong");
+                    setTimeout(() => btn.classList.remove("mini-answer-wrong"), 500);
                 }
-
             }
 
             async function playWillAlphabetOrder(){
@@ -10170,7 +10146,9 @@
 
                 if(letter === expected){
 
-                    willAlphabetScore += 25;
+                    // Setiap huruf yang benar bernilai +2.
+                    // 5 huruf per ronde = maksimal 10 poin; 10 ronde = 100 poin.
+                    willAlphabetScore += 2;
 
                     let s =
                     document.getElementById(
@@ -10204,721 +10182,340 @@
 
                     }
 
-                }else{
-
-                    willAlphabetScore -= 10;
-
-                    let s =
-                    document.getElementById(
-                        "willAlphabetScore"
-                    );
-
-                    if(s){
-
-                        s.innerText =
-                        willAlphabetScore;
-
-                    }
-
                 }
+                // Klik huruf yang salah tidak mengurangi poin.
 
             }
 
             async function playWillArrowMemory(){
-
-                // alert("Arrow Memory belum dibuat");
-
-                // return 0;
                 return new Promise(resolve=>{
-
                     willArrowResolve = resolve;
-
                     willArrowScore = 0;
-
                     willArrowRound = 0;
-
                     nextWillArrowRound();
-
                 });
-
             }
 
             function nextWillArrowRound(){
-
+                clearInterval(willArrowTimer);
                 if(willArrowRound >= willArrowMaxRound){
-
-                    clearInterval(willArrowTimer);
-
                     closeDecisionModal();
-
-                    willArrowResolve(willArrowScore);
-
+                    willArrowResolve(Math.round(willArrowScore * 100) / 100);
                     return;
-
                 }
 
                 willArrowRound++;
-
-                if(willArrowRound<=3){
-
-                    willArrowTimeLeft=8;
-
-                }else if(willArrowRound<=6){
-
-                    willArrowTimeLeft=6;
-
-                }else{
-
-                    willArrowTimeLeft=4;
-
-                }
-
+                // Every answer phase starts with a fresh 8-second timer.
+                willArrowTimeLeft = 8;
                 willArrowInput = [];
-
                 willArrowPattern = [];
-
-                const arrows = ["⬆️","⬇️","⬅️","➡️"];
-
-                let length = Math.min(
-                    3 + Math.floor(willArrowRound/2),
-                    8
-                );
-
-                for(let i=0;i<length;i++){
-
-                    willArrowPattern.push(
-
-                        arrows[
-                            Math.floor(Math.random()*4)
-                        ]
-
-                    );
-
+                const arrows = ["⬆️", "⬇️", "⬅️", "➡️"];
+                const length = Math.min(3 + Math.floor(willArrowRound / 2), 8);
+                for(let i = 0; i < length; i++){
+                    willArrowPattern.push(arrows[Math.floor(Math.random() * arrows.length)]);
                 }
 
                 willArrowShowing = true;
-
                 openDecisionModal(
-
                     `
                     <h2>🔀 Arrow Memory</h2>
-
-                    <p>
-                    Hafalkan urutan panah berikut.
-                    </p>
-
-                    <p>
-                    ⭐ Score :
-                    <span id="arrowScore">
-                    ${willArrowScore}
-                    </span>
-                    </p>
-
-                    <p>
-                    ⏱
-                    <span id="arrowTimer">
-                    ${willArrowTimeLeft}
-                    </span>
-                    </p>
+                    <p><strong>Ronde ${willArrowRound}/${willArrowMaxRound}</strong></p>
+                    <p>Hafalkan urutan panah berikut.</p>
                     `,
-
                     `
-                    <div
-                    id="arrowSequence"
-                    style="
-                    font-size:42px;
-                    text-align:center;
-                    margin:20px;
-                    ">
-                    ${willArrowPattern.join(" ")}
+                    <div id="arrowSequence" style="font-size:42px;text-align:center;margin:20px;font-weight:bold;">
+                        ${willArrowPattern.join(" ")}
                     </div>
                     `
                 );
-
-                setTimeout(showArrowButtons,2000);
-
+                // Memorization phase has no countdown or score display.
+                setTimeout(showArrowButtons, 2000);
             }
 
             function showArrowButtons(){
-
                 willArrowShowing = false;
 
-                let html="";
-
-                ["⬆️","⬇️","⬅️","➡️"].forEach(a=>{
-
-                    html+=`
-                    <button
-                    onclick="clickArrow('${a}')"
-                    style="
-                    width:80px;
-                    height:80px;
-                    font-size:32px;
-                    margin:6px;
-                    ">
-                    ${a}
-                    </button>
+                // Ganti instruksi di header modal saat masuk fase menjawab.
+                const decisionTitle = document.getElementById("decisionTitle");
+                if(decisionTitle){
+                    decisionTitle.innerHTML = `
+                        <h2>🔀 Arrow Memory</h2>
+                        <p><strong>Ronde ${willArrowRound}/${willArrowMaxRound}</strong></p>
+                        <p>Ikuti urutan panah. Jawaban salah bisa dicoba lagi sebelum waktu habis.</p>
                     `;
+                }
 
+                let html = "";
+                ["⬆️", "⬇️", "⬅️", "➡️"].forEach((arrow, i)=>{
+                    html += `
+                    <button data-arrow-index="${i}" onclick="clickArrow('${arrow}')"
+                        style="width:80px;height:80px;font-size:32px;margin:6px;">
+                        ${arrow}
+                    </button>`;
                 });
 
-                document.getElementById(
-                    "decisionContent"
-                ).innerHTML =
-
-                `
-                <p>
-
-                ⭐ Score :
-                <span id="arrowScore">
-
-                ${willArrowScore}
-
-                </span>
-
-                </p>
-
-                <p>
-
-                ⏱
-                <span id="arrowTimer">
-
-                ${willArrowTimeLeft}
-
-                </span>
-
-                </p>
-
-                ${html}
+                const content = document.getElementById("decisionContent");
+                if(!content) return;
+                content.innerHTML = `
+                    <p><strong>⭐ Score: <span id="arrowScore">${willArrowScore.toFixed(2).replace(/\.00$/, "")}</span></strong></p>
+                    <p><strong>⏱ <span id="arrowTimer">8</span> detik</strong></p>
+                    <div style="display:flex;flex-wrap:wrap;justify-content:center;">${html}</div>
                 `;
 
                 clearInterval(willArrowTimer);
-
-                willArrowTimer=setInterval(()=>{
-
-                    willArrowTimeLeft--;
-
-                    let t=document.getElementById("arrowTimer");
-
-                    if(t){
-
-                        t.innerText=willArrowTimeLeft;
-
-                    }
-
-                    if(willArrowTimeLeft<=0){
-
+                willArrowTimeLeft = 8;
+                willArrowTimer = setInterval(()=>{
+                    willArrowTimeLeft = Math.max(0, willArrowTimeLeft - 1);
+                    const timer = document.getElementById("arrowTimer");
+                    if(timer) timer.innerText = willArrowTimeLeft;
+                    if(willArrowTimeLeft <= 0){
                         clearInterval(willArrowTimer);
-
-                        willArrowScore-=3;
-
-                        setTimeout(nextWillArrowRound,500);
-
+                        nextWillArrowRound();
                     }
-
-                },1000);
-
+                }, 1000);
             }
 
             function clickArrow(arrow){
+                if(willArrowShowing || willArrowTimeLeft <= 0) return;
+                const expectedIndex = willArrowInput.length;
+                const buttons = [...document.querySelectorAll("#decisionContent button[data-arrow-index]")];
+                const arrowIndex = {"⬆️":0,"⬇️":1,"⬅️":2,"➡️":3}[arrow];
+                const btn = buttons.find(button => Number(button.dataset.arrowIndex) === arrowIndex);
+                if(!btn || expectedIndex >= willArrowPattern.length) return;
 
-                clearInterval(willArrowTimer);
+                btn.classList.remove("mini-answer-wrong", "mini-answer-correct");
+                void btn.offsetWidth;
+                if(arrow === willArrowPattern[expectedIndex]){
+                    btn.classList.add("mini-answer-correct");
+                    willArrowInput.push(arrow);
+                    const perCorrect = 10 / willArrowPattern.length;
+                    willArrowScore += perCorrect;
+                    const scoreLabel = document.getElementById("arrowScore");
+                    if(scoreLabel) scoreLabel.innerText = willArrowScore.toFixed(2).replace(/\.00$/, "");
 
-                willArrowInput.push(arrow);
-
-                let index =
-                willArrowInput.length-1;
-
-                if(
-                    arrow ===
-                    willArrowPattern[index]
-                ){
-
-                    willArrowScore += 25;
-
+                    if(willArrowInput.length === willArrowPattern.length){
+                        clearInterval(willArrowTimer);
+                        // Round completed: every arrow was correct. Start next round with a fresh timer.
+                        setTimeout(nextWillArrowRound, 500);
+                    }
                 }else{
-
-                    willArrowScore -= 10;
-
+                    // Wrong answer flashes red; expected index stays put so the player can retry.
+                    btn.classList.add("mini-answer-wrong");
+                    setTimeout(() => btn.classList.remove("mini-answer-wrong"), 500);
                 }
-
-                let s =
-                document.getElementById(
-                    "arrowScore"
-                );
-
-                if(s){
-
-                    s.innerText =
-                    willArrowScore;
-
-                }
-
-                if(
-                    willArrowInput.length ===
-                    willArrowPattern.length
-                ){
-
-                    setTimeout(
-
-                        nextWillArrowRound,
-
-                        600
-
-                    );
-
-                }
-
             }
 
             async function playWillColorMatch(){
-
-                // alert("Color Match belum dibuat");
-
-                // return 0;
                 return new Promise(resolve=>{
-
                     willColorResolve = resolve;
-
                     willColorScore = 0;
-
                     willColorRound = 0;
-
+                    willColorAnswered = false;
+                    clearInterval(willColorTimer);
                     nextWillColorRound();
-
                 });
-
-
             }
 
             function nextWillColorRound(){
+                clearInterval(willColorTimer);
 
-                if(willColorRound>=willColorMaxRound){
-
-                    clearInterval(willColorTimer);
-
+                if(willColorRound >= willColorMaxRound){
                     closeDecisionModal();
-
                     willColorResolve(willColorScore);
-
                     return;
                 }
 
                 willColorRound++;
+                willColorTimeLeft = 5;
+                willColorAnswered = false;
 
-                if(willColorRound<=3){
-
-                    willColorTimeLeft=8;
-
-                }else if(willColorRound<=6){
-
-                    willColorTimeLeft=6;
-
-                }else{
-
-                    willColorTimeLeft=4;
-
-                }
-
-                const colors=[
-
-                    {
-                        id:"red",
-                        text:"MERAH",
-                        color:"#ef4444"
-                    },
-
-                    {
-                        id:"blue",
-                        text:"BIRU",
-                        color:"#3b82f6"
-                    },
-
-                    {
-                        id:"green",
-                        text:"HIJAU",
-                        color:"#22c55e"
-                    },
-
-                    {
-                        id:"yellow",
-                        text:"KUNING",
-                        color:"#facc15"
-                    }
-
+                const colors = [
+                    { id:"red", text:"MERAH", color:"#ef4444" },
+                    { id:"blue", text:"BIRU", color:"#3b82f6" },
+                    { id:"green", text:"HIJAU", color:"#22c55e" },
+                    { id:"yellow", text:"KUNING", color:"#facc15" }
                 ];
 
-                let word =
-                colors[
-                    Math.floor(Math.random()*colors.length)
-                ];
-
-                let font =
-                colors[
-                    Math.floor(Math.random()*colors.length)
-                ];
-
-                while(font.id===word.id){
-
-                    font=
-                    colors[
-                        Math.floor(Math.random()*colors.length)
-                    ];
-
+                const word = colors[Math.floor(Math.random() * colors.length)];
+                let font = colors[Math.floor(Math.random() * colors.length)];
+                while(font.id === word.id){
+                    font = colors[Math.floor(Math.random() * colors.length)];
                 }
 
-                let askFont =
-                Math.random()<0.5;
+                const askFont = Math.random() < 0.5;
+                currentColorAnswer = askFont ? font.id : word.id;
 
-                if(askFont){
-
-                    currentColorAnswer = font.id;
-
-                }else{
-
-                    currentColorAnswer = word.id;
-
-                }
-
-                let buttons="";
-
+                let buttons = "";
                 colors.forEach(c=>{
-
-                    buttons+=`
-
-                    <button
-
-                    onclick="chooseWillColor('${c.id}')"
-
-                    style="
-
-                    width:100%;
-
-                    margin:6px 0;
-
-                    ">
-
-                    ${c.text}
-
-                    </button>
-
-                    `;
-
+                    buttons += `
+                        <button class="color-match-option"
+                            data-color-option="${c.id}"
+                            onclick="chooseWillColor('${c.id}')"
+                            style="width:100%;margin:6px 0;">
+                            ${c.text}
+                        </button>`;
                 });
 
-                openDecisionModal(
+                openDecisionModal(`
+                    <div style="font-size:28px;font-weight:bold">🎨 COLOR MATCH</div>
+                    <div style="margin-top:10px">Soal ${willColorRound}/${willColorMaxRound}</div>
+                    <div style="margin-top:15px">
+                        ${askFont ? "Pilih <b>WARNA</b> tulisan" : "Pilih <b>ARTI</b> tulisan"}
+                    </div>
+                    <div style="font-size:54px;font-weight:bold;margin:25px;color:${font.color};">
+                        ${word.text}
+                    </div>
+                    <div>⭐ Score : <span id="colorScore">${willColorScore}</span></div>
+                    <div>⏱ <span id="colorTimer">5</span> detik</div>
+                `, buttons);
 
-            `
+                // Timer baru 5 detik untuk setiap soal; klik jawaban mengakhiri soal satu kali saja.
+                willColorTimer = setInterval(()=>{
+                    if(willColorAnswered) return;
+                    willColorTimeLeft = Math.max(0, willColorTimeLeft - 1);
+                    const timerLabel = document.getElementById("colorTimer");
+                    if(timerLabel) timerLabel.innerText = willColorTimeLeft;
 
-            <div style="font-size:28px;font-weight:bold">
-
-            🎨 COLOR MATCH
-
-            </div>
-
-            <div style="margin-top:10px">
-
-            Round ${willColorRound}/${willColorMaxRound}
-
-            </div>
-
-            <div style="margin-top:15px">
-
-            ${askFont?
-
-            "Pilih <b>WARNA</b> tulisan"
-
-            :
-
-            "Pilih <b>ARTI</b> tulisan"
-
-            }
-
-            </div>
-
-            <div
-
-            style="
-
-            font-size:54px;
-
-            font-weight:bold;
-
-            margin:25px;
-
-            color:${font.color};
-
-            ">
-
-            ${word.text}
-
-            </div>
-
-            <div>
-
-            ⭐ Score :
-
-            <span id="colorScore">
-
-            ${willColorScore}
-
-            </span>
-
-            </div>
-
-            <div>
-
-            ⏱
-
-            <span id="colorTimer">
-
-            ${willColorTimeLeft}
-
-            </span>
-
-            </div>
-
-            `,
-
-            buttons
-
-            );
-
-                clearInterval(willColorTimer);
-
-                willColorTimer=setInterval(()=>{
-
-                    willColorTimeLeft--;
-
-                    let t=document.getElementById("colorTimer");
-
-                    if(t){
-
-                        t.innerText=willColorTimeLeft;
-
-                    }
-
-                    if(willColorTimeLeft<=0){
-
+                    if(willColorTimeLeft <= 0){
                         clearInterval(willColorTimer);
-
-                        willColorScore-=3;
-
-                        setTimeout(
-
-                            nextWillColorRound,
-
-                            500
-
-                        );
-
+                        willColorAnswered = true;
+                        document.querySelectorAll(".color-match-option").forEach(btn=>btn.disabled = true);
+                        setTimeout(nextWillColorRound, 250);
                     }
-
-                },1000);
-
+                }, 1000);
             }
 
             function chooseWillColor(answer){
-
+                // Hanya satu jawaban diproses per soal agar tidak membuat ronde/timer ganda.
+                if(willColorAnswered) return;
+                willColorAnswered = true;
                 clearInterval(willColorTimer);
 
-                if(answer===currentColorAnswer){
+                const buttons = document.querySelectorAll(".color-match-option");
+                buttons.forEach(btn=>btn.disabled = true);
+                const selected = document.querySelector(`.color-match-option[data-color-option="${answer}"]`);
 
-                    willColorScore+=25;
-
+                if(answer === currentColorAnswer){
+                    willColorScore += 10;
+                    if(selected){
+                        selected.style.backgroundColor = "#16a34a";
+                        selected.style.color = "#ffffff";
+                        selected.classList.add("mini-answer-correct");
+                    }
                 }else{
-
-                    willColorScore-=10;
-
+                    // Jawaban salah mendapat 0 poin dan langsung ditandai merah.
+                    if(selected){
+                        selected.style.backgroundColor = "#dc2626";
+                        selected.style.color = "#ffffff";
+                        // Keep the wrong answer solid red until the next question appears; do not animate back to orange.
+                    }
                 }
 
-                let s=document.getElementById("colorScore");
-
-                if(s){
-
-                    s.innerText=willColorScore;
-
-                }
-
-                setTimeout(
-
-                    nextWillColorRound,
-
-                    500
-
-                );
-
+                const scoreLabel = document.getElementById("colorScore");
+                if(scoreLabel) scoreLabel.innerText = willColorScore;
+                setTimeout(nextWillColorRound, 450);
             }
 
             async function playWillQuickMath(){
-
-                // alert("Quick Math belum dibuat");
-
-                // return 0;
                 return new Promise(resolve=>{
-
                     willMathResolve = resolve;
-
                     willMathScore = 0;
-
                     willMathRound = 0;
-
+                    window.currentQuickMathAnswered = false;
+                    clearInterval(willMathTimer);
                     nextWillMathRound();
-
                 });
-
             }
 
             function nextWillMathRound(){
+                // Stop the previous round's timer before creating the next one.
+                clearInterval(willMathTimer);
+                willMathTimer = null;
 
                 if(willMathRound >= willMathMaxRound){
-
-                    clearInterval(willMathTimer);
-
                     closeDecisionModal();
-
-                    willMathResolve(willMathScore);
-
+                    if(typeof willMathResolve === "function"){
+                        const resolve = willMathResolve;
+                        willMathResolve = null;
+                        resolve(willMathScore);
+                    }
                     return;
-
                 }
 
                 willMathRound++;
+                willMathTimeLeft = 5;
+                window.currentQuickMathAnswered = false;
 
-                if(willMathRound<=3){
-
-                    willMathTimeLeft=8;
-
-                }else if(willMathRound<=6){
-
-                    willMathTimeLeft=6;
-
-                }else{
-
-                    willMathTimeLeft=5;
-
-                }
-
-                let question = generateMathQuestion();
-
+                const question = generateMathQuestion();
                 currentMathAnswer = question.answer;
-
-                let options = [...question.options];
-
-                options.sort(()=>Math.random()-0.5);
-
-                let html="";
+                const options = [...question.options].sort(()=>Math.random()-0.5);
+                let html = "";
 
                 options.forEach(opt=>{
-
-                    html+=`
-
+                    html += `
                     <button
-
-                    onclick="chooseWillMath(${opt})"
-
-                    style="
-
-                    width:100%;
-
-                    margin:6px 0;
-
-                    ">
-
-                    ${opt}
-
-                    </button>
-
-                    `;
-
+                        data-math-option="${opt}"
+                        onclick="chooseWillMath(${opt})"
+                        style="width:100%; margin:6px 0;">
+                        ${opt}
+                    </button>`;
                 });
 
                 openDecisionModal(
-
                     `
-
-                    <div style="font-size:30px;font-weight:bold">
-
-                    🧮 QUICK MATH
-
-                    </div>
-
-                    <div style="margin-top:10px">
-
-                    Round ${willMathRound}/${willMathMaxRound}
-
-                    </div>
-
-                    <div style="
-
-                    font-size:48px;
-
-                    font-weight:bold;
-
-                    margin:25px;
-
-                    ">
-
-                    ${question.text}
-
-                    </div>
-
-                    <div>
-
-                    ⭐ Score :
-
-                    <span id="mathScore">
-
-                    ${willMathScore}
-
-                    </span>
-
-                    </div>
-
-                    <div>
-
-                    ⏱
-
-                    <span id="mathTimer">
-
-                    ${willMathTimeLeft}
-
-                    </span>
-
-                    </div>
-
+                    <div style="font-size:30px;font-weight:bold">🧮 QUICK MATH</div>
+                    <div style="margin-top:10px">Round ${willMathRound}/${willMathMaxRound}</div>
+                    <div style="font-size:48px;font-weight:bold;margin:25px">${question.text}</div>
+                    <div>⭐ Score : <span id="mathScore">${willMathScore}</span></div>
+                    <div>⏱ <span id="mathTimer">${willMathTimeLeft}</span></div>
                     `,
-
                     html
-
                 );
 
-                clearInterval(willMathTimer);
+                willMathTimer = setInterval(()=>{
+                    if(window.currentQuickMathAnswered) return;
+                    willMathTimeLeft = Math.max(0, willMathTimeLeft - 1);
+                    const timerLabel = document.getElementById("mathTimer");
+                    if(timerLabel) timerLabel.innerText = willMathTimeLeft;
 
-                willMathTimer=setInterval(()=>{
-
-                    willMathTimeLeft--;
-
-                    let t=document.getElementById("mathTimer");
-
-                    if(t){
-
-                        t.innerText=willMathTimeLeft;
-
-                    }
-
-                    if(willMathTimeLeft<=0){
-
+                    if(willMathTimeLeft <= 0){
                         clearInterval(willMathTimer);
-
-                        willMathScore-=3;
-
-                        setTimeout(nextWillMathRound,500);
-
+                        willMathTimer = null;
+                        // Timeout gives 0 points and advances exactly once.
+                        window.currentQuickMathAnswered = true;
+                        document.querySelectorAll("#decisionContent button[data-math-option]").forEach(btn=>btn.disabled = true);
+                        setTimeout(nextWillMathRound, 250);
                     }
+                }, 1000);
+            }
 
-                },1000);
+            function chooseWillMath(answer){
+                if(window.currentQuickMathAnswered || willMathTimeLeft <= 0) return;
+                const buttons = [...document.querySelectorAll("#decisionContent button[data-math-option]")];
+                const selected = buttons.find(btn => Number(btn.dataset.mathOption) === Number(answer));
+                if(!selected || selected.disabled) return;
 
+                // Mark the round as answered before any UI/timer changes to block rapid repeat clicks.
+                window.currentQuickMathAnswered = true;
+                clearInterval(willMathTimer);
+                willMathTimer = null;
+                buttons.forEach(btn => btn.disabled = true);
+
+                if(Number(answer) === Number(currentMathAnswer)){
+                    willMathScore += 10;
+                    selected.style.backgroundColor = "#16a34a";
+                    selected.style.color = "#ffffff";
+                    selected.classList.add("mini-answer-correct");
+                }else{
+                    // Wrong answer: zero points, red feedback, then move on.
+                    selected.style.backgroundColor = "#dc2626";
+                    selected.style.color = "#ffffff";
+                    // Keep the wrong answer solid red until the next question appears; do not animate back to orange.
+                }
+
+                const scoreLabel = document.getElementById("mathScore");
+                if(scoreLabel) scoreLabel.innerText = willMathScore;
+                setTimeout(nextWillMathRound, 400);
             }
 
             function generateMathQuestion(){
@@ -11044,29 +10641,34 @@
             }
 
             function chooseWillMath(answer){
+                // Guard this round before touching the timer/UI so duplicate clicks cannot
+                // score twice or schedule multiple next-round calls.
+                if(window.currentQuickMathAnswered || willMathTimeLeft <= 0) return;
 
+                const buttons = [...document.querySelectorAll("#decisionContent button[data-math-option]")];
+                const selected = buttons.find(btn => Number(btn.dataset.mathOption) === Number(answer));
+                if(!selected || selected.disabled) return;
+
+                window.currentQuickMathAnswered = true;
                 clearInterval(willMathTimer);
+                willMathTimer = null;
+                buttons.forEach(btn => btn.disabled = true);
 
-                if(answer===currentMathAnswer){
-
-                    willMathScore+=25;
-
+                if(Number(answer) === Number(currentMathAnswer)){
+                    willMathScore += 10;
+                    selected.style.backgroundColor = "#16a34a";
+                    selected.style.color = "#ffffff";
+                    selected.classList.add("mini-answer-correct");
                 }else{
-
-                    willMathScore-=10;
-
+                    // Salah: 0 poin, tombol merah, langsung lanjut ke soal berikut.
+                    selected.style.backgroundColor = "#dc2626";
+                    selected.style.color = "#ffffff";
+                    // Keep the wrong answer solid red until the next question appears; do not animate back to orange.
                 }
 
-                let s=document.getElementById("mathScore");
-
-                if(s){
-
-                    s.innerText=willMathScore;
-
-                }
-
-                setTimeout(nextWillMathRound,500);
-
+                const scoreLabel = document.getElementById("mathScore");
+                if(scoreLabel) scoreLabel.innerText = willMathScore;
+                setTimeout(nextWillMathRound, Number(answer) === Number(currentMathAnswer) ? 400 : 600);
             }
 
             async function playWillLampMemory(){
@@ -11088,207 +10690,122 @@
 
             }
 
+            // Lamp Memory: tiap soal punya timer independen 8 detik.
+            // Skor tiap soal = (lampu benar yang dipilih / 3) * 10.
+            let willLampCorrectThisRound = 0;
+            let willLampRoundFinished = false;
+            let willLampCanClick = false;
+
+            function finishWillLampRound(){
+                if(willLampRoundFinished) return;
+                willLampRoundFinished = true;
+                willLampCanClick = false;
+                clearInterval(willLampTimer);
+                willLampTimer = null;
+
+                // Setiap soal bernilai maksimal 10 poin; lampu salah/tidak dipilih tidak menambah poin.
+                willLampScore += willLampCorrectThisRound * (10 / 3);
+                const scoreLabel = document.getElementById("lampScore");
+                if(scoreLabel) scoreLabel.innerText = Number(willLampScore.toFixed(2));
+
+                setTimeout(nextWillLampRound, 350);
+            }
+
             function nextWillLampRound(){
+                clearInterval(willLampTimer);
+                willLampTimer = null;
 
-                if(willLampRound>=willLampMaxRound){
-
-                    clearInterval(willLampTimer);
-
+                if(willLampRound >= willLampMaxRound){
                     closeDecisionModal();
-
-                    willLampResolve(willLampScore);
-
+                    if(typeof willLampResolve === "function"){
+                        const resolve = willLampResolve;
+                        willLampResolve = null;
+                        resolve(Number(willLampScore.toFixed(2)));
+                    }
                     return;
-
                 }
 
                 willLampRound++;
+                willLampTimeLeft = 8;
+                willLampClicked = [];
+                willLampCorrectThisRound = 0;
+                willLampRoundFinished = false;
+                willLampCanClick = false;
+                willLampPattern = [];
 
-                if(willLampRound<=3){
-
-                    willLampTimeLeft=8;
-
-                }else if(willLampRound<=6){
-
-                    willLampTimeLeft=6;
-
-                }else{
-
-                    willLampTimeLeft=4;
-
+                while(willLampPattern.length < 3){
+                    const n = Math.floor(Math.random() * 9);
+                    if(!willLampPattern.includes(n)) willLampPattern.push(n);
                 }
 
-                willLampClicked=[];
-
-                willLampPattern=[];
-
-                while(willLampPattern.length<3){
-
-                    let n=Math.floor(Math.random()*9);
-
-                    if(!willLampPattern.includes(n))
-
-                        willLampPattern.push(n);
-
-                }
-
-                let html="";
-
-                for(let i=0;i<9;i++){
-
-                    let active=
-                    willLampPattern.includes(i);
-
-                    html+=`
-                    <button
-                    id="lamp${i}"
-                    onclick="clickWillLamp(${i})"
-                    style="
-                    width:80px;
-                    height:80px;
-                    margin:4px;
-                    font-size:30px;
-                    background:${active?"gold":"#ddd"};
-                    ">
-                    💡
-                    </button>
-                    `;
-
+                let html = "";
+                for(let i = 0; i < 9; i++){
+                    const active = willLampPattern.includes(i);
+                    html += `
+                    <button id="lamp${i}" onclick="clickWillLamp(${i})"
+                        style="width:80px;height:80px;margin:4px;font-size:30px;background:${active ? 'gold' : '#ddd'};">
+                        💡
+                    </button>`;
                 }
 
                 openDecisionModal(
-
-                    `
-                    <h2>💡 Lamp Memory</h2>
-
-                    <p>
-                    Ronde ${willLampRound}/${willLampMaxRound}
-                    </p>
-
-                    <p>
-                    Ingat posisi lampu.
-                    </p>
-
-                    <p>
-⭐
-                    <span id="lampScore">
-                    ${willLampScore}
-                    </span>
-                    </p>
-
-                    <p>
-                    ⏱
-                    <span id="lampTimer">
-                    ${willLampTimeLeft}
-                    </span>
-                    </p>
-                    `,
-
-                    `<div style="
-                    display:grid;
-                    grid-template-columns:repeat(3,1fr);
-                    gap:8px;
-                    ">
-                    ${html}
-                    </div>`
-
+                    `<h2>💡 Lamp Memory</h2>
+                    <p>Soal ${willLampRound}/${willLampMaxRound}</p>
+                    <p>Ingat posisi lampu, lalu pilih maksimal 3 lampu.</p>
+                    <p>⭐ <span id="lampScore">${Number(willLampScore.toFixed(2))}</span></p>
+                    <p>⏱ <span id="lampTimer">8</span> detik</p>
+                    <p>🔘 Pilihan: <span id="lampClicks">0</span>/3</p>`,
+                    `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">${html}</div>`
                 );
 
-                setTimeout(hideLampPattern,1500);
-
+                // Waktu 8 detik baru dimulai setelah fase mengingat posisi selesai.
+                setTimeout(hideLampPattern, 1500);
             }
+
             function hideLampPattern(){
-
-                for(let i=0;i<9;i++){
-
-                    document
-                    .getElementById("lamp"+i)
-                    .style.background="#ddd";
-
+                if(willLampRoundFinished) return;
+                for(let i = 0; i < 9; i++){
+                    const lamp = document.getElementById("lamp" + i);
+                    if(lamp) lamp.style.background = "#ddd";
                 }
 
+                willLampTimeLeft = 8;
+                const timerLabel = document.getElementById("lampTimer");
+                if(timerLabel) timerLabel.innerText = "8";
+                willLampCanClick = true;
                 clearInterval(willLampTimer);
-
-                willLampTimer=setInterval(()=>{
-
-                    willLampTimeLeft--;
-
-                    let t=document.getElementById("lampTimer");
-
-                    if(t){
-
-                        t.innerText=willLampTimeLeft;
-
-                    }
-
-                    if(willLampTimeLeft<=0){
-
-                        clearInterval(willLampTimer);
-
-                        willLampScore-=3;
-
-                        let s=document.getElementById("lampScore");
-
-                        if(s){
-
-                            s.innerText=willLampScore;
-
-                        }
-
-                        setTimeout(nextWillLampRound,500);
-
-                    }
-
-                },1000);
-
+                willLampTimer = setInterval(() => {
+                    if(willLampRoundFinished) return;
+                    willLampTimeLeft = Math.max(0, willLampTimeLeft - 1);
+                    const t = document.getElementById("lampTimer");
+                    if(t) t.innerText = willLampTimeLeft;
+                    if(willLampTimeLeft <= 0) finishWillLampRound();
+                }, 1000);
             }
 
             function clickWillLamp(index){
+                if(!willLampCanClick || willLampRoundFinished) return;
+                if(willLampClicked.length >= 3 || willLampClicked.includes(index)) return;
 
-                // Timer tetap berjalan saat player memilih lampu.
-                // Timer hanya dihentikan saat ronde selesai atau waktu habis.
-                if(
-                    willLampClicked.includes(index)
-                ) return;
-
+                const lamp = document.getElementById("lamp" + index);
+                if(!lamp) return;
                 willLampClicked.push(index);
+                lamp.disabled = true;
 
-                document
-                .getElementById("lamp"+index)
-                .style.background="orange";
-
-                if(
-                    willLampPattern.includes(index)
-                ){
-
-                    willLampScore+=25;
-
+                if(willLampPattern.includes(index)){
+                    willLampCorrectThisRound++;
+                    lamp.style.background = "#16a34a";
+                    lamp.style.color = "white";
                 }else{
-
-                    willLampScore-=10;
-
+                    lamp.style.background = "#dc2626";
+                    lamp.style.color = "white";
                 }
 
-                document
-                .getElementById("lampScore")
-                .innerText=
-                willLampScore;
+                const clickLabel = document.getElementById("lampClicks");
+                if(clickLabel) clickLabel.innerText = willLampClicked.length;
 
-                if(
-                    willLampClicked.length===
-                    willLampPattern.length
-                ){
-
-                    // Semua pilihan ronde sudah selesai.
-                    clearInterval(willLampTimer);
-
-                    setTimeout(
-                        nextWillLampRound,
-                        600
-                    );
-
-                }
-
+                // Begitu 3 lampu dipilih, soal selesai lebih awal.
+                if(willLampClicked.length >= 3) finishWillLampRound();
             }
 
             async function runRoleMiniGame(
@@ -26233,9 +25750,9 @@
                 // Tetap tampilkan reaksi penghuni terhadap korban voting.
                 await applyChaosVotingReactions(eliminated);
 
-                if(status[playerName] === "KELUAR"){
-                    log("💥 Kamu tereliminasi lewat voting");
-                }
+                // if(status[playerName] === "KELUAR"){
+                //     log("💥 Kamu tereliminasi lewat voting");
+                // }
 
                 await runChaosKeyPleaAndWill();
             }
@@ -32181,6 +31698,188 @@
 
             });
             
+
+
+            // =============================================================
+            // 🧪 WASIAT DEBUG HARNESS — jalankan dari DevTools Console
+            // Cara pakai:
+            //   1) Edit WASIAT_DEBUG_CONFIG di bawah.
+            //   2) Buka game, isi data player, lalu mulai game seperti biasa.
+            //   3) Buka DevTools > Console, jalankan: debugWasiat()
+            // Config: victim = pemilik wasiat/housemate yang diekstradisi,
+            // game = salah satu WILL_GAMES, targetScore = target wasiat.
+            // Debug membuka MINI-GAME ASLI, bukan simulasi skor.
+            // State role, currentMiniGames, dan metadata korban dipulihkan
+            // setelah game selesai; hasil/jejak skor tetap tampil di Console.
+            // =============================================================
+            window.WASIAT_DEBUG_CONFIG = {
+                // null = otomatis pilih peserta season ini (bukan nama statis).
+                // Bisa diisi nama peserta yang ada di roster season aktif.
+                victim: null,
+                game: "lampMemory",
+                targetScore: 80
+            };
+
+            // Daftar peserta diambil dari roster season aktif (`players`).
+            // Peserta berstatus KELUAR tetap tersedia karena merekalah yang
+            // biasanya memiliki wasiat untuk diuji.
+            window.listWasiatDebugParticipants = function() {
+                const roster = Array.isArray(players) ? players : [];
+                const list = roster.map((name, index) => ({
+                    index,
+                    name,
+                    status: status?.[name] || "AMAN",
+                    isPlayer: name === playerName,
+                    hasWill: !!eliminatedMeta?.[name]?.will,
+                    willExecuted: !!eliminatedMeta?.[name]?.will?.executed
+                }));
+                console.table(list);
+                return list;
+            };
+
+            window.debugWasiat = async function(overrides = {}) {
+                const cfg = { ...window.WASIAT_DEBUG_CONFIG, ...overrides };
+                const validGames = Array.isArray(WILL_GAMES) ? WILL_GAMES : [];
+
+                if (!playerName) {
+                    console.error("[WASIAT DEBUG] Mulai game dan isi nama player dulu.");
+                    return;
+                }
+                if (!cfg.game || !willGameConfig[cfg.game] || !validGames.includes(cfg.game)) {
+                    console.error("[WASIAT DEBUG] Game tidak valid.", {
+                        selected: cfg.game,
+                        available: validGames
+                    });
+                    return;
+                }
+                if (!Number.isFinite(Number(cfg.targetScore))) {
+                    console.error("[WASIAT DEBUG] targetScore harus angka.", cfg.targetScore);
+                    return;
+                }
+                if (typeof openWillGame !== "function") {
+                    console.error("[WASIAT DEBUG] openWillGame() tidak ditemukan.");
+                    return;
+                }
+
+                const roster = Array.isArray(players) ? players : [];
+                if (!roster.length) {
+                    console.error("[WASIAT DEBUG] Roster season kosong. Mulai/load game terlebih dahulu.");
+                    return;
+                }
+
+                // Terima nama peserta, atau index roster (0-based). Kalau null,
+                // pilih peserta season ini selain player secara otomatis.
+                let victim = cfg.victim;
+                if (typeof victim === "number" && Number.isInteger(victim)) {
+                    victim = roster[victim];
+                } else if (victim != null) {
+                    victim = String(victim).trim();
+                } else {
+                    victim = roster.find(name => name !== playerName) || roster[0];
+                }
+
+                if (!victim || !roster.includes(victim)) {
+                    console.error("[WASIAT DEBUG] Nama/index victim tidak ada di roster season ini.");
+                    console.log("Peserta season aktif (gunakan listWasiatDebugParticipants() untuk detail):");
+                    console.table(roster.map((name, index) => ({ index, name, status: status?.[name] || "AMAN" })));
+                    return;
+                }
+                if (victim === playerName) {
+                    console.warn("[WASIAT DEBUG] Victim adalah player sendiri. Debug tetap dijalankan karena nama ini memang ada di roster.");
+                }
+
+                const oldKeyHolder = roles.kunci;
+                const oldMiniGame = currentMiniGames.will;
+                const hadMeta = Object.prototype.hasOwnProperty.call(eliminatedMeta, victim);
+                const oldMeta = hadMeta ? structuredClone(eliminatedMeta[victim]) : null;
+                const targetScore = Number(cfg.targetScore);
+                let poll = null;
+                let last = {};
+                let resultScore = null;
+
+                const scoreState = () => ({
+                    numberOrder: { score: willNumberScore, round: willNumberRound },
+                    alphabetOrder: { score: willAlphabetScore, round: willAlphabetRound },
+                    arrowMemory: { score: willArrowScore, round: willArrowRound },
+                    colorMatch: { score: willColorScore, round: willColorRound },
+                    quickMath: { score: willMathScore, round: willMathRound },
+                    lampMemory: { score: willLampScore, round: willLampRound }
+                });
+
+                try {
+                    // Set up temporary context as though player is Key Holder.
+                    roles.kunci = playerName;
+                    currentMiniGames.will = cfg.game;
+                    eliminatedMeta[victim] = eliminatedMeta[victim] || {};
+                    eliminatedMeta[victim].will = {
+                        game: cfg.game,
+                        score: targetScore,
+                        executor: playerName,
+                        executed: false,
+                        success: null,
+                        debug: true
+                    };
+
+                    console.group(`🧪 WASIAT DEBUG — ${cfg.game}`);
+                    console.table({
+                        playerKeyHolder: playerName,
+                        extraditedVictim: victim,
+                        game: `${willGameConfig[cfg.game].label} (${cfg.game})`,
+                        targetScore
+                    });
+                    console.log("Skor tiap ronde akan dicatat saat berubah. Mainkan popup yang terbuka.");
+                    console.log("State skor awal:", scoreState());
+
+                    poll = setInterval(() => {
+                        const now = scoreState();
+                        for (const [gameName, state] of Object.entries(now)) {
+                            const prev = last[gameName];
+                            if (!prev || prev.score !== state.score || prev.round !== state.round) {
+                                if (gameName === cfg.game) {
+                                    console.log(`[WASIAT SCORE] ${gameName} | round ${state.round} | score ${state.score}`);
+                                }
+                                last[gameName] = { ...state };
+                            }
+                        }
+                    }, 100);
+
+                    resultScore = await openWillGame();
+                    const numericScore = Number(resultScore) || 0;
+                    const success = numericScore >= targetScore;
+                    console.log("📊 HASIL AKHIR WASIAT DEBUG", {
+                        keyHolder: playerName,
+                        victim,
+                        game: cfg.game,
+                        targetScore,
+                        actualScore: numericScore,
+                        difference: numericScore - targetScore,
+                        success,
+                        finalGameState: scoreState()
+                    });
+                    return {
+                        keyHolder: playerName,
+                        victim,
+                        game: cfg.game,
+                        targetScore,
+                        actualScore: numericScore,
+                        difference: numericScore - targetScore,
+                        success
+                    };
+                } catch (err) {
+                    console.error("[WASIAT DEBUG] Error saat menjalankan mini-game:", err);
+                    throw err;
+                } finally {
+                    if (poll !== null) clearInterval(poll);
+                    roles.kunci = oldKeyHolder;
+                    currentMiniGames.will = oldMiniGame;
+                    if (hadMeta) eliminatedMeta[victim] = oldMeta;
+                    else delete eliminatedMeta[victim];
+                    console.log("[WASIAT DEBUG] Role Key Holder, currentMiniGames, dan metadata korban dikembalikan ke kondisi sebelumnya.");
+                    console.groupEnd();
+                }
+            };
+            // console.info("🧪 Wasiat Debug siap. Jalankan listWasiatDebugParticipants() untuk melihat roster season ini, lalu debugWasiat() untuk mulai. Victim default otomatis dipilih dari roster aktif; bisa override dengan nama atau index peserta.");
+
         </script>
         <!-- <div id="modalRelasi" class="modal" onclick="clickOutside(event)">
             <div class="modal-content">
